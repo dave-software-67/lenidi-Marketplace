@@ -824,7 +824,6 @@ let blockedSellers = JSON.parse(localStorage.getItem('lenidiBlocked')) || [];
 let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
 let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
 
-// Track which product is queued for deletion
 let pendingDeleteId = null;
 
 // ============================================================
@@ -853,11 +852,8 @@ function verifyMarkFor(sellerEmail) {
 }
 
 // ============================================================
-// RANKING — TASK: boost/VIP ranking
+// RANKING
 // ============================================================
-// VIP ads → always top
-// Boosted ads → below VIP, newest boost first
-// Non-boosted → bottom (newest post first)
 function rankProducts(list) {
   const vip = list.filter(p => p.isVip);
   const boosted = list.filter(p => p.isBoosted && !p.isVip);
@@ -867,12 +863,10 @@ function rankProducts(list) {
   return [...vip, ...boosted, ...rest];
 }
 
-// Home page: ONLY VIP + boosted
 function homeList() {
   return rankProducts(products.filter(p => p.isBoosted || p.isVip));
 }
 
-// Search page: everything, ranked
 function searchList(list) {
   return rankProducts(list);
 }
@@ -897,6 +891,55 @@ async function apiDelete(path) {
     const res = await fetch(BACKEND_URL + path, { method: 'DELETE' });
     return await res.json().catch(() => ({}));
   } catch (e) { return {}; }
+}
+
+// ============================================================
+// ✅ NEW: SYNC FROM BACKEND (VIP, boosts, ban status)
+// ============================================================
+async function syncFromBackend() {
+  if (!userEmail) return;
+  try {
+    const data = await apiGet('/user-sync/' + userEmail);
+    if (!data) return;
+
+    // Check if banned / suspended
+    if (data.status === 'banned' || data.status === 'suspended') {
+      document.getElementById('suspendedMsg').textContent =
+        data.status === 'banned'
+          ? 'Your account has been permanently banned for violating our rules.'
+          : 'Your account is temporarily suspended.';
+      document.getElementById('suspendedCountdown').textContent =
+        data.status === 'banned' ? '∞' : ((data.suspend_days || '?') + ' days');
+      document.getElementById('suspendedOverlay').classList.add('show');
+      return;
+    } else {
+      document.getElementById('suspendedOverlay').classList.remove('show');
+    }
+
+    // Apply real plan + boosts + verify from backend
+    if (data.boosts !== undefined) userBoosts = data.boosts || 0;
+    if (data.verify !== undefined) userVerify = data.verify || '';
+
+    if (data.plan && data.plan !== 'free') {
+      const planData = SUBSCRIPTION_PLANS.find(p => p.id === data.plan);
+      subscription = {
+        plan: data.plan,
+        verifyClass: planData ? planData.verifyClass : '',
+        until: Date.now() + 31 * 24 * 60 * 60 * 1000,
+        boosts: data.boosts || 0
+      };
+      localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
+    } else {
+      subscription = null;
+      localStorage.removeItem('lenidiSubscription');
+    }
+
+    localStorage.setItem('lenidiBoosts', userBoosts);
+    localStorage.setItem('lenidiVerify', userVerify);
+    applyVerifyMark();
+    updateBoostsUI();
+    updateSubTimer();
+  } catch (e) { console.warn('Sync failed:', e); }
 }
 
 // ============================================================
@@ -994,7 +1037,7 @@ document.querySelectorAll('#collectionTabs .collection-tab').forEach(tab => {
 });
 
 // ============================================================
-// SEARCH — everything, ranked (VIP → boosted → non-boosted bottom)
+// SEARCH
 // ============================================================
 function openSearchPage() {
   switchPage('search');
@@ -1026,9 +1069,8 @@ function applyFilter() {
   renderProducts(searchList(results), 'searchProductGrid');
   switchPage('search');
 }
-
 // ============================================================
-// PRODUCT DETAIL — includes Delete + Boost for own ads
+// PRODUCT DETAIL
 // ============================================================
 function openProduct(id) {
   const p = products.find(x => String(x.id) === String(id));
@@ -1080,7 +1122,6 @@ function openProduct(id) {
   const leftHtml = leftCol.map(renderCell).join('');
   const rightHtml = rightCol.map(renderCell).join('');
 
-  // OWNER BUTTONS: Delete (top) + Boost (below), same size
   const ownerButtons = isMe(p.seller)
     ? '<div class="detail-btn-stack">' +
         '<button class="delete-inline-btn" onclick="requestDeleteAd(' + p.id + ')"><i class="fas fa-trash"></i> Delete</button>' +
@@ -1140,7 +1181,7 @@ function openProduct(id) {
 }
 
 // ============================================================
-// DELETE AD — YES/NO confirm page → removes everywhere
+// DELETE AD
 // ============================================================
 function requestDeleteAd(id) {
   pendingDeleteId = id;
@@ -1157,10 +1198,8 @@ async function confirmDeleteAd() {
   const id = pendingDeleteId;
   pendingDeleteId = null;
 
-  // 1. Try backend delete (if route exists)
   try { await apiDelete('/products/' + id); } catch (e) {}
 
-  // 2. Remove from in-memory + saved list
   products = products.filter(p => String(p.id) !== String(id));
   savedItems = savedItems.filter(x => String(x) !== String(id));
   localStorage.setItem('lenidiSaved', JSON.stringify(savedItems));
@@ -1196,7 +1235,6 @@ document.addEventListener('click', () => {
 function openSellerProfile(sellerEmail) {
   if (!sellerEmail) { showToast('Seller info unavailable'); return; }
   currentSellerEmail = sellerEmail;
-  // Only show public (VIP/boosted) ads of this seller
   const sellerAds = products.filter(p => p.sellerEmail === sellerEmail && (p.isBoosted || p.isVip || sellerEmail === userEmail));
   if (sellerAds.length === 0) { showToast('No public ads from this seller'); return; }
   const sample = sellerAds[0] || {};
@@ -1255,7 +1293,7 @@ function blockSeller(sellerEmail) {
 }
 
 // ============================================================
-// SELL PAGE — now includes Clothing
+// SELL PAGE
 // ============================================================
 function updateSellDetailFields() {
   const cat = document.getElementById('sellCategory').value;
@@ -1319,10 +1357,6 @@ function getUpgradeTarget() {
   return nextMap[subscription.plan];
 }
 
-// ============================================================
-// POST AD — VIP gets auto-boosted + visible on Home.
-// Non-VIP ads go to Search (bottom) + My Listings only.
-// ============================================================
 async function postAd() {
   try {
     const title = (document.getElementById('sellTitle').value || '').trim();
@@ -1412,7 +1446,6 @@ async function confirmBoost(id) {
   localStorage.setItem('lenidiBoosts', userBoosts);
   updateBoostsUI();
 
-  // Mark product as boosted locally + send to backend
   const p = products.find(x => String(x.id) === String(id));
   if (p) {
     p.isBoosted = true;
@@ -1438,7 +1471,6 @@ function renderMyListings() {
     grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i><h3>No listings yet</h3><p>Post an ad to see it here.</p></div>';
     return;
   }
-  // Show all my ads (boosted or not) — newest first
   const sorted = [...mine].sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
   renderProducts(sorted, 'myListingsGrid');
 }
@@ -1658,7 +1690,7 @@ function updateBoostsUI() {
 }
 
 // ============================================================
-// AUTH
+// AUTH — updated with syncFromBackend
 // ============================================================
 function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
@@ -1676,6 +1708,8 @@ function doLogin() {
   showToast('Welcome, ' + name.split(' ')[0] + '!');
   switchPage('profile');
   apiPost('/users', { email: userEmail, name: userName, phone: userPhone, boosts: userBoosts, verify: userVerify }).catch(() => {});
+  // ✅ Sync real plan/boosts/ban from backend
+  setTimeout(syncFromBackend, 500);
 }
 
 function doLogout() {
@@ -1915,7 +1949,7 @@ function buildAdStrip() {
 }
 
 // ============================================================
-// PAGE SWITCHING
+// PAGE SWITCHING — updated with syncFromBackend on profile
 // ============================================================
 function switchPage(pageId) {
   if (pageId !== 'aiChatPage') {
@@ -1939,14 +1973,14 @@ function switchPage(pageId) {
 
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
-  if (pageId === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); }
+  if (pageId === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
   if (pageId === 'home') { loadProducts(); }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ============================================================
-// INIT
+// INIT — updated with auto-sync every 30s
 // ============================================================
 buildAdStrip();
 buildBoostGrid();
@@ -1961,6 +1995,8 @@ buildPricingGrid();
   syncUserInfo();
   await loadProducts();
   checkPendingPayment();
+  syncFromBackend();
+  setInterval(syncFromBackend, 30000);
   switchPage('home');
 })();
 
