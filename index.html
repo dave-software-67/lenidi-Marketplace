@@ -9,8 +9,8 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 body { background: #f5f7fa; min-height: 100vh; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
-button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; transition: transform 0.08s ease, opacity 0.08s ease; }
-button:active { transform: scale(0.95); opacity: 0.88; }
+button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; transition: transform 0.1s ease, opacity 0.1s ease; }
+button:active { transform: scale(0.94); opacity: 0.85; }
 .top-bar { background: #fff; border-bottom: 1px solid #e9ecef; padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }
 .logo-text { font-size: 22px; font-weight: 800; color: #1e2a3a; letter-spacing: -0.4px; }
 .logo-text span { color: #ff6b00; }
@@ -26,7 +26,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .page.active { display: block; }
 .promo-banner { background: linear-gradient(135deg, #1e2a3a, #2c3e50); border-radius: 16px; padding: 18px 20px; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
 .promo-text h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #fff; }
-.promo-text p { font-size: 12px; opacity: 0.85; color: #e0e6ed; }
+.promo-text p { font-size: 12px; opacity: 0.9; color: #e0e6ed; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .collection-tabs { display: flex; gap: 12px; margin-bottom: 18px; overflow-x: auto; scrollbar-width: none; padding-bottom: 6px; }
 .collection-tabs::-webkit-scrollbar { display: none; }
 .collection-tab { background: #fff; border: 1px solid #e4e7ec; padding: 9px 18px; border-radius: 30px; font-size: 13px; font-weight: 500; color: #1e2a3a; white-space: nowrap; cursor: pointer; }
@@ -45,7 +45,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .product-title { font-size: 12px; color: #2c3e50; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 32px; }
 .location { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #7f8c8d; }
 .location i { font-size: 10px; }
-.date-posted { font-size: 10px; color: #95a5a6; }
+.date-posted { font-size: 10px; color: #95a5a6; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .loader-3dots { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 40px 16px; }
 .loader-3dots span { width: 14px; height: 14px; background: #3b82f6; border-radius: 50%; animation: bounce3 1.4s infinite ease-in-out both; }
 .loader-3dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -69,7 +69,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .suggestion-tag { display: inline-block; background: #fff; border: 1px solid #e4e7ec; padding: 8px 16px; border-radius: 40px; font-size: 13px; color: #2c3e50; margin: 0 8px 8px 0; cursor: pointer; }
 .filter-page-header { display: flex; align-items: center; gap: 12px; background: #fff; padding: 14px 16px; border-bottom: 1px solid #e9ecef; }
 .filter-page-header .back-btn { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px; }
-.filter-page-header h3 { font-size: 17px; color: #1e2a3a; }
+.filter-page-header h3 { font-size: 17px; color: #1e2a3a; display: flex; align-items: center; gap: 6px; }
 .filter-body { padding: 16px; max-width: 380px; margin: 0 auto; }
 .filter-section { background: #fff; border-radius: 16px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 12px; }
 .filter-section h4 { font-size: 13px; color: #1e2a3a; margin-bottom: 10px; font-weight: 700; }
@@ -123,10 +123,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .seller-menu-item.report, .seller-menu-item.block { color: #b91c1c; }
 .chat-btn { background: #25D366; color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; }
 .other-ads-title { font-size: 15px; font-weight: 700; color: #1e2a3a; margin: 20px 0 10px; }
-.verify-yellow { color: #f5c518; }
-.verify-orange { color: #ff6b00; }
-.verify-purple { color: #8b5cf6; }
-.verify-blue { color: #3b82f6; }
 .verify-mark { font-size: 14px; }
 .verify-badge { display: inline-flex; position: relative; width: 16px; height: 16px; vertical-align: middle; margin-left: 3px; flex-shrink: 0; }
 .verify-badge i.fa-certificate { font-size: 16px; position: absolute; top: 0; left: 0; line-height: 1; }
@@ -135,7 +131,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .verify-badge.verify-orange i.fa-certificate { color: #ff6b00; }
 .verify-badge.verify-purple i.fa-certificate { color: #8b5cf6; }
 .verify-badge.verify-blue i.fa-certificate { color: #3b82f6; }
-
 .saves-header { margin-bottom: 16px; }
 .saves-header h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
 .saves-header p { color: #5e6f7e; font-size: 14px; }
@@ -219,6 +214,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .sub-timer-banner .sub-info h4 { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
 .sub-timer-banner .sub-info p { font-size: 12px; }
 .sub-timer-banner .sub-countdown { font-size: 18px; font-weight: 800; }
+.sub-renew-btn { background: #3b82f6; color: #fff; border: none; padding: 10px 16px; border-radius: 60px; font-weight: 700; font-size: 12px; }
 .sub-timer-yellow { background: linear-gradient(135deg, #fef9c3, #fde68a); border-color: #f5c518; }
 .sub-timer-yellow i, .sub-timer-yellow .sub-info h4, .sub-timer-yellow .sub-info p, .sub-timer-yellow .sub-countdown { color: #854d0e; }
 .sub-timer-orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); border-color: #ff6b00; }
@@ -227,7 +223,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .sub-timer-purple i, .sub-timer-purple .sub-info h4, .sub-timer-purple .sub-info p, .sub-timer-purple .sub-countdown { color: #5b21b6; }
 .sub-timer-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-color: #3b82f6; }
 .sub-timer-blue i, .sub-timer-blue .sub-info h4, .sub-timer-blue .sub-info p, .sub-timer-blue .sub-countdown { color: #1e40af; }
-.sub-renew-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; border: none; padding: 12px 22px; border-radius: 60px; font-weight: 700; font-size: 13px; }
 .profile-header { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 20px; padding: 18px; border: 1px solid #edf0f3; margin-bottom: 20px; flex-wrap: wrap; }
 .profile-avatar { width: 68px; height: 68px; background: #ff6b00; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 700; flex-shrink: 0; cursor: pointer; position: relative; overflow: hidden; }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -243,14 +238,15 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .stat-label { font-size: 11px; color: #7f8c8d; }
 .stat.boosts .stat-number { color: #ff6b00; }
 .profile-menu { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 24px; }
-.menu-item { background: #fff; border-radius: 14px; padding: 15px; display: flex; align-items: center; gap: 14px; border: 1px solid #edf0f3; cursor: pointer; }
+.menu-item { background: #fff; border-radius: 14px; padding: 15px; display: flex; align-items: center; gap: 14px; border: 1px solid #edf0f3; cursor: pointer; position: relative; }
 .menu-item i:first-child { font-size: 20px; color: #ff6b00; width: 28px; text-align: center; }
 .menu-item span { font-weight: 600; color: #1e2a3a; font-size: 14px; flex: 1; display: flex; align-items: center; gap: 6px; }
 .menu-item .fa-chevron-right { color: #b0bec5; font-size: 12px; }
 .menu-item.delete-item i:first-child { color: #ef4444; }
 .menu-item.delete-item span { color: #ef4444; }
-.menu-item.badge-on { position: relative; }
-.menu-item .unread-badge { position: absolute; top: 12px; right: 40px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.menu-item.referral-blue i:first-child { color: #3b82f6 !important; }
+.menu-item.referral-blue span { color: #3b82f6 !important; font-weight: 700 !important; }
+.menu-item .unread-badge { position: absolute; top: 12px; right: 40px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 20px; display: none; align-items: center; justify-content: center; padding: 0 5px; }
 .watch-ad-card { background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 16px; padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; border: none; width: 100%; text-align: left; }
 .watch-ad-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .watch-ad-icon i { font-size: 20px; color: #fff; }
@@ -258,13 +254,15 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .watch-ad-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
 .watch-ad-text p { font-size: 12px; opacity: 0.9; }
 .watch-ad-btn { background: #fff; color: #ff6b00; border: none; padding: 9px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; flex-shrink: 0; }
-.auth-bar { display: flex; align-items: center; justify-content: space-between; background: #fff; border-radius: 16px; padding: 14px 18px; border: 1px solid #edf0f3; gap: 12px; }
-.auth-bar-info h4 { font-size: 14px; color: #1e2a3a; margin-bottom: 2px; }
-.auth-bar-info p { font-size: 12px; color: #7f8c8d; }
-.auth-bar-buttons { display: flex; gap: 8px; flex-shrink: 0; }
-.auth-btn { padding: 10px 22px; border-radius: 60px; font-weight: 600; font-size: 13px; border: none; white-space: nowrap; }
-.auth-btn.signin { background: #ff6b00; color: #fff; }
-.auth-btn.logout { background: #f0f4f9; color: #1e2a3a; }
+.auth-bar { display: none; }
+.auth-page-container { max-width: 420px; margin: 0 auto; padding: 16px; }
+.auth-page-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; }
+.auth-page-card h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
+.auth-page-card > p { font-size: 14px; color: #7f8c8d; margin-bottom: 20px; }
+.auth-page-card .form-group { margin-bottom: 16px; }
+.auth-page-card .form-group input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; text-align: left; }
+.referral-input-signup { text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+.referral-optional-tag { font-size: 11px; color: #94a3b8; font-weight: 500; margin-left: 4px; text-transform: none; letter-spacing: 0; }
 .listings-header { margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
 .listings-header .back-btn { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px; }
 .listings-header h2 { font-size: 20px; color: #1e2a3a; }
@@ -300,14 +298,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .contact { font-size: 13px; color: #94a3b8; margin-top: 20px; }
 .contact a { color: #22c55e; text-decoration: none; font-weight: 700; }
 .create-account-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px 28px; border-radius: 60px; font-weight: 700; font-size: 15px; margin-bottom: 16px; margin-top: 8px; }
-.auth-page-container { max-width: 420px; margin: 0 auto; padding: 16px; }
-.auth-page-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; }
-.auth-page-card h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
-.auth-page-card > p { font-size: 14px; color: #7f8c8d; margin-bottom: 20px; }
-.auth-page-card .form-group { margin-bottom: 16px; }
-.auth-page-card .form-group input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; text-align: left; }
-.referral-input-signup { text-transform: uppercase; letter-spacing: 2px; font-weight: 700; text-align: left !important; }
-.referral-optional-tag { font-size: 11px; color: #94a3b8; font-weight: 500; margin-left: 4px; text-transform: none; letter-spacing: 0; }
 .confirm-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; text-align: center; max-width: 420px; margin: 0 auto; }
 .confirm-card h2 { font-size: 19px; color: #1e2a3a; margin-bottom: 8px; }
 .confirm-card p { font-size: 14px; color: #7f8c8d; margin-bottom: 22px; }
@@ -321,7 +311,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .bottom-nav button { background: transparent; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #8f9aa8; flex: 1; max-width: 90px; position: relative; }
 .bottom-nav button i { font-size: 22px; }
 .bottom-nav button.active, .bottom-nav button.active i { color: #ff6b00; font-weight: 600; }
-.bottom-nav .nav-dot { position: absolute; top: 2px; right: 22px; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.bottom-nav .nav-dot { position: absolute; top: 2px; right: 20px; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
 .typing-dots { display: inline-flex; align-items: center; gap: 4px; padding: 4px 0; }
 .typing-dots span { width: 8px; height: 8px; background: #b0bec5; border-radius: 50%; display: inline-block; animation: typingBounce 1.2s infinite ease-in-out; }
 .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -364,10 +354,15 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .referral-code-box .code-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
 .referral-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
 .referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; outline: none; }
-.referral-input-row input:focus { border-color: #3b82f6; }
 .btn-claim { width: 100%; padding: 16px; border-radius: 60px; border: none; font-weight: 800; font-size: 15px; background: #cbd5e1; color: #64748b; cursor: not-allowed; }
 .btn-claim.unlocked { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; cursor: pointer; }
 .btn-blue { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; }
+.inbox-item { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
+.inbox-icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+.inbox-body { flex: 1; min-width: 0; }
+.inbox-body h4 { font-size: 14px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
+.inbox-body p { font-size: 13px; color: #5e6f7e; line-height: 1.5; margin-bottom: 6px; }
+.inbox-body .inbox-date { font-size: 11px; color: #94a3b8; }
 @media (min-width: 600px) {
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .saves-grid { grid-template-columns: repeat(3, 1fr); }
@@ -422,7 +417,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <div class="promo-banner">
       <div class="promo-text">
         <h1>Buy & sell near you</h1>
-        <p>Note: Trust the verified sellers <span class="verify-badge verify-blue" style="margin-left:4px;"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></p>
+        <p>Trust verified sellers <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></p>
       </div>
     </div>
     <div class="collection-tabs" id="adStrip" style="margin-bottom:20px; padding-bottom:6px; gap:12px;"></div>
@@ -580,18 +575,18 @@ button:active { transform: scale(0.95); opacity: 0.88; }
           </div>
         </div>
       </div>
-      <button class="watch-ad-card" onclick="document.getElementById('comingSoonOverlay')?.classList.add('show')">
+      <button class="watch-ad-card">
         <div class="watch-ad-icon"><i class="fas fa-play"></i></div>
         <div class="watch-ad-text"><h4>Watch an ad for 2 boosts</h4><p>Free boosts</p></div>
         <div class="watch-ad-btn"><i class="fas fa-gift"></i> Watch</div>
       </button>
       <div id="subTimerContainer"></div>
       <div class="profile-menu">
-        <div class="menu-item" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item referral-blue" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="switchPage('myListings')"><i class="fas fa-box"></i><span>My listings</span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item badge-on" id="inboxMenuBtn" onclick="openInbox()"><i class="fas fa-inbox"></i><span>Inbox</span><span class="unread-badge" id="inboxBadge" style="display:none;">0</span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item" onclick="openSupportChat()"><i class="fas fa-comments"></i><span>Chat with Support <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item" onclick="openAISupport()"><i class="fas fa-robot"></i><span>Lenidi Ai help <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item" onclick="openInbox()"><i class="fas fa-inbox"></i><span>Inbox</span><span class="unread-badge" id="inboxBadge">0</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item" onclick="openSupportChat()"><i class="fas fa-comments"></i><span>Chat with Support</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item" onclick="openAISupport()"><i class="fas fa-robot"></i><span>Lenidi Ai help</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openPrivacy()"><i class="fas fa-shield-alt"></i><span>Privacy & Policy</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openTerms()"><i class="fas fa-file-contract"></i><span>Terms of Service</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item delete-item" onclick="switchPage('deleteAccountPage')"><i class="fas fa-user-slash"></i><span>Delete My Account</span><i class="fas fa-chevron-right"></i></div>
@@ -606,19 +601,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
         <div class="form-group"><label>Phone</label><input type="tel" id="loginPhone" placeholder="0244 000 000"></div>
         <div class="form-group"><label>Referral code <span class="referral-optional-tag">(Optional)</span></label><input type="text" id="loginReferral" class="referral-input-signup" placeholder="DAVE123" maxlength="10"></div>
         <button class="btn-primary" onclick="doLogin()">Sign in</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="logoutConfirmPage" class="page">
-    <div class="auth-page-container">
-      <div class="confirm-card">
-        <h2>Log out?</h2>
-        <p>You'll be signed out of your account.</p>
-        <div class="confirm-buttons">
-          <button class="confirm-no" onclick="switchPage('profile')">No</button>
-          <button class="confirm-yes" onclick="doLogout()">Yes, log out</button>
-        </div>
       </div>
     </div>
   </div>
@@ -684,7 +666,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
       <h3>Inbox</h3>
     </div>
     <div style="padding:16px;max-width:600px;margin:0 auto;">
-      <div id="inboxList"><div class="no-results"><i class="fas fa-inbox"></i><h3>No messages yet</h3><p>You'll see announcements from Lenidi here.</p></div></div>
+      <div id="inboxList"><div class="no-results"><i class="fas fa-inbox"></i><h3>No messages yet</h3><p>You'll see announcements here.</p></div></div>
     </div>
   </div>
 
@@ -693,7 +675,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
       <div class="conv-header" style="position:relative;">
         <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
         <div class="conv-avatar"><i class="fas fa-headset"></i></div>
-        <div class="conv-user"><h4>Chat with Support <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h4><span>Online</span></div>
+        <div class="conv-user"><h4>Chat with Support</h4><span>Online</span></div>
       </div>
       <div class="conv-messages" id="supportMessages">
         <div class="msg-bubble received">Hi! 👋 How can we help you today?</div>
@@ -708,14 +690,14 @@ button:active { transform: scale(0.95); opacity: 0.88; }
   <div id="aiSupportPage" class="page">
     <div class="filter-page-header">
       <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-      <h3>Lenidi Ai help <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h3>
+      <h3>Lenidi Ai help</h3>
     </div>
     <div style="padding:16px;">
       <div style="background:#fff;border-radius:20px;padding:20px;border:1px solid #edf0f3;margin-bottom:16px;text-align:center;">
         <div style="width:68px;height:68px;border-radius:50%;background:#ff6b00;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
           <i class="fas fa-robot" style="font-size:28px;color:#fff;"></i>
         </div>
-        <h2 style="font-size:19px;font-weight:800;color:#1e2a3a;margin-bottom:6px;">Hi, I'm Lenidi AI <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h2>
+        <h2 style="font-size:19px;font-weight:800;color:#1e2a3a;margin-bottom:6px;">Hi, I'm Lenidi AI</h2>
         <p style="font-size:13px;color:#7f8c8d;line-height:1.5;">Ask me anything — I can help if you were scammed or need support.</p>
       </div>
       <div style="background:#fff7ed;border:1px solid #ffe0b2;border-radius:16px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
@@ -731,7 +713,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
       <div class="conv-header" style="position:relative;">
         <button class="back-btn" onclick="switchPage('aiSupportPage')"><i class="fas fa-arrow-left"></i></button>
         <div class="conv-avatar"><i class="fas fa-robot"></i></div>
-        <div class="conv-user"><h4>Lenidi AI <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h4><span>Online</span></div>
+        <div class="conv-user"><h4>Lenidi AI</h4><span>Online</span></div>
         <button class="conv-menu-btn" onclick="toggleConvMenu(event)"><i class="fas fa-ellipsis-v"></i></button>
         <div class="conv-menu-popup" id="convMenuPopup">
           <div class="conv-menu-item" onclick="clearAIChat()"><i class="fas fa-trash-alt"></i> Clear chat</div>
@@ -837,7 +819,7 @@ let referralInfo = { code: null, count: 0, claimed: false };
 let accountDeleted = false;
 let broadcasts = [];
 let lastSeenBroadcastId = Number(localStorage.getItem('lenidiLastBroadcast') || 0);
-let lastSubTimerRef = null;
+let supportPollRef = null;
 
 function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastText').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
 function isMe(name) { return name === userName; }
@@ -1148,8 +1130,8 @@ async function reportSeller(sellerEmail) {
     const reported = JSON.parse(localStorage.getItem('lenidiReported')) || {};
     reported[target] = (reported[target] || 0) + 1;
     localStorage.setItem('lenidiReported', JSON.stringify(reported));
-    if (reported[target] >= 10) showToast('🚨 Seller has been reported 10+ times'); else showToast('🚨 Report submitted. Thank you.');
-  } catch (e) { showToast('Failed to report. Try again.'); }
+    if (reported[target] >= 10) showToast('🚨 Seller reported 10+ times'); else showToast('🚨 Report submitted');
+  } catch (e) { showToast('Failed to report'); }
 }
 
 function blockSeller(sellerEmail) {
@@ -1220,7 +1202,7 @@ async function postAd() {
     if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
     const myCount = products.filter(p => p.sellerEmail === userEmail).length;
     const limit = getListingLimit();
-    if (myCount >= limit) { const target = getUpgradeTarget(); showToast('🚫 Limit reached, upgrade to ' + target + ' to post ad'); setTimeout(() => switchPage('packs'), 1300); return; }
+    if (myCount >= limit) { const target = getUpgradeTarget(); showToast('🚫 Limit reached, upgrade to ' + target); setTimeout(() => switchPage('packs'), 1300); return; }
     const isVip = subscription && Date.now() < subscription.until && subscription.plan === 'vip';
     const payload = {
       title: title, price: 'GHC ' + price, price_raw: parseInt(price) || 0,
@@ -1237,10 +1219,10 @@ async function postAd() {
     const result = await apiPost('/products', payload);
     if (result.error) { showToast('Error: ' + result.error); return; }
     clearForm();
-    showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted! It will show at the bottom of Search.');
+    showToast(isVip ? '🚀 VIP AD posted!' : '✅ Ad posted!');
     await loadProducts();
     switchPage('myListings');
-  } catch (err) { showToast('Error posting: ' + err.message); }
+  } catch (err) { showToast('Error: ' + err.message); }
 }
 
 function openBoostPage(id) {
@@ -1270,7 +1252,7 @@ async function confirmBoost(id) {
   updateBoostsUI();
   const p = products.find(x => String(x.id) === String(id));
   if (p) { p.isBoosted = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now(); try { await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() }); } catch (e) {} }
-  showToast('🚀 Boosted! Now visible on Home.');
+  showToast('🚀 Boosted!');
   applyCollectionFilter();
   switchPage('home');
 }
@@ -1344,7 +1326,7 @@ function switchPacksTab(tab) {
 async function startPayment(email, amount, plan, type) {
   try {
     const data = await apiPost('/create-payment', { email: email, amount: amount, plan: plan, type: type });
-    if (!data.authorization_url) { showToast('Payment start failed: ' + (data.error || 'unknown')); return; }
+    if (!data.authorization_url) { showToast('Payment start failed'); return; }
     localStorage.setItem('lenidiPendingPayment', JSON.stringify({ reference: data.reference, plan: plan, type: type, amount: amount, started: Date.now() }));
     window.location.href = data.authorization_url;
   } catch (e) { showToast('Payment error: ' + e.message); }
@@ -1370,7 +1352,7 @@ function onPaymentSuccess(pending) {
     userBoosts += amt;
     localStorage.setItem('lenidiBoosts', userBoosts);
     updateBoostsUI();
-    showToast('🎉 +' + amt + ' boosts added!');
+    showToast('🎉 +' + amt + ' boosts!');
   } else if (pending.type === 'subscription') {
     const planData = SUBSCRIPTION_PLANS.find(p => p.id === pending.plan);
     if (planData) {
@@ -1396,7 +1378,7 @@ function updateSubTimer() {
   const now = Date.now();
   if (now >= subscription.until) {
     userVerify = ''; localStorage.setItem('lenidiVerify', '');
-    c.innerHTML = '<div class="sub-timer-banner sub-timer-blue"><i class="fas fa-crown"></i><div class="sub-info"><h4>Subscription expired</h4><p>Renew to keep VIP benefits</p></div><button class="sub-renew-btn" onclick="switchPage(\'packs\'); switchPacksTab(\'subscriptions\');">Renew Subscription</button></div>';
+    c.innerHTML = '<div class="sub-timer-banner sub-timer-blue"><i class="fas fa-crown"></i><div class="sub-info"><h4>Subscription expired</h4><p>Renew to keep VIP</p></div><button class="sub-renew-btn" onclick="switchPage(\'packs\'); switchPacksTab(\'subscriptions\');">Renew Subscription</button></div>';
     return;
   }
   const rem = subscription.until - now;
@@ -1460,23 +1442,23 @@ async function createMyCode() {
   if (code.length < 3) { showToast('Code must be at least 3 characters'); return; }
   try {
     const res = await apiPost('/referral/set-code', { email: userEmail, code: code });
-    if (res.success) { referralInfo.code = res.code; showToast('✅ Your referral code is ' + res.code); renderReferralPage(); }
-    else if (res.taken) { showToast('❌ TAKEN — try another code'); }
+    if (res.success) { referralInfo.code = res.code; showToast('✅ Code saved'); renderReferralPage(); }
+    else if (res.taken) { showToast('❌ TAKEN — try another'); }
     else { showToast('❌ ' + (res.error || 'Failed')); }
   } catch (e) { showToast('Network error'); }
 }
 async function claimFreeVip() {
-  if (referralInfo.count < 100) { showToast('Need 100 referrals first'); return; }
+  if (referralInfo.count < 100) { showToast('Need 100 referrals'); return; }
   if (referralInfo.claimed) { showToast('Already claimed'); return; }
   if (!confirm('Claim your 1 month Free VIP reward?')) return;
   try {
     const res = await apiPost('/referral/claim-vip', { email: userEmail });
-    if (res.success) { showToast('🎉 You got FREE VIP for 1 month!'); referralInfo.claimed = true; await syncFromBackend(); renderReferralPage(); }
+    if (res.success) { showToast('🎉 You got FREE VIP!'); referralInfo.claimed = true; await syncFromBackend(); renderReferralPage(); }
     else { showToast('❌ ' + (res.error || 'Failed')); }
   } catch (e) { showToast('Network error'); }
 }
 
-// INBOX (broadcasts)
+// ===== INBOX =====
 async function loadBroadcasts() {
   try {
     const data = await apiGet('/broadcasts');
@@ -1504,7 +1486,7 @@ function updateInboxBadge() {
   }
 }
 function openInbox() {
-  switchPage('inbox');
+  switchPage('inboxPage');
   renderInbox();
   if (broadcasts.length > 0) {
     lastSeenBroadcastId = Math.max(...broadcasts.map(b => Number(b.id)));
@@ -1514,19 +1496,17 @@ function openInbox() {
 }
 function renderInbox() {
   const el = document.getElementById('inboxList');
-  if (!broadcasts.length) { el.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i><h3>No messages yet</h3><p>You\'ll see announcements from Lenidi here.</p></div>'; return; }
+  if (!broadcasts.length) { el.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i><h3>No messages yet</h3><p>You\'ll see announcements here.</p></div>'; return; }
   el.innerHTML = broadcasts.map(b => {
     const dt = b.created_at ? new Date(b.created_at).toLocaleString() : '';
-    return '<div style="background:#fff;border-radius:14px;padding:14px;border:1px solid #edf0f3;margin-bottom:10px;">' +
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;display:flex;align-items:center;justify-content:center;"><i class="fas fa-bullhorn"></i></div><h4 style="font-size:14px;font-weight:800;color:#1e2a3a;">' + (b.title || 'Broadcast') + '</h4></div>' +
-      '<p style="font-size:13px;color:#5e6f7e;line-height:1.5;margin-bottom:6px;">' + (b.body || '') + '</p>' +
-      '<div style="font-size:11px;color:#94a3b8;">' + dt + '</div>' +
+    return '<div class="inbox-item">' +
+      '<div class="inbox-icon"><i class="fas fa-bullhorn"></i></div>' +
+      '<div class="inbox-body"><h4>' + (b.title || 'Broadcast') + '</h4><p>' + (b.body || '') + '</p><div class="inbox-date">' + dt + '</div></div>' +
     '</div>';
   }).join('');
 }
 
-// SUPPORT CHAT (user ↔ admin)
-let supportPollRef = null;
+// ===== SUPPORT CHAT =====
 function openSupportChat() {
   if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
   switchPage('supportChatPage');
@@ -1540,26 +1520,37 @@ async function loadSupportMessages() {
     const msgs = await apiGet('/dm/' + encodeURIComponent(userEmail));
     const box = document.getElementById('supportMessages');
     if (!box) return;
-    if (!msgs || !msgs.length) { box.innerHTML = '<div class="msg-bubble received">Hi! 👋 How can we help you today?</div>'; return; }
-    box.innerHTML = msgs.map(m => {
-      const side = m.sender === 'admin' ? 'received' : 'sent';
+    if (!msgs || !msgs.length) {
+      box.innerHTML = '<div class="msg-bubble received">Hi! 👋 How can we help you today?</div>';
+      return;
+    }
+    const html = msgs.map(m => {
+      const side = (m.sender === 'admin') ? 'received' : 'sent';
       const safe = (m.body || '').replace(/</g, '&lt;');
       return '<div class="msg-bubble ' + side + '">' + safe + '</div>';
     }).join('');
-    box.scrollTop = box.scrollHeight;
+    if (box.innerHTML !== html) {
+      box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
+    }
   } catch (e) {}
 }
 async function sendSupportMsg() {
   const input = document.getElementById('supportInput');
   const text = input.value.trim();
   if (!text) return;
+  const box = document.getElementById('supportMessages');
+  box.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
+  box.scrollTop = box.scrollHeight;
+  input.value = '';
   try {
-    await apiPost('/dm/send', { user_email: userEmail, sender: 'user', body: text });
-    input.value = '';
-    loadSupportMessages();
-  } catch (e) { showToast('Failed to send'); }
+    const res = await apiPost('/dm/send', { user_email: userEmail, sender: 'user', body: text });
+    if (res && res.success) setTimeout(loadSupportMessages, 400);
+    else showToast('Failed: ' + ((res && res.error) || 'unknown'));
+  } catch (e) { showToast('Network error'); }
 }
 
+// ===== AUTH =====
 async function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
   const email = (document.getElementById('loginEmail').value || '').trim();
@@ -1615,44 +1606,24 @@ function changePhone() { const p = prompt('New phone:', userPhone); if (p && p.t
 function handlePfpUpload(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; }; r.readAsDataURL(f); }
 
 function openAISupport() { switchPage('aiSupportPage'); }
-function openAIChatWith(q) { if (!aiConsented) { document.getElementById('aiConsentOverlay') && document.getElementById('aiConsentOverlay').classList.add('show'); window.pendingAIQuestion = q || ''; return; } switchPage('aiChatPage'); if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); } }
-function acceptAIConsent() { aiConsented = true; localStorage.setItem('lenidiAiConsent', 'true'); switchPage('aiChatPage'); }
-function declineAIConsent() { showToast('AI chat unavailable without consent'); }
+function openAIChatWith(q) {
+  if (!aiConsented) { window.pendingAIQuestion = q || ''; switchPage('aiChatPage'); aiConsented = true; localStorage.setItem('lenidiAiConsent', 'true'); return; }
+  switchPage('aiChatPage');
+  if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
+}
 function toggleConvMenu(e) { e.stopPropagation(); document.getElementById('convMenuPopup').classList.toggle('show'); }
 function clearAIChat() { document.getElementById('convMenuPopup').classList.remove('show'); document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
-function isAdminCommand(t) { return /^\/(suspend|ban|unban|gift|unpack|remove)/i.test(t.trim()); }
-function parseAdminCommand(text) {
-  const t = text.trim();
-  let m = t.match(/^\/gift_(plus|pro|premium|vip)_([^\s]+)$/i);
-  if (m) {
-    const plan = m[1].toLowerCase();
-    const target = m[2].toLowerCase();
-    const planData = SUBSCRIPTION_PLANS.find(p => p.id === plan);
-    if (!planData) return '❌ Unknown plan';
-    if (target === userEmail) {
-      userVerify = planData.verifyClass;
-      userBoosts += planData.boosts;
-      localStorage.setItem('lenidiVerify', userVerify);
-      localStorage.setItem('lenidiBoosts', userBoosts);
-      subscription = { plan: plan, verifyClass: planData.verifyClass, until: Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: planData.boosts };
-      localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
-      applyVerifyMark(); updateBoostsUI(); updateSubTimer();
-      return '✅ Gifted you ' + plan.toUpperCase() + ' + ' + planData.boosts + ' boosts!';
-    }
-    return '✅ Gifted ' + plan.toUpperCase() + ' to ' + target;
+function isScamTrigger(t) { return /\b(scam|scammed|fraud|stolen|fake seller)\b/i.test(t); }
+function aiLocalReply(raw) {
+  if (reportingScam) {
+    if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; }
+    if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; }
+    reportingScam = false; scamDraft = {};
+    return '✅ Report submitted.';
   }
-  m = t.match(/^\/gift_(\d+)_boosts_([^\s]+)$/i);
-  if (m) { const amt = parseInt(m[1]); const target = m[2].toLowerCase(); if (target === userEmail) { userBoosts += amt; localStorage.setItem('lenidiBoosts', userBoosts); updateBoostsUI(); return '✅ Gifted you ' + amt + ' boosts!'; } return '✅ Gifted ' + amt + ' boosts to ' + target; }
-  m = t.match(/^\/suspend_([^\s_]+)_(\d+)\s*days?$/i);
-  if (m) return '⛔ ' + m[1] + ' suspended for ' + m[2] + ' days.';
-  m = t.match(/^\/ban_([^\s]+)$/i);
-  if (m) return '⛔ ' + m[1] + ' banned permanently.';
-  m = t.match(/^\/unban_([^\s]+)$/i);
-  if (m) return '✅ ' + m[1] + ' unbanned.';
+  if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; }
   return null;
 }
-function isScamTrigger(t) { return /\b(scam|scammed|fraud|stolen|fake seller)\b/i.test(t); }
-function aiLocalReply(raw) { if (isAdminCommand(raw)) { const r = parseAdminCommand(raw); if (r) return r; } if (reportingScam) { if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; } if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; } reportingScam = false; scamDraft = {}; return '✅ Report submitted. They will be reviewed.'; } if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; } return null; }
 async function askGroq(msg) {
   aiHistory.push({ role: 'user', content: msg });
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY }, body: JSON.stringify({ model: GROQ_MODEL, messages: aiHistory, temperature: 0.7, max_tokens: 512 }) });
@@ -1710,7 +1681,7 @@ function switchPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => { b.classList.toggle('active', b.dataset.page === pageId); });
-  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage','referralPage','inboxPage','supportChatPage'];
+  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','referralPage','inboxPage','supportChatPage'];
   document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
