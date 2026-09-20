@@ -98,7 +98,10 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
 .detail-price-line { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
 .detail-price-big { font-size: 22px; font-weight: 800; color: #16a34a; }
 .detail-neg { font-size: 13px; color: #7f8c8d; }
-.boost-inline-btn { background: #ff6b00; color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; margin-left: auto; }
+.detail-btn-stack { display: flex; flex-direction: column; gap: 8px; margin-left: auto; }
+.boost-inline-btn, .delete-inline-btn { color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; text-align: center; }
+.boost-inline-btn { background: #ff6b00; }
+.delete-inline-btn { background: #ef4444; }
 .detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #fff; border-radius: 14px; padding: 16px; border: 1px solid #edf0f3; }
 .meta-cell { display: flex; flex-direction: column; gap: 4px; }
 .meta-cell .meta-value { font-size: 15px; font-weight: 700; color: #1e2a3a; word-break: break-word; }
@@ -405,7 +408,7 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
   <div class="categories" id="categoryBar">
     <a href="#" class="active" data-category="all" onclick="filterCategory(event, 'all')">All</a>
     <a href="#" data-category="vehicles" onclick="filterCategory(event, 'vehicles')">Vehicles</a>
-    <a href="#" data-category="property" onclick="filterCategory(event, 'property')">Property</a>
+    <a href="#" data-category="clothing" onclick="filterCategory(event, 'clothing')">Clothing</a>
     <a href="#" data-category="phones" onclick="filterCategory(event, 'phones')">Phones</a>
     <a href="#" data-category="electronics" onclick="filterCategory(event, 'electronics')">Electronics</a>
     <a href="#" data-category="home" onclick="filterCategory(event, 'home')">Home</a>
@@ -484,6 +487,7 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
           <option value="phones">Phones</option>
           <option value="vehicles">Vehicles</option>
           <option value="property">Property</option>
+          <option value="clothing">Clothing</option>
           <option value="electronics">Electronics</option>
           <option value="home">Home</option>
           <option value="jobs">Jobs</option>
@@ -520,6 +524,7 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
           <option value="phones">Mobile Phones</option>
           <option value="vehicles">Vehicles</option>
           <option value="property">Property</option>
+          <option value="clothing">Clothing</option>
           <option value="electronics">Electronics</option>
           <option value="home">Home & Furniture</option>
           <option value="jobs">Jobs</option>
@@ -614,6 +619,19 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
         <div class="confirm-buttons">
           <button class="confirm-no" onclick="switchPage('profile')">No</button>
           <button class="confirm-yes" onclick="doLogout()">Yes, log out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="deleteAdConfirmPage" class="page">
+    <div class="auth-page-container">
+      <div class="confirm-card">
+        <h2 style="color:#ef4444;">Do you want to delete this ad?</h2>
+        <p>This ad will disappear from everywhere. This cannot be undone.</p>
+        <div class="confirm-buttons">
+          <button class="confirm-no" onclick="cancelDeleteAd()">NO</button>
+          <button class="confirm-yes" onclick="confirmDeleteAd()">YES</button>
         </div>
       </div>
     </div>
@@ -806,6 +824,9 @@ let blockedSellers = JSON.parse(localStorage.getItem('lenidiBlocked')) || [];
 let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
 let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
 
+// Track which product is queued for deletion
+let pendingDeleteId = null;
+
 // ============================================================
 // HELPERS
 // ============================================================
@@ -824,12 +845,36 @@ function avatarHtml(name) {
   return name.split(' ').map(n => n[0]).join('');
 }
 
-// TASK 10 — Verify tick everywhere
 function verifyMarkFor(sellerEmail) {
   if (sellerEmail === userEmail && userVerify) {
     return ' <i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>';
   }
   return '';
+}
+
+// ============================================================
+// RANKING — TASK: boost/VIP ranking
+// ============================================================
+// VIP ads → always top
+// Boosted ads → below VIP, newest boost first
+// Non-boosted → bottom (newest post first)
+function rankProducts(list) {
+  const vip = list.filter(p => p.isVip);
+  const boosted = list.filter(p => p.isBoosted && !p.isVip);
+  const rest = list.filter(p => !p.isBoosted && !p.isVip);
+  boosted.sort((a, b) => (b.boostedAt || 0) - (a.boostedAt || 0));
+  rest.sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
+  return [...vip, ...boosted, ...rest];
+}
+
+// Home page: ONLY VIP + boosted
+function homeList() {
+  return rankProducts(products.filter(p => p.isBoosted || p.isVip));
+}
+
+// Search page: everything, ranked
+function searchList(list) {
+  return rankProducts(list);
 }
 
 // ============================================================
@@ -847,9 +892,15 @@ async function apiPost(path, body) {
   });
   return res.json();
 }
+async function apiDelete(path) {
+  try {
+    const res = await fetch(BACKEND_URL + path, { method: 'DELETE' });
+    return await res.json().catch(() => ({}));
+  } catch (e) { return {}; }
+}
 
 // ============================================================
-// LOAD PRODUCTS (TASK 2)
+// LOAD PRODUCTS
 // ============================================================
 async function loadProducts() {
   const loader = document.getElementById('homeLoader');
@@ -874,7 +925,9 @@ async function loadProducts() {
         desc: p.description || '',
         badge: p.badge,
         isBoosted: p.is_boosted,
-        isVip: p.is_vip
+        isVip: p.is_vip,
+        boostedAt: p.boosted_at || 0,
+        postedAt: p.posted_at || 0
       }));
     }
   } catch (e) { console.warn('Load failed:', e); }
@@ -914,10 +967,9 @@ function renderProducts(list, containerId) {
   });
 }
 
+// HOME = VIP + boosted only
 function applyCollectionFilter() {
-  const boosted = products.filter(p => p.isBoosted || p.isVip);
-  const rest = products.filter(p => !p.isBoosted && !p.isVip);
-  let filtered = [...boosted, ...rest].slice(0, 16);
+  let filtered = homeList().slice(0, 16);
   const titleMap = { fresh: 'Fresh recommendations', hot: 'Hot deals', near: 'Near you', trending: 'Trending now' };
   document.getElementById('sectionTitle').textContent = titleMap[currentCollection] || 'Fresh recommendations';
   if (currentHomeCategory !== 'all') filtered = filtered.filter(p => p.category === currentHomeCategory);
@@ -942,7 +994,7 @@ document.querySelectorAll('#collectionTabs .collection-tab').forEach(tab => {
 });
 
 // ============================================================
-// SEARCH
+// SEARCH — everything, ranked (VIP → boosted → non-boosted bottom)
 // ============================================================
 function openSearchPage() {
   switchPage('search');
@@ -958,7 +1010,7 @@ function performSearch() {
   });
   document.getElementById('searchSuggestions').style.display = 'none';
   document.getElementById('searchProductGrid').style.display = 'grid';
-  renderProducts(results, 'searchProductGrid');
+  renderProducts(searchList(results), 'searchProductGrid');
 }
 function quickSearch(term) { document.getElementById('searchInput').value = term; performSearch(); }
 function applyFilter() {
@@ -971,12 +1023,12 @@ function applyFilter() {
   if (cat !== 'all') results = results.filter(p => p.category === cat);
   document.getElementById('searchSuggestions').style.display = 'none';
   document.getElementById('searchProductGrid').style.display = 'grid';
-  renderProducts(results, 'searchProductGrid');
+  renderProducts(searchList(results), 'searchProductGrid');
   switchPage('search');
 }
 
 // ============================================================
-// PRODUCT DETAIL (TASK 1, 2, 10, 19, 20)
+// PRODUCT DETAIL — includes Delete + Boost for own ads
 // ============================================================
 function openProduct(id) {
   const p = products.find(x => String(x.id) === String(id));
@@ -1005,6 +1057,7 @@ function openProduct(id) {
     phones: [{l:'BRAND',k:'brand'},{l:'MODEL',k:'model'},{l:'CONDITION',k:'condition'},{l:'STORAGE',k:'storage'},{l:'RAM',k:'ram'},{l:'NETWORK',k:'network'},{l:'REAR CAMERA',k:'rear_cam'},{l:'FRONT CAMERA',k:'front_cam'},{l:'SCREEN SIZE',k:'screen_size'},{l:'BATTERY',k:'battery'},{l:'COLOR',k:'color'}],
     vehicles: [{l:'BRAND',k:'brand'},{l:'MODEL',k:'model'},{l:'YEAR',k:'year'},{l:'CONDITION',k:'condition'},{l:'MILEAGE',k:'mileage'},{l:'TRANSMISSION',k:'transmission'},{l:'FUEL',k:'fuel'},{l:'COLOR',k:'color'}],
     property: [{l:'PROPERTY',k:'brand'},{l:'CONDITION',k:'condition'},{l:'BEDROOMS',k:'bedrooms'},{l:'BATHROOMS',k:'bathrooms'},{l:'SIZE',k:'size'}],
+    clothing: [{l:'SIZE',k:'size'},{l:'COLOR',k:'color'},{l:'BRAND',k:'brand'},{l:'CONDITION',k:'condition'},{l:'GENDER',k:'gender'},{l:'MATERIAL',k:'material'}],
     electronics: [{l:'BRAND',k:'brand'},{l:'MODEL',k:'model'},{l:'CONDITION',k:'condition'},{l:'STORAGE',k:'storage'},{l:'RAM',k:'ram'},{l:'COLOR',k:'color'}],
     home: [{l:'MATERIAL',k:'material'},{l:'CONDITION',k:'condition'},{l:'COLOR',k:'color'}],
     jobs: [{l:'COMPANY',k:'company'},{l:'JOB TYPE',k:'job_type'},{l:'SALARY',k:'salary'}],
@@ -1027,6 +1080,14 @@ function openProduct(id) {
   const leftHtml = leftCol.map(renderCell).join('');
   const rightHtml = rightCol.map(renderCell).join('');
 
+  // OWNER BUTTONS: Delete (top) + Boost (below), same size
+  const ownerButtons = isMe(p.seller)
+    ? '<div class="detail-btn-stack">' +
+        '<button class="delete-inline-btn" onclick="requestDeleteAd(' + p.id + ')"><i class="fas fa-trash"></i> Delete</button>' +
+        '<button class="boost-inline-btn" onclick="openBoostPage(' + p.id + ')"><i class="fas fa-rocket"></i> Boost</button>' +
+      '</div>'
+    : '';
+
   document.getElementById('detailContent').innerHTML =
     '<div class="detail-gallery">' +
       '<button class="gallery-back" onclick="switchPage(\'home\')"><i class="fas fa-arrow-left"></i></button>' +
@@ -1042,7 +1103,7 @@ function openProduct(id) {
       '<div class="detail-price-line">' +
         '<span class="detail-price-big">' + p.price.replace('GHC ', 'GH₵ ') + '</span>' +
         '<span class="detail-neg">Negotiable</span>' +
-        (isMe(p.seller) ? '<button class="boost-inline-btn" onclick="openBoostPage(' + p.id + ')"><i class="fas fa-rocket"></i> Boost</button>' : '') +
+        ownerButtons +
       '</div>' +
       (rows.length > 0 ? '<div class="detail-meta" style="margin-bottom:0;"><div>' + leftHtml + '</div><div>' + rightHtml + '</div></div>' : '') +
       '<div class="detail-desc"><h4>Description</h4><p>' + (p.desc || 'No description') + '</p></div>' +
@@ -1078,6 +1139,39 @@ function openProduct(id) {
   switchPage('detail');
 }
 
+// ============================================================
+// DELETE AD — YES/NO confirm page → removes everywhere
+// ============================================================
+function requestDeleteAd(id) {
+  pendingDeleteId = id;
+  switchPage('deleteAdConfirmPage');
+}
+
+function cancelDeleteAd() {
+  pendingDeleteId = null;
+  switchPage('detail');
+}
+
+async function confirmDeleteAd() {
+  if (!pendingDeleteId) { switchPage('home'); return; }
+  const id = pendingDeleteId;
+  pendingDeleteId = null;
+
+  // 1. Try backend delete (if route exists)
+  try { await apiDelete('/products/' + id); } catch (e) {}
+
+  // 2. Remove from in-memory + saved list
+  products = products.filter(p => String(p.id) !== String(id));
+  savedItems = savedItems.filter(x => String(x) !== String(id));
+  localStorage.setItem('lenidiSaved', JSON.stringify(savedItems));
+
+  showToast('🗑️ Ad deleted');
+  applyCollectionFilter();
+  updateActiveAdsCount();
+  if (document.getElementById('myListingsPage').classList.contains('active')) renderMyListings();
+  switchPage('myListings');
+}
+
 function toggleSellerMenu(e, email, name) {
   e.stopPropagation();
   currentSellerEmail = email;
@@ -1102,8 +1196,9 @@ document.addEventListener('click', () => {
 function openSellerProfile(sellerEmail) {
   if (!sellerEmail) { showToast('Seller info unavailable'); return; }
   currentSellerEmail = sellerEmail;
-  const sellerAds = products.filter(p => p.sellerEmail === sellerEmail);
-  if (sellerAds.length === 0) { showToast('No ads from this seller'); return; }
+  // Only show public (VIP/boosted) ads of this seller
+  const sellerAds = products.filter(p => p.sellerEmail === sellerEmail && (p.isBoosted || p.isVip || sellerEmail === userEmail));
+  if (sellerAds.length === 0) { showToast('No public ads from this seller'); return; }
   const sample = sellerAds[0] || {};
   currentSellerName = sample.seller || 'Seller';
   const tick = verifyMarkFor(sellerEmail);
@@ -1112,12 +1207,12 @@ function openSellerProfile(sellerEmail) {
   document.getElementById('sellerProfileEmail').innerHTML = '<i class="fas fa-envelope" style="color:#7f8c8d;font-size:11px;"></i> ' + sellerEmail;
   document.getElementById('sellerProfilePhone').innerHTML = sample.sellerPhone ? '<i class="fas fa-phone" style="color:#7f8c8d;font-size:11px;"></i> ' + sample.sellerPhone : '';
   document.getElementById('sellerProfileAdsCount').textContent = sellerAds.length + ' ads listed';
-  renderProducts(sellerAds, 'sellerProfileGrid');
+  renderProducts(searchList(sellerAds), 'sellerProfileGrid');
   switchPage('sellerProfile');
 }
 
 // ============================================================
-// WHATSAPP (TASK 20 - no icon, just "Chat")
+// WHATSAPP
 // ============================================================
 function openWhatsApp(number, title, price) {
   let n = (number || '').replace(/[\s\-\+\(\)]/g, '');
@@ -1128,7 +1223,7 @@ function openWhatsApp(number, title, price) {
 }
 
 // ============================================================
-// REPORT & BLOCK (TASK 8)
+// REPORT & BLOCK
 // ============================================================
 async function reportSeller(sellerEmail) {
   if (!isLoggedIn) { showToast('Please sign in first'); return; }
@@ -1160,7 +1255,7 @@ function blockSeller(sellerEmail) {
 }
 
 // ============================================================
-// SELL PAGE
+// SELL PAGE — now includes Clothing
 // ============================================================
 function updateSellDetailFields() {
   const cat = document.getElementById('sellCategory').value;
@@ -1169,6 +1264,7 @@ function updateSellDetailFields() {
     phones: [['sellBrand','Brand','Apple'],['sellModel','Model','iPhone 13'],['sellCondition','Condition','Used'],['sellStorage','Storage','64 GB'],['sellRam','RAM','3 GB'],['sellNetwork','Network','4G'],['sellRearCam','Rear Camera','12 MP'],['sellFrontCam','Front Camera','7 MP'],['sellScreenSize','Screen Size','6.1 inches'],['sellBattery','Battery','2942 mAh'],['sellColor','Color','Black']],
     vehicles: [['sellBrand','Brand','Toyota'],['sellModel','Model','Camry'],['sellYear','Year','2018'],['sellMileage','Mileage','45,000 km'],['sellTransmission','Transmission','Automatic'],['sellFuel','Fuel','Petrol'],['sellCondition','Condition','Used'],['sellColor','Color','Black']],
     property: [['sellBrand','Property Name','3 Bedroom Apt'],['sellCondition','Condition','Newly built'],['sellBedrooms','Bedrooms','3'],['sellBathrooms','Bathrooms','2'],['sellSize','Size','120 sqm']],
+    clothing: [['sellSize','Size','M, L, XL…'],['sellColor','Color','Black'],['sellBrand','Brand','Nike'],['sellCondition','Condition','New'],['sellGender','Gender','Men / Women / Unisex'],['sellMaterial','Material','Cotton']],
     electronics: [['sellBrand','Brand','Apple'],['sellModel','Model','MacBook Pro'],['sellCondition','Condition','Like new'],['sellStorage','Storage','512 GB'],['sellRam','RAM','16 GB'],['sellColor','Color','Space Grey']],
     home: [['sellMaterial','Material','Wood'],['sellCondition','Condition','Used'],['sellColor','Color','Brown']],
     jobs: [['sellCompany','Company','Lenidi Ltd'],['sellJobType','Job Type','Full-time'],['sellSalary','Salary','GHC 3000']],
@@ -1223,6 +1319,10 @@ function getUpgradeTarget() {
   return nextMap[subscription.plan];
 }
 
+// ============================================================
+// POST AD — VIP gets auto-boosted + visible on Home.
+// Non-VIP ads go to Search (bottom) + My Listings only.
+// ============================================================
 async function postAd() {
   try {
     const title = (document.getElementById('sellTitle').value || '').trim();
@@ -1256,10 +1356,12 @@ async function postAd() {
       seller_phone: whatsapp, whatsapp: whatsapp,
       photos: uploadedPhotos,
       badge: isVip ? 'BEST BUY' : 'NEW',
-      is_boosted: isVip, is_vip: isVip
+      is_boosted: isVip, is_vip: isVip,
+      posted_at: Date.now(),
+      boosted_at: isVip ? Date.now() : 0
     };
 
-    const fieldIds = ['sellBrand','sellModel','sellCondition','sellStorage','sellRam','sellNetwork','sellRearCam','sellFrontCam','sellScreenSize','sellBattery','sellColor','sellYear','sellMileage','sellTransmission','sellFuel','sellBedrooms','sellBathrooms','sellSize','sellProcessor','sellMaterial','sellCompany','sellJobType','sellSalary','sellServiceType','sellExperience'];
+    const fieldIds = ['sellBrand','sellModel','sellCondition','sellStorage','sellRam','sellNetwork','sellRearCam','sellFrontCam','sellScreenSize','sellBattery','sellColor','sellYear','sellMileage','sellTransmission','sellFuel','sellBedrooms','sellBathrooms','sellSize','sellProcessor','sellMaterial','sellCompany','sellJobType','sellSalary','sellServiceType','sellExperience','sellGender'];
     fieldIds.forEach(id => {
       const el = document.getElementById(id);
       if (el && el.value) {
@@ -1272,7 +1374,7 @@ async function postAd() {
     if (result.error) { showToast('Error: ' + result.error); return; }
 
     clearForm();
-    showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted!');
+    showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted! It will show at the bottom of Search.');
     await loadProducts();
     switchPage('myListings');
   } catch (err) {
@@ -1309,8 +1411,20 @@ async function confirmBoost(id) {
   userBoosts -= 50;
   localStorage.setItem('lenidiBoosts', userBoosts);
   updateBoostsUI();
-  showToast('🚀 Boosted!');
-  await loadProducts();
+
+  // Mark product as boosted locally + send to backend
+  const p = products.find(x => String(x.id) === String(id));
+  if (p) {
+    p.isBoosted = true;
+    p.badge = 'BEST BUY';
+    p.boostedAt = Date.now();
+    try {
+      await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() });
+    } catch (e) {}
+  }
+
+  showToast('🚀 Boosted! Now visible on Home.');
+  applyCollectionFilter();
   switchPage('home');
 }
 
@@ -1324,7 +1438,9 @@ function renderMyListings() {
     grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i><h3>No listings yet</h3><p>Post an ad to see it here.</p></div>';
     return;
   }
-  renderProducts(mine, 'myListingsGrid');
+  // Show all my ads (boosted or not) — newest first
+  const sorted = [...mine].sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
+  renderProducts(sorted, 'myListingsGrid');
 }
 
 async function updateActiveAdsCount() {
@@ -1365,14 +1481,15 @@ function renderSaves() {
     grid.innerHTML = '<div class="empty-state"><i class="far fa-star"></i><h3>No saved items</h3><p>Tap the star on any listing.</p></div>';
     return;
   }
-  renderProducts(saved, 'savesGrid');
+  renderProducts(searchList(saved), 'savesGrid');
 }
 
 // ============================================================
-// PRIVACY & TERMS (TASK 6)
+// PRIVACY & TERMS
 // ============================================================
 function openPrivacy() { window.location.href = 'https://dave-software-67.github.io/lenidi-privacy/'; }
 function openTerms() { window.location.href = 'https://dave-software-67.github.io/lenidi-terms/'; }
+
 // ============================================================
 // PACKS & BOOSTS
 // ============================================================
@@ -1423,13 +1540,12 @@ function switchPacksTab(tab) {
 }
 
 // ============================================================
-// PAYSTACK — TASK 5: Redirect to browser
+// PAYSTACK
 // ============================================================
 async function startPayment(email, amount, plan, type) {
   try {
     const data = await apiPost('/create-payment', { email: email, amount: amount, plan: plan, type: type });
     if (!data.authorization_url) { showToast('Payment start failed: ' + (data.error || 'unknown')); return; }
-
     localStorage.setItem('lenidiPendingPayment', JSON.stringify({
       reference: data.reference,
       plan: plan,
@@ -1437,11 +1553,10 @@ async function startPayment(email, amount, plan, type) {
       amount: amount,
       started: Date.now()
     }));
-
-    // Open Paystack's real authorization URL in browser
     window.location.href = data.authorization_url;
   } catch (e) { showToast('Payment error: ' + e.message); }
 }
+
 function checkPendingPayment() {
   const pending = JSON.parse(localStorage.getItem('lenidiPendingPayment'));
   if (!pending) return;
@@ -1491,7 +1606,12 @@ function onPaymentSuccess(pending) {
       updateSubTimer();
       showToast('🎉 Subscribed to ' + planData.name + '!');
       if (planData.id === 'vip') {
-        products.filter(p => p.sellerEmail === userEmail).forEach(p => { p.isBoosted = true; p.badge = 'BEST BUY'; });
+        products.filter(p => p.sellerEmail === userEmail).forEach(p => {
+          p.isBoosted = true;
+          p.isVip = true;
+          p.badge = 'BEST BUY';
+          p.boostedAt = Date.now();
+        });
         applyCollectionFilter();
       }
       switchPage('profile');
@@ -1613,7 +1733,7 @@ function handlePfpUpload(e) {
 }
 
 // ============================================================
-// AI CHAT — TASK 7: Consent popup
+// AI CHAT
 // ============================================================
 function openAISupport() { switchPage('aiSupportPage'); }
 
@@ -1798,7 +1918,6 @@ function buildAdStrip() {
 // PAGE SWITCHING
 // ============================================================
 function switchPage(pageId) {
-  // Clear AI chat when leaving chat
   if (pageId !== 'aiChatPage') {
     const msgs = document.getElementById('aiMessages');
     if (msgs) msgs.innerHTML = '<div class="msg-bubble received">Hi! I\'m Lenidi AI. How can I help? 😊</div>';
@@ -1815,7 +1934,7 @@ function switchPage(pageId) {
     b.classList.toggle('active', b.dataset.page === pageId);
   });
 
-  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm'];
+  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage'];
   document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
 
   if (pageId === 'saves') renderSaves();
