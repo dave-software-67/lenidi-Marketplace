@@ -754,48 +754,25 @@ const SUBSCRIPTION_PLANS = [
     id: 'plus', name: 'Plus', price: 99, boosts: 50, limit: PLUS_LIMIT,
     verifyClass: 'verify-yellow', ringClass: 'ring-yellow',
     btnClass: 'pack-btn-plus', desc: 'Great start for casual sellers',
-    features: [
-      'Yellow verification mark', 'Higher search placement',
-      '50 free boosts', 'Standard chat support',
-      'More listing slots', 'Basic profile analytics'
-    ]
+    features: ['Yellow verification mark','Higher search placement','50 free boosts','Standard chat support','More listing slots','Basic profile analytics']
   },
   {
     id: 'pro', name: 'Pro', price: 399, boosts: 80, limit: PRO_LIMIT,
     verifyClass: 'verify-orange', ringClass: 'ring-orange',
-    btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results',
-    popular: true,
-    features: [
-      'Orange verification mark', 'Top of search results',
-      '80 free boosts', 'Priority chat support',
-      'More listing slots', 'Full analytics dashboard',
-      'Featured + spotlight ads', 'Early access to features'
-    ]
+    btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results', popular: true,
+    features: ['Orange verification mark','Top of search results','80 free boosts','Priority chat support','More listing slots','Full analytics dashboard','Featured + spotlight ads','Early access to features']
   },
   {
     id: 'premium', name: 'Premium', price: 699, boosts: 100, limit: PREMIUM_LIMIT,
     verifyClass: 'verify-purple', ringClass: 'ring-purple',
     btnClass: 'pack-btn-premium', desc: 'For growing businesses & shops',
-    features: [
-      'Purple verification mark', 'Verified badge on all ads',
-      '100 free boosts', 'Dedicated account support',
-      'More listing slots', 'Advanced analytics',
-      'Premium badge + spotlight', 'Bulk listing upload',
-      'Priority above Pro sellers', 'No commission on first 10 sales'
-    ]
+    features: ['Purple verification mark','Verified badge on all ads','100 free boosts','Dedicated account support','More listing slots','Advanced analytics','Premium badge + spotlight','Bulk listing upload','Priority above Pro sellers','No commission on first 10 sales']
   },
   {
     id: 'vip', name: 'VIP', price: 999, boosts: 200, limit: Infinity,
     verifyClass: 'verify-blue', ringClass: 'ring-blue',
     btnClass: 'pack-btn-vip', desc: 'For people who want more traffic and more sales',
-    features: [
-      'Blue verification mark', 'Gain trust with verified badge',
-      '200 free boosts', 'Get more sales with 10x visibility',
-      'AUTO-BOOSTED every post', 'Priority chat support',
-      '#1 ranking in search', 'Dedicated account manager',
-      'Top of Home page always', 'Early access to all features',
-      'Products get BEST BUY badges', 'Good for big sellers'
-    ]
+    features: ['Blue verification mark','Gain trust with verified badge','200 free boosts','Get more sales with 10x visibility','AUTO-BOOSTED every post','Priority chat support','#1 ranking in search','Dedicated account manager','Top of Home page always','Early access to all features','Products get BEST BUY badges','Good for big sellers']
   }
 ];
 
@@ -894,7 +871,8 @@ async function apiDelete(path) {
 }
 
 // ============================================================
-// ✅ NEW: SYNC FROM BACKEND (VIP, boosts, ban status)
+// SYNC FROM BACKEND — pulls VIP / boosts / ban / plan
+// Also shows toasts + refreshes UI when something changed
 // ============================================================
 async function syncFromBackend() {
   if (!userEmail) return;
@@ -902,7 +880,7 @@ async function syncFromBackend() {
     const data = await apiGet('/user-sync/' + userEmail);
     if (!data) return;
 
-    // Check if banned / suspended
+    // Ban / suspend check
     if (data.status === 'banned' || data.status === 'suspended') {
       document.getElementById('suspendedMsg').textContent =
         data.status === 'banned'
@@ -916,7 +894,10 @@ async function syncFromBackend() {
       document.getElementById('suspendedOverlay').classList.remove('show');
     }
 
-    // Apply real plan + boosts + verify from backend
+    const oldBoosts = userBoosts;
+    const oldVerify = userVerify;
+    const oldPlan = subscription ? subscription.plan : null;
+
     if (data.boosts !== undefined) userBoosts = data.boosts || 0;
     if (data.verify !== undefined) userVerify = data.verify || '';
 
@@ -936,10 +917,48 @@ async function syncFromBackend() {
 
     localStorage.setItem('lenidiBoosts', userBoosts);
     localStorage.setItem('lenidiVerify', userVerify);
+
+    // Refresh UI
     applyVerifyMark();
     updateBoostsUI();
     updateSubTimer();
+    if (document.getElementById('productGrid')) renderProducts(homeList(), 'productGrid');
+    syncUserInfo();
+
+    // Live toasts
+    if (oldBoosts !== userBoosts && userBoosts > oldBoosts) {
+      showToast('🎉 +' + (userBoosts - oldBoosts) + ' boosts!');
+    }
+    if (oldVerify !== userVerify && userVerify) {
+      showToast('✅ You got verified!');
+    }
+    if (oldPlan !== (subscription ? subscription.plan : null) && subscription) {
+      showToast('👑 Plan updated to ' + subscription.plan.toUpperCase() + '!');
+    }
   } catch (e) { console.warn('Sync failed:', e); }
+}
+
+// ============================================================
+// PUSH USER TO BACKEND (used when user changes name/phone/email)
+// ============================================================
+async function pushUserToBackend() {
+  if (!userEmail) return;
+  try {
+    await apiPost('/users', {
+      email: userEmail,
+      name: userName,
+      phone: userPhone,
+      boosts: userBoosts,
+      verify: userVerify
+    });
+    await apiPost('/update-my-products', {
+      seller_email: userEmail,
+      seller_name: userName,
+      seller_phone: userPhone,
+      whatsapp: userPhone
+    }).catch(() => {});
+    await syncFromBackend();
+  } catch (e) { console.warn('Push failed:', e); }
 }
 
 // ============================================================
@@ -1010,7 +1029,6 @@ function renderProducts(list, containerId) {
   });
 }
 
-// HOME = VIP + boosted only
 function applyCollectionFilter() {
   let filtered = homeList().slice(0, 16);
   const titleMap = { fresh: 'Fresh recommendations', hot: 'Hot deals', near: 'Near you', trending: 'Trending now' };
@@ -1481,7 +1499,7 @@ async function updateActiveAdsCount() {
 }
 
 // ============================================================
-// FULLSCREEN IMAGE
+// FULLSCREEN IMAGE + SAVE
 // ============================================================
 function openFullscreen(productId, startIndex) {
   const p = products.find(x => String(x.id) === String(productId));
@@ -1580,10 +1598,7 @@ async function startPayment(email, amount, plan, type) {
     if (!data.authorization_url) { showToast('Payment start failed: ' + (data.error || 'unknown')); return; }
     localStorage.setItem('lenidiPendingPayment', JSON.stringify({
       reference: data.reference,
-      plan: plan,
-      type: type,
-      amount: amount,
-      started: Date.now()
+      plan: plan, type: type, amount: amount, started: Date.now()
     }));
     window.location.href = data.authorization_url;
   } catch (e) { showToast('Payment error: ' + e.message); }
@@ -1639,10 +1654,7 @@ function onPaymentSuccess(pending) {
       showToast('🎉 Subscribed to ' + planData.name + '!');
       if (planData.id === 'vip') {
         products.filter(p => p.sellerEmail === userEmail).forEach(p => {
-          p.isBoosted = true;
-          p.isVip = true;
-          p.badge = 'BEST BUY';
-          p.boostedAt = Date.now();
+          p.isBoosted = true; p.isVip = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now();
         });
         applyCollectionFilter();
       }
@@ -1670,27 +1682,26 @@ function updateSubTimer() {
     subscription = null; localStorage.removeItem('lenidiSubscription');
     applyVerifyMark(); c.innerHTML = ''; return;
   }
-  const rem = subscription.until - now;
+  const rem = subscription.until>' - now;
   const d = Math.floor(rem / 86400000);
-  const h = Math.floor((rem % 86400000) / 3600000);
-  const colourClass = { plus: 'sub-timer-yellow', pro: 'sub-timer-orange', premium: 'sub-timer-purple', vip: 'sub-timer-blue' }[subscription.plan] || 'sub-timer-yellow';
-  c.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
+  const : h = Math.floor((rem % 86400000) / 3600000);
+  const colourClass = { plus: ' '';
+sub-timer-yellow', pro: 'sub-timer-orange', premium: 'sub-timer-purple',}
+
+ vip: 'sub-timer-blue' }[subscription.plan] || 'sub-timer-yellow';
+  cfunction.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
 }
 
 function applyVerifyMark() {
   const el = document.getElementById('profileVerifyMark');
-  el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>' : '';
-}
-
-function updateBoostsUI() {
+  el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i updateBoostsUI() {
   const stat = document.getElementById('boostsStat');
   const count = document.getElementById('boostCount');
   if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; }
   else stat.style.display = 'none';
 }
-
 // ============================================================
-// AUTH — updated with syncFromBackend
+// AUTH
 // ============================================================
 function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
@@ -1708,7 +1719,6 @@ function doLogin() {
   showToast('Welcome, ' + name.split(' ')[0] + '!');
   switchPage('profile');
   apiPost('/users', { email: userEmail, name: userName, phone: userPhone, boosts: userBoosts, verify: userVerify }).catch(() => {});
-  // ✅ Sync real plan/boosts/ban from backend
   setTimeout(syncFromBackend, 500);
 }
 
@@ -1742,18 +1752,51 @@ function syncUserInfo() {
   if (document.getElementById('savesPage').classList.contains('active')) renderSaves();
 }
 
+// ✅ changeName — pushes to backend
 function changeName() {
   const n = prompt('New name:', userName);
-  if (n && n.trim()) { userName = n.trim(); localStorage.setItem('lenidiName', userName); syncUserInfo(); showToast('Name updated everywhere!'); }
+  if (n && n.trim()) {
+    userName = n.trim();
+    localStorage.setItem('lenidiName', userName);
+    syncUserInfo();
+    pushUserToBackend();
+    showToast('✅ Name updated everywhere!');
+  }
 }
-function changeEmail() {
+
+// ✅ changeEmail — moves data in backend
+async function changeEmail() {
   const e = prompt('New email:', userEmail);
-  if (e && e.trim()) { userEmail = e.trim().toLowerCase(); localStorage.setItem('lenidiEmail', userEmail); syncUserInfo(); showToast('Email updated everywhere!'); }
+  if (e && e.trim()) {
+    const newEmail = e.trim().toLowerCase();
+    if (newEmail === userEmail) { showToast('Same email, no change'); return; }
+    try {
+      const res = await apiPost('/change-email', { old_email: userEmail, new_email: newEmail });
+      if (res && res.success) {
+        userEmail = newEmail;
+        localStorage.setItem('lenidiEmail', userEmail);
+        syncUserInfo();
+        pushUserToBackend();
+        showToast('✅ Email updated everywhere!');
+      } else {
+        showToast('❌ ' + ((res && res.error) || 'Failed'));
+      }
+    } catch (err) { showToast('Network error'); }
+  }
 }
+
+// ✅ changePhone — pushes to backend
 function changePhone() {
   const p = prompt('New phone:', userPhone);
-  if (p && p.trim()) { userPhone = p.trim(); localStorage.setItem('lenidiPhone', userPhone); syncUserInfo(); showToast('Phone updated everywhere!'); }
+  if (p && p.trim()) {
+    userPhone = p.trim();
+    localStorage.setItem('lenidiPhone', userPhone);
+    syncUserInfo();
+    pushUserToBackend();
+    showToast('✅ Phone updated everywhere!');
+  }
 }
+
 function handlePfpUpload(e) {
   const f = e.target.files[0];
   if (!f) return;
@@ -1873,13 +1916,11 @@ function aiLocalReply(raw) {
   if (reportingScam) {
     if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; }
     if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; }
-    reportingScam = false;
-    scamDraft = {};
+    reportingScam = false; scamDraft = {};
     return '✅ Report submitted. They will be reviewed.';
   }
   if (isScamTrigger(raw)) {
-    reportingScam = true;
-    scamDraft = {};
+    reportingScam = true; scamDraft = {};
     return 'Sorry to hear. What is their name?';
   }
   return null;
@@ -1949,7 +1990,7 @@ function buildAdStrip() {
 }
 
 // ============================================================
-// PAGE SWITCHING — updated with syncFromBackend on profile
+// PAGE SWITCHING — profile auto-syncs
 // ============================================================
 function switchPage(pageId) {
   if (pageId !== 'aiChatPage') {
@@ -1980,7 +2021,7 @@ function switchPage(pageId) {
 }
 
 // ============================================================
-// INIT — updated with auto-sync every 30s
+// INIT — auto-poll every 15s + sync on tab focus
 // ============================================================
 buildAdStrip();
 buildBoostGrid();
@@ -1996,7 +2037,18 @@ buildPricingGrid();
   await loadProducts();
   checkPendingPayment();
   syncFromBackend();
-  setInterval(syncFromBackend, 30000);
+
+  // ✅ Auto-sync every 15 seconds — ALWAYS, no matter what page
+  setInterval(() => {
+    if (!isLoggedIn || !userEmail) return;
+    syncFromBackend();
+  }, 15000);
+
+  // ✅ Sync when user comes back to the tab/app
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && isLoggedIn && userEmail) syncFromBackend();
+  });
+
   switchPage('home');
 })();
 
