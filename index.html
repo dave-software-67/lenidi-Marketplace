@@ -363,6 +363,20 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .inbox-body h4 { font-size: 14px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
 .inbox-body p { font-size: 13px; color: #5e6f7e; line-height: 1.5; margin-bottom: 6px; }
 .inbox-body .inbox-date { font-size: 11px; color: #94a3b8; }
+
+/* SERVICES FULLSCREEN */
+.services-fullscreen { position: fixed; inset: 0; background: #f5f7fa; z-index: 2000; display: flex; flex-direction: column; overflow-y: auto; }
+.services-topbar { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 14px 16px; border-bottom: 1px solid #e9ecef; position: sticky; top: 0; z-index: 10; }
+.services-topbar h3 { font-size: 17px; font-weight: 800; color: #1e2a3a; }
+.services-back { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px 8px; cursor: pointer; }
+.services-body { flex: 1; padding: 28px 20px; max-width: 520px; margin: 0 auto; width: 100%; }
+.services-label { font-size: 13px; font-weight: 800; color: #1e2a3a; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 18px; text-align: center; }
+.services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.service-card { background: #eff6ff; border: 2px solid #3b82f6; border-radius: 20px; padding: 32px 14px; text-align: center; cursor: pointer; transition: all 0.15s; }
+.service-card:active { transform: scale(0.97); background: #dbeafe; }
+.service-card h4 { font-size: 15px; font-weight: 800; color: #1e40af; margin-bottom: 6px; line-height: 1.3; }
+.service-card p { font-size: 12px; color: #3b82f6; }
+
 @media (min-width: 600px) {
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .saves-grid { grid-template-columns: repeat(3, 1fr); }
@@ -584,9 +598,9 @@ button:active { transform: scale(0.94); opacity: 0.85; }
       <div class="profile-menu">
         <div class="menu-item referral-blue" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="switchPage('myListings')"><i class="fas fa-box"></i><span>My listings</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item referral-blue" onclick="openServices()"><i class="fas fa-bolt"></i><span>⚡ Lenidi Services</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openInbox()"><i class="fas fa-inbox"></i><span>Inbox</span><span class="unread-badge" id="inboxBadge">0</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openSupportChat()"><i class="fas fa-comments"></i><span>Chat with Support</span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item" onclick="openAISupport()"><i class="fas fa-robot"></i><span>Lenidi Ai help</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openPrivacy()"><i class="fas fa-shield-alt"></i><span>Privacy & Policy</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openTerms()"><i class="fas fa-file-contract"></i><span>Terms of Service</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item delete-item" onclick="switchPage('deleteAccountPage')"><i class="fas fa-user-slash"></i><span>Delete My Account</span><i class="fas fa-chevron-right"></i></div>
@@ -687,44 +701,25 @@ button:active { transform: scale(0.94); opacity: 0.85; }
     </div>
   </div>
 
-  <div id="aiSupportPage" class="page">
-    <div class="filter-page-header">
-      <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-      <h3>Lenidi Ai help</h3>
-    </div>
-    <div style="padding:16px;">
-      <div style="background:#fff;border-radius:20px;padding:20px;border:1px solid #edf0f3;margin-bottom:16px;text-align:center;">
-        <div style="width:68px;height:68px;border-radius:50%;background:#ff6b00;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
-          <i class="fas fa-robot" style="font-size:28px;color:#fff;"></i>
+  <div id="servicesPage" class="page">
+    <div class="services-fullscreen">
+      <div class="services-topbar">
+        <button class="services-back" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
+        <h3>⚡ Lenidi Services</h3>
+        <div style="width:40px;"></div>
+      </div>
+      <div class="services-body">
+        <div class="services-label">CHOOSE ACTION</div>
+        <div class="services-grid">
+          <div class="service-card" onclick="openAgentLink()">
+            <h4>⚡ Become an Agent</h4>
+            <p>Sign up &amp; earn</p>
+          </div>
+          <div class="service-card" onclick="openDataBundleLink()">
+            <h4>⚡ Buy Data Bundles</h4>
+            <p>Cheap data</p>
+          </div>
         </div>
-        <h2 style="font-size:19px;font-weight:800;color:#1e2a3a;margin-bottom:6px;">Hi, I'm Lenidi AI</h2>
-        <p style="font-size:13px;color:#7f8c8d;line-height:1.5;">Ask me anything — I can help if you were scammed or need support.</p>
-      </div>
-      <div style="background:#fff7ed;border:1px solid #ffe0b2;border-radius:16px;padding:14px;margin-bottom:16px;display:flex;align-items:center;gap:12px;">
-        <i class="fab fa-whatsapp" style="color:#25D366;font-size:22px;"></i>
-        <div><h4 style="font-size:13px;color:#c2410c;font-weight:700;margin-bottom:2px;">WhatsApp Support</h4><p style="font-size:15px;color:#1e2a3a;font-weight:700;">0544840240</p></div>
-      </div>
-      <button class="btn-primary" style="margin-top:18px;" onclick="openAIChatWith('')">Start chatting</button>
-    </div>
-  </div>
-
-  <div id="aiChatPage" class="page">
-    <div class="conversation-page">
-      <div class="conv-header" style="position:relative;">
-        <button class="back-btn" onclick="switchPage('aiSupportPage')"><i class="fas fa-arrow-left"></i></button>
-        <div class="conv-avatar"><i class="fas fa-robot"></i></div>
-        <div class="conv-user"><h4>Lenidi AI</h4><span>Online</span></div>
-        <button class="conv-menu-btn" onclick="toggleConvMenu(event)"><i class="fas fa-ellipsis-v"></i></button>
-        <div class="conv-menu-popup" id="convMenuPopup">
-          <div class="conv-menu-item" onclick="clearAIChat()"><i class="fas fa-trash-alt"></i> Clear chat</div>
-        </div>
-      </div>
-      <div class="conv-messages" id="aiMessages">
-        <div class="msg-bubble received">Hi! I'm Lenidi AI. How can I help? 😊</div>
-      </div>
-      <div class="conv-input-bar">
-        <input type="text" id="aiInput" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter') sendAIMessage()">
-        <button class="conv-send-btn" onclick="sendAIMessage()">Send</button>
       </div>
     </div>
   </div>
@@ -774,10 +769,9 @@ button:active { transform: scale(0.94); opacity: 0.85; }
   <button data-page="packs" onclick="switchPage('packs')"><i class="fas fa-crown"></i><span>Packs</span></button>
   <button data-page="profile" onclick="switchPage('profile')" id="profileNavBtn"><i class="far fa-user"></i><span>Profile</span></button>
 </nav>
+
 <script>
-const BACKEND_URL = "https://lenidi-backend.onrender.com";
-const GROQ_API_KEY = "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";
-const GROQ_MODEL = "openai/gpt-oss-20b";
+ const BACKEND_URL = "https://lenidi-backend.onrender.com";
 const FREE_LIMIT = 10;
 const PLUS_LIMIT = 20;
 const PRO_LIMIT = 50;
@@ -806,14 +800,10 @@ let userEmail = localStorage.getItem('lenidiEmail') || '';
 let userPhone = localStorage.getItem('lenidiPhone') || '';
 let userVerify = localStorage.getItem('lenidiVerify') || '';
 let subscription = JSON.parse(localStorage.getItem('lenidiSubscription')) || null;
-let reportingScam = false;
-let scamDraft = {};
 let activePollingRef = null;
 let currentSellerEmail = '';
 let currentSellerName = '';
 let blockedSellers = JSON.parse(localStorage.getItem('lenidiBlocked')) || [];
-let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
-let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
 let pendingDeleteId = null;
 let referralInfo = { code: null, count: 0, claimed: false };
 let accountDeleted = false;
@@ -839,6 +829,15 @@ function searchList(list) { return rankProducts(list); }
 async function apiGet(path) { const res = await fetch(BACKEND_URL + path); return res.json(); }
 async function apiPost(path, body) { const res = await fetch(BACKEND_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return res.json(); }
 async function apiDelete(path) { try { const res = await fetch(BACKEND_URL + path, { method: 'DELETE' }); return await res.json().catch(() => ({})); } catch (e) { return {}; } }
+
+// ================= SERVICES =================
+function openServices() { switchPage('servicesPage'); }
+function openAgentLink() {
+  window.open('https://dataplug-gh.com/auth?ref=5734ba5d-3096-44ce-90b9-ba8d90bd89ab', '_blank');
+}
+function openDataBundleLink() {
+  window.open('https://dataplug-gh.com/pay/data-max-buy-5734ba5d', '_blank');
+}
 
 async function syncFromBackend() {
   if (!userEmail) return;
@@ -1434,21 +1433,21 @@ function renderReferralPage() {
   const btn = document.getElementById('claimVipBtn');
   if (referralInfo.count >= 100 && !referralInfo.claimed) { btn.classList.add('unlocked'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-crown"></i> Claim Free VIP (1 Month)'; }
   else if (referralInfo.claimed) { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-check"></i> VIP Already Claimed'; }
-  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP'; }
+  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas faip()-lock {
+"></i> Claim Free VIP'; }
 }
 async function createMyCode() {
   const input = document.getElementById('newCodeInput');
-  const code = (input.value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
-  if (code.length < 3) { showToast('Code must be at least 3 characters'); return; }
+  const code = (input.value || '').trim().toUpperCase ().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+  if (code.length < 3) { showToast('Code must be if at least 3 characters'); return; }
   try {
     const res = await apiPost('/referral/set-code', { email: userEmail, code: code });
-    if (res.success) { referralInfo.code = res.code; showToast('✅ Code saved'); renderReferralPage(); }
+    if (res (.success) { referralInfo.code = res.code; showToast('✅ Code saved'); renderReferralPage(); }
     else if (res.taken) { showToast('❌ TAKEN — try another'); }
     else { showToast('❌ ' + (res.error || 'Failed')); }
   } catch (e) { showToast('Network error'); }
 }
-async function claimFreeVip() {
-  if (referralInfo.count < 100) { showToast('Need 100 referrals'); return; }
+async function claimFreeVreferralInfo.count < 100) { showToast('Need 100 referrals'); return; }
   if (referralInfo.claimed) { showToast('Already claimed'); return; }
   if (!confirm('Claim your 1 month Free VIP reward?')) return;
   try {
@@ -1605,58 +1604,6 @@ async function changeEmail() {
 function changePhone() { const p = prompt('New phone:', userPhone); if (p && p.trim()) { userPhone = p.trim(); localStorage.setItem('lenidiPhone', userPhone); syncUserInfo(); pushUserToBackend(); showToast('✅ Phone updated!'); } }
 function handlePfpUpload(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; }; r.readAsDataURL(f); }
 
-function openAISupport() { switchPage('aiSupportPage'); }
-function openAIChatWith(q) {
-  if (!aiConsented) { window.pendingAIQuestion = q || ''; switchPage('aiChatPage'); aiConsented = true; localStorage.setItem('lenidiAiConsent', 'true'); return; }
-  switchPage('aiChatPage');
-  if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
-}
-function toggleConvMenu(e) { e.stopPropagation(); document.getElementById('convMenuPopup').classList.toggle('show'); }
-function clearAIChat() { document.getElementById('convMenuPopup').classList.remove('show'); document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
-function isScamTrigger(t) { return /\b(scam|scammed|fraud|stolen|fake seller)\b/i.test(t); }
-function aiLocalReply(raw) {
-  if (reportingScam) {
-    if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; }
-    if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; }
-    reportingScam = false; scamDraft = {};
-    return '✅ Report submitted.';
-  }
-  if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; }
-  return null;
-}
-async function askGroq(msg) {
-  aiHistory.push({ role: 'user', content: msg });
-  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY }, body: JSON.stringify({ model: GROQ_MODEL, messages: aiHistory, temperature: 0.7, max_tokens: 512 }) });
-  if (!res.ok) throw new Error('AI error');
-  const data = await res.json();
-  const reply = data.choices?.[0]?.message?.content?.trim() || 'Sorry, no response.';
-  aiHistory.push({ role: 'assistant', content: reply });
-  if (aiHistory.length > 11) aiHistory = [aiHistory[0], ...aiHistory.slice(-10)];
-  return reply;
-}
-async function sendAIMessage() {
-  const input = document.getElementById('aiInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const msgs = document.getElementById('aiMessages');
-  msgs.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
-  input.value = '';
-  msgs.scrollTop = msgs.scrollHeight;
-  const typing = document.createElement('div');
-  typing.className = 'msg-bubble received';
-  typing.id = 'aiTyping';
-  typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-  msgs.appendChild(typing);
-  msgs.scrollTop = msgs.scrollHeight;
-  let reply;
-  try { const local = aiLocalReply(text); reply = local !== null ? local : await askGroq(text); }
-  catch (e) { reply = '⚠️ AI error. Contact 0544840240.'; }
-  const t = document.getElementById('aiTyping');
-  if (t) t.remove();
-  msgs.innerHTML += '<div class="msg-bubble received">' + reply.replace(/\n/g, '<br>') + '</div>';
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
 function buildAdStrip() {
   const strip = document.getElementById('adStrip');
   const cards = [
@@ -1665,7 +1612,7 @@ function buildAdStrip() {
     { title: 'Lenidi Plus', desc: 'GHC 99/month', icon: 'fa-crown', cls: 'purple-card' },
     { title: 'Sell faster', desc: 'Featured listings', icon: 'fa-bolt', cls: 'yellow-card' },
     { title: 'Watch & earn', desc: 'Free boosts', icon: 'fa-gift', cls: 'blue-card' },
-    { title: 'Chat support', desc: '24/7 help', icon: 'fa-robot', cls: 'red-card' },
+    { title: 'Chat support', desc: '24/7 help', icon: 'fa-headset', cls: 'red-card' },
     { title: 'Save items', desc: 'Star favourites', icon: 'fa-star', cls: 'amber-card' }
   ];
   strip.innerHTML = '';
@@ -1674,14 +1621,13 @@ function buildAdStrip() {
 
 function switchPage(pageId) {
   if (accountDeleted) return;
-  if (pageId !== 'aiChatPage') { const msgs = document.getElementById('aiMessages'); if (msgs) msgs.innerHTML = '<div class="msg-bubble received">Hi! I\'m Lenidi AI. How can I help? 😊</div>'; }
   let target = document.getElementById(pageId);
   if (!target) target = document.getElementById(pageId + 'Page');
   if (!target) { console.warn('Page not found:', pageId); return; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => { b.classList.toggle('active', b.dataset.page === pageId); });
-  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','referralPage','inboxPage','supportChatPage'];
+  const hideHeader = ['search','filter','detail','boostProductPage','deleteAccountPage','referralPage','inboxPage','supportChatPage','servicesPage'];
   document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
@@ -1715,7 +1661,6 @@ buildPricingGrid();
 })();
 
 document.addEventListener('click', () => {
-  document.getElementById('convMenuPopup')?.classList.remove('show');
   document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show'));
 });
 </script>
