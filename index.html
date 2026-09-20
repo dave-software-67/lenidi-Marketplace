@@ -241,6 +241,9 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
 .menu-item .fa-chevron-right { color: #b0bec5; font-size: 12px; }
 .menu-item.delete-item i:first-child { color: #ef4444; }
 .menu-item.delete-item span { color: #ef4444; }
+.menu-item.referral-item { background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-color: #3b82f6; }
+.menu-item.referral-item i:first-child { color: #1e40af; }
+.menu-item.referral-item span { color: #1e40af; font-weight: 700; }
 .watch-ad-card { background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 16px; padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; border: none; width: 100%; text-align: left; }
 .watch-ad-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 .watch-ad-icon i { font-size: 20px; color: #fff; }
@@ -357,6 +360,25 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
 .ai-consent-buttons button { flex: 1; padding: 13px; border-radius: 60px; font-weight: 700; font-size: 13px; border: none; }
 .ai-consent-accept { background: #ff6b00; color: #fff; }
 .ai-consent-decline { background: #f0f4f9; color: #1e2a3a; }
+.referral-hero { background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 20px; padding: 26px 22px; color: #fff; text-align: center; margin-bottom: 16px; }
+.referral-hero .hero-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; }
+.referral-hero h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.referral-hero p { font-size: 13px; opacity: 0.9; line-height: 1.5; }
+.referral-progress-card { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #edf0f3; text-align: center; margin-bottom: 16px; }
+.referral-progress-card .count-big { font-size: 44px; font-weight: 800; color: #1e40af; line-height: 1; margin-bottom: 6px; }
+.referral-progress-card .count-label { font-size: 13px; color: #7f8c8d; margin-bottom: 16px; }
+.referral-progress-bar { height: 12px; background: #e2e8f0; border-radius: 20px; overflow: hidden; margin-bottom: 8px; }
+.referral-progress-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #1e40af); border-radius: 20px; transition: width 0.5s; }
+.referral-code-box { background: #f0f9ff; border: 2px dashed #3b82f6; border-radius: 14px; padding: 16px; margin-bottom: 14px; text-align: center; }
+.referral-code-box .code-label { font-size: 11px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.referral-code-box .code-value { font-size: 24px; font-weight: 800; color: #1e40af; letter-spacing: 3px; }
+.referral-code-box .code-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
+.referral-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; outline: none; }
+.referral-input-row input:focus { border-color: #3b82f6; }
+.btn-claim { width: 100%; padding: 16px; border-radius: 60px; border: none; font-weight: 800; font-size: 15px; background: #cbd5e1; color: #64748b; cursor: not-allowed; }
+.btn-claim.unlocked { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; cursor: pointer; }
+.btn-blue { background: #3b82f6; color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; }
 @media (min-width: 600px) {
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .saves-grid { grid-template-columns: repeat(3, 1fr); }
@@ -588,6 +610,7 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
       </button>
       <div id="subTimerContainer"></div>
       <div class="profile-menu">
+        <div class="menu-item referral-item" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="switchPage('myListings')"><i class="fas fa-box"></i><span>My listings</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openAISupport()"><i class="fas fa-robot"></i><span>Lenidi Ai Chat Support</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openPrivacy()"><i class="fas fa-shield-alt"></i><span>Privacy & Policy</span><i class="fas fa-chevron-right"></i></div>
@@ -606,6 +629,7 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
         <div class="form-group"><label>Full name</label><input type="text" id="loginName" placeholder="John Doe"></div>
         <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="john@example.com"></div>
         <div class="form-group"><label>Phone</label><input type="tel" id="loginPhone" placeholder="0244 000 000"></div>
+        <div class="form-group"><label>Referral code (optional)</label><input type="text" id="loginReferral" placeholder="e.g. DAVE123" maxlength="10" style="text-transform:uppercase;letter-spacing:2px;text-align:center;font-weight:700;"></div>
         <button class="btn-primary" onclick="doLogin()">Sign in</button>
       </div>
     </div>
@@ -643,6 +667,41 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
       <h2>My listings</h2>
     </div>
     <div class="product-grid" id="myListingsGrid"></div>
+  </div>
+
+  <div id="referralPage" class="page">
+    <div class="filter-page-header">
+      <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
+      <h3>Referrals</h3>
+    </div>
+    <div style="padding:16px;max-width:480px;margin:0 auto;">
+      <div class="referral-hero">
+        <div class="hero-icon"><i class="fas fa-gift"></i></div>
+        <h2>Refer 100 People</h2>
+        <p>Get <b>1 month of Free VIP</b> when you refer 100 people to Lenidi</p>
+      </div>
+      <div class="referral-progress-card">
+        <div class="count-big" id="refCount">0</div>
+        <div class="count-label">out of 100 referrals</div>
+        <div class="referral-progress-bar"><div class="referral-progress-fill" id="refProgress" style="width:0%"></div></div>
+      </div>
+      <div id="myCodeSection">
+        <div class="referral-code-box" id="codeBox">
+          <div class="code-label">Your referral code</div>
+          <div class="code-value" id="myCodeDisplay">— — —</div>
+          <div class="code-hint" id="codeHint">Tap below to create your code</div>
+        </div>
+        <div id="createCodeSection">
+          <div class="referral-input-row">
+            <input type="text" id="newCodeInput" placeholder="DAVE123" maxlength="10" style="text-transform:uppercase;">
+          </div>
+          <button class="btn-blue" onclick="createMyCode()"><i class="fas fa-check"></i> Save My Referral Code</button>
+          <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:8px;">Max 10 characters. Letters & numbers only.</p>
+        </div>
+      </div>
+      <button class="btn-claim" id="claimVipBtn" onclick="claimFreeVip()" disabled><i class="fas fa-crown"></i> Claim Free VIP</button>
+      <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:8px;">Unlocks at 100 referrals</p>
+    </div>
   </div>
 
   <div id="aiSupportPage" class="page">
@@ -771,6 +830,7 @@ let blockedSellers = JSON.parse(localStorage.getItem('lenidiBlocked')) || [];
 let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
 let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
 let pendingDeleteId = null;
+let referralInfo = { code: null, count: 0, claimed: false };
 
 function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastText').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
 function isMe(name) { return name === userName; }
@@ -797,17 +857,33 @@ async function syncFromBackend() {
   try {
     const data = await apiGet('/user-sync/' + userEmail);
     if (!data) return;
+
+    // DELETED account
+    if (data.deleted === true || data.status === 'deleted') {
+      document.getElementById('suspendedTitle').textContent = 'Account Deleted';
+      document.getElementById('suspendedMsg').textContent = 'Your account has been deleted. You can contact support or create a new one.';
+      document.getElementById('suspendedCountdown').textContent = '';
+      document.getElementById('suspendedSubtext').textContent = '';
+      document.getElementById('suspendedOverlay').classList.add('show');
+      return;
+    }
+
+    // BANNED / SUSPENDED
     if (data.status === 'banned' || data.status === 'suspended') {
+      document.getElementById('suspendedTitle').textContent = 'Account Suspended';
       document.getElementById('suspendedMsg').textContent = data.status === 'banned' ? 'Your account has been permanently banned for violating our rules.' : 'Your account is temporarily suspended.';
       document.getElementById('suspendedCountdown').textContent = data.status === 'banned' ? '∞' : ((data.suspend_days || '?') + ' days');
+      document.getElementById('suspendedSubtext').textContent = '';
       document.getElementById('suspendedOverlay').classList.add('show');
       return;
     } else {
       document.getElementById('suspendedOverlay').classList.remove('show');
     }
+
     const oldBoosts = userBoosts; const oldVerify = userVerify; const oldPlan = subscription ? subscription.plan : null;
     if (data.boosts !== undefined) userBoosts = data.boosts || 0;
     if (data.verify !== undefined) userVerify = data.verify || '';
+
     if (data.plan && data.plan !== 'free') {
       const planData = SUBSCRIPTION_PLANS.find(p => p.id === data.plan);
       subscription = { plan: data.plan, verifyClass: planData ? planData.verifyClass : '', until: Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: data.boosts || 0 };
@@ -816,6 +892,12 @@ async function syncFromBackend() {
       subscription = null;
       localStorage.removeItem('lenidiSubscription');
     }
+
+    // Update referral info if present
+    if (data.referral_code !== undefined) referralInfo.code = data.referral_code;
+    if (data.referrals_count !== undefined) referralInfo.count = data.referrals_count || 0;
+    if (data.claimed_vip_reward !== undefined) referralInfo.claimed = data.claimed_vip_reward;
+
     localStorage.setItem('lenidiBoosts', userBoosts);
     localStorage.setItem('lenidiVerify', userVerify);
     applyVerifyMark(); updateBoostsUI(); updateSubTimer();
@@ -880,9 +962,7 @@ function applyCollectionFilter() {
   if (currentHomeCategory !== 'all') filtered = filtered.filter(p => p.category === currentHomeCategory);
   renderProducts(filtered, 'productGrid');
 }
-
 function filterCategory(e, cat) { e.preventDefault(); currentHomeCategory = cat; document.querySelectorAll('#categoryBar a').forEach(a => a.classList.remove('active')); e.target.classList.add('active'); applyCollectionFilter(); }
-
 document.querySelectorAll('#collectionTabs .collection-tab').forEach(tab => {
   tab.addEventListener('click', function () {
     document.querySelectorAll('#collectionTabs .collection-tab').forEach(t => t.classList.remove('active'));
@@ -1021,17 +1101,7 @@ async function confirmDeleteAd() {
   switchPage('myListings');
 }
 
-function toggleSellerMenu(e, email, name) {
-  e.stopPropagation();
-  currentSellerEmail = email;
-  currentSellerName = name;
-  const allMenus = document.querySelectorAll('.seller-menu-popup');
-  const parentCard = e.target.closest('.seller-card');
-  const thisMenu = parentCard.querySelector('.seller-menu-popup');
-  const wasOpen = thisMenu.classList.contains('show');
-  allMenus.forEach(m => m.classList.remove('show'));
-  if (!wasOpen) thisMenu.classList.add('show');
-}
+function toggleSellerMenu(e, email, name) { e.stopPropagation(); currentSellerEmail = email; currentSellerName = name; const allMenus = document.querySelectorAll('.seller-menu-popup'); const parentCard = e.target.closest('.seller-card'); const thisMenu = parentCard.querySelector('.seller-menu-popup'); const wasOpen = thisMenu.classList.contains('show'); allMenus.forEach(m => m.classList.remove('show')); if (!wasOpen) thisMenu.classList.add('show'); }
 function toggleSellerProfileMenu(e) { e.stopPropagation(); document.getElementById('sellerProfileMenuPopup').classList.toggle('show'); }
 document.addEventListener('click', () => { document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show')); });
 
@@ -1103,7 +1173,6 @@ function updateSellDetailFields() {
   const selected = fields[cat] || [];
   container.innerHTML = selected.map(f => '<div class="form-group"><label>' + f[1] + '</label><input type="text" id="' + f[0] + '" placeholder="' + f[2] + '"></div>').join('');
 }
-
 function handlePhotoUpload(event) {
   const files = event.target.files;
   const preview = document.getElementById('uploadPreview');
@@ -1116,7 +1185,6 @@ function handlePhotoUpload(event) {
   }
   event.target.value = '';
 }
-
 function clearForm() {
   document.getElementById('sellTitle').value = '';
   document.getElementById('sellRegion').value = '';
@@ -1128,7 +1196,6 @@ function clearForm() {
   document.getElementById('dynamicDetailFields').innerHTML = '';
   uploadedPhotos = [];
 }
-
 function getListingLimit() { if (!subscription || Date.now() >= subscription.until) return FREE_LIMIT; const plan = SUBSCRIPTION_PLANS.find(p => p.id === subscription.plan); return plan ? plan.limit : FREE_LIMIT; }
 function getUpgradeTarget() { if (!subscription || Date.now() >= subscription.until) return 'Plus'; const nextMap = { plus: 'Pro', pro: 'Premium', premium: 'VIP', vip: null }; return nextMap[subscription.plan]; }
 
@@ -1154,8 +1221,7 @@ async function postAd() {
       description: desc || 'No description',
       seller_email: userEmail, seller_name: userName,
       seller_phone: whatsapp, whatsapp: whatsapp,
-      photos: uploadedPhotos,
-      badge: isVip ? 'BEST BUY' : 'NEW',
+      photos: uploadedPhotos, badge: isVip ? 'BEST BUY' : 'NEW',
       is_boosted: isVip, is_vip: isVip,
       posted_at: Date.now(), boosted_at: isVip ? Date.now() : 0
     };
@@ -1190,7 +1256,6 @@ function openBoostPage(id) {
     '</div></div>';
   switchPage('boostProductPage');
 }
-
 async function confirmBoost(id) {
   if (userBoosts < 50) { showToast('Need 50 boosts'); return; }
   userBoosts -= 50;
@@ -1202,7 +1267,6 @@ async function confirmBoost(id) {
   applyCollectionFilter();
   switchPage('home');
 }
-
 function renderMyListings() {
   const grid = document.getElementById('myListingsGrid');
   const mine = products.filter(p => p.sellerEmail === userEmail);
@@ -1210,7 +1274,6 @@ function renderMyListings() {
   const sorted = [...mine].sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
   renderProducts(sorted, 'myListingsGrid');
 }
-
 async function updateActiveAdsCount() { const mine = products.filter(p => p.sellerEmail === userEmail); document.getElementById('activeAdsCount').textContent = mine.length; }
 
 function openFullscreen(productId, startIndex) {
@@ -1235,7 +1298,6 @@ function toggleSaveFromDetail(id) {
   btn.className = 'gallery-heart ' + (isSaved ? 'saved' : '');
   btn.innerHTML = '<i class="' + (isSaved ? 'fas' : 'far') + ' fa-star"></i>';
 }
-
 function renderSaves() {
   const grid = document.getElementById('savesGrid');
   const saved = products.filter(p => savedItems.includes(p.id));
@@ -1251,7 +1313,6 @@ function buildBoostGrid() {
   grid.innerHTML = '';
   BOOST_PACKS.forEach(p => { const card = document.createElement('div'); card.className = 'boost-card'; card.innerHTML = '<div class="boost-amount">' + p.amount + '</div><div class="boost-label">boosts</div><div class="boost-price">GHC ' + p.price + '</div><button class="boost-btn" onclick="buyBoosts(' + p.amount + ',' + p.price + ')">Buy</button>'; grid.appendChild(card); });
 }
-
 function buildPricingGrid() {
   const grid = document.getElementById('pricingGrid');
   grid.innerHTML = '';
@@ -1263,7 +1324,6 @@ function buildPricingGrid() {
     grid.appendChild(card);
   });
 }
-
 function switchPacksTab(tab) {
   const slider = document.getElementById('packsSlider');
   const tabBoosts = document.getElementById('tabBoosts');
@@ -1282,7 +1342,6 @@ async function startPayment(email, amount, plan, type) {
     window.location.href = data.authorization_url;
   } catch (e) { showToast('Payment error: ' + e.message); }
 }
-
 function checkPendingPayment() {
   const pending = JSON.parse(localStorage.getItem('lenidiPendingPayment'));
   if (!pending) return;
@@ -1298,7 +1357,6 @@ function checkPendingPayment() {
     if (attempts >= 60) { clearInterval(activePollingRef); activePollingRef = null; localStorage.removeItem('lenidiPendingPayment'); }
   }, 3000);
 }
-
 function onPaymentSuccess(pending) {
   if (pending.type === 'boost') {
     const amt = parseInt(pending.plan);
@@ -1322,7 +1380,6 @@ function onPaymentSuccess(pending) {
     }
   }
 }
-
 function buyBoosts(amount, price) { if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; } startPayment(userEmail, price, amount + '', 'boost'); }
 function subscribePlan(planId, price, freeBoosts, verifyClass) { if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; } startPayment(userEmail, price, planId, 'subscription'); }
 
@@ -1337,14 +1394,108 @@ function updateSubTimer() {
   const colourClass = { plus: 'sub-timer-yellow', pro: 'sub-timer-orange', premium: 'sub-timer-purple', vip: 'sub-timer-blue' }[subscription.plan] || 'sub-timer-yellow';
   c.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
 }
-
 function applyVerifyMark() { const el = document.getElementById('profileVerifyMark'); el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>' : ''; }
 function updateBoostsUI() { const stat = document.getElementById('boostsStat'); const count = document.getElementById('boostCount'); if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; } else stat.style.display = 'none'; }
 
-function doLogin() {
+// ============================================================
+// REFERRAL SYSTEM
+// ============================================================
+async function openReferralPage() {
+  if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
+  switchPage('referralPage');
+  await loadReferralInfo();
+}
+async function loadReferralInfo() {
+  try {
+    const data = await apiGet('/referral/info/' + userEmail);
+    referralInfo.code = data.referral_code;
+    referralInfo.count = data.referrals_count || 0;
+    referralInfo.claimed = data.claimed_vip_reward || false;
+    renderReferralPage();
+  } catch (e) { renderReferralPage(); }
+}
+function renderReferralPage() {
+  document.getElementById('refCount').textContent = referralInfo.count;
+  const pct = Math.min(100, referralInfo.count);
+  document.getElementById('refProgress').style.width = pct + '%';
+  const codeBox = document.getElementById('codeBox');
+  const myCodeDisplay = document.getElementById('myCodeDisplay');
+  const codeHint = document.getElementById('codeHint');
+  const createSection = document.getElementById('createCodeSection');
+  if (referralInfo.code) {
+    myCodeDisplay.textContent = referralInfo.code;
+    codeHint.textContent = 'Share this with friends!';
+    createSection.style.display = 'none';
+    codeBox.style.background = '#dcfce7';
+    codeBox.style.borderColor = '#16a34a';
+    myCodeDisplay.style.color = '#16a34a';
+    codeHint.style.color = '#166534';
+  } else {
+    myCodeDisplay.textContent = '— — —';
+    codeHint.textContent = 'Tap below to create your code';
+    createSection.style.display = 'block';
+    codeBox.style.background = '#f0f9ff';
+    codeBox.style.borderColor = '#3b82f6';
+    myCodeDisplay.style.color = '#1e40af';
+    codeHint.style.color = '#64748b';
+  }
+  const btn = document.getElementById('claimVipBtn');
+  if (referralInfo.count >= 100 && !referralInfo.claimed) {
+    btn.classList.add('unlocked');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-crown"></i> Claim Free VIP (1 Month)';
+  } else if (referralInfo.claimed) {
+    btn.classList.remove('unlocked');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-check"></i> VIP Already Claimed';
+  } else {
+    btn.classList.remove('unlocked');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP (' + referralInfo.count + '/100)';
+  }
+}
+async function createMyCode() {
+  const input = document.getElementById('newCodeInput');
+  const code = (input.value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+  if (code.length < 3) { showToast('Code must be at least 3 characters'); return; }
+  try {
+    const res = await apiPost('/referral/set-code', { email: userEmail, code: code });
+    if (res.success) {
+      referralInfo.code = res.code;
+      showToast('✅ Your referral code is ' + res.code);
+      renderReferralPage();
+    } else if (res.taken) {
+      showToast('❌ TAKEN — try another code');
+    } else {
+      showToast('❌ ' + (res.error || 'Failed'));
+    }
+  } catch (e) { showToast('Network error'); }
+}
+async function claimFreeVip() {
+  if (referralInfo.count < 100) { showToast('Need 100 referrals first'); return; }
+  if (referralInfo.claimed) { showToast('Already claimed'); return; }
+  if (!confirm('Claim your 1 month Free VIP reward?')) return;
+  try {
+    const res = await apiPost('/referral/claim-vip', { email: userEmail });
+    if (res.success) {
+      showToast('🎉 You got FREE VIP for 1 month!');
+      referralInfo.claimed = true;
+      await syncFromBackend();
+      renderReferralPage();
+    } else {
+      showToast('❌ ' + (res.error || 'Failed'));
+    }
+  } catch (e) { showToast('Network error'); }
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+async function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
   const email = (document.getElementById('loginEmail').value || '').trim();
   const phone = (document.getElementById('loginPhone').value || '').trim();
+  const referralCode = (document.getElementById('loginReferral').value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
   if (!name || !email || !phone) { showToast('Fill all fields'); return; }
   isLoggedIn = true;
   userName = name; userEmail = email.toLowerCase(); userPhone = phone;
@@ -1356,14 +1507,21 @@ function doLogin() {
   updateProfileView(); updateBoostsUI(); updateSubTimer();
   showToast('Welcome, ' + name.split(' ')[0] + '!');
   switchPage('profile');
-  apiPost('/users', { email: userEmail, name: userName, phone: userPhone, boosts: userBoosts, verify: userVerify }).catch(() => {});
+  try {
+    await apiPost('/users', { email: userEmail, name: userName, phone: userPhone, boosts: userBoosts, verify: userVerify });
+  } catch (e) {}
+  if (referralCode && referralCode.length >= 3) {
+    try {
+      const rr = await apiPost('/referral/redeem', { email: userEmail, code: referralCode });
+      if (rr.success) showToast('✅ Referral code applied!');
+      else if (rr.error) showToast('⚠️ ' + rr.error);
+    } catch (e) {}
+  }
   setTimeout(syncFromBackend, 500);
 }
-
 function doLogout() { localStorage.clear(); location.reload(); }
 function deleteMyAccount() { localStorage.clear(); showToast('Account deleted'); setTimeout(() => location.reload(), 1000); }
 function updateProfileView() { document.getElementById('loggedInProfileView').style.display = isLoggedIn ? 'block' : 'none'; document.getElementById('loggedOutProfileView').style.display = isLoggedIn ? 'none' : 'block'; }
-
 function syncUserInfo() {
   document.getElementById('profileNameText').textContent = userName || 'John Doe';
   document.getElementById('profileEmailText').textContent = userEmail || '—';
@@ -1373,12 +1531,10 @@ function syncUserInfo() {
   if (document.getElementById('myListingsPage').classList.contains('active')) renderMyListings();
   if (document.getElementById('savesPage').classList.contains('active')) renderSaves();
 }
-
 function changeName() {
   const n = prompt('New name:', userName);
   if (n && n.trim()) { userName = n.trim(); localStorage.setItem('lenidiName', userName); syncUserInfo(); pushUserToBackend(); showToast('✅ Name updated everywhere!'); }
 }
-
 async function changeEmail() {
   const e = prompt('New email:', userEmail);
   if (e && e.trim()) {
@@ -1391,12 +1547,10 @@ async function changeEmail() {
     } catch (err) { showToast('Network error'); }
   }
 }
-
 function changePhone() {
   const p = prompt('New phone:', userPhone);
   if (p && p.trim()) { userPhone = p.trim(); localStorage.setItem('lenidiPhone', userPhone); syncUserInfo(); pushUserToBackend(); showToast('✅ Phone updated everywhere!'); }
 }
-
 function handlePfpUpload(e) {
   const f = e.target.files[0];
   if (!f) return;
@@ -1405,6 +1559,9 @@ function handlePfpUpload(e) {
   r.readAsDataURL(f);
 }
 
+// ============================================================
+// AI CHAT
+// ============================================================
 function openAISupport() { switchPage('aiSupportPage'); }
 function openAIChatWith(q) {
   if (!aiConsented) { document.getElementById('aiConsentOverlay').classList.add('show'); window.pendingAIQuestion = q || ''; return; }
@@ -1423,9 +1580,7 @@ function acceptAIConsent() {
 function declineAIConsent() { document.getElementById('aiConsentOverlay').classList.remove('show'); window.pendingAIQuestion = ''; showToast('AI chat unavailable without consent'); }
 function toggleConvMenu(e) { e.stopPropagation(); document.getElementById('convMenuPopup').classList.toggle('show'); }
 function clearAIChat() { document.getElementById('convMenuPopup').classList.remove('show'); document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
-
 function isAdminCommand(t) { return /^\/(suspend|ban|unban|gift|unpack|remove)/i.test(t.trim()); }
-
 function parseAdminCommand(text) {
   const t = text.trim();
   let m = t.match(/^\/gift_(plus|pro|premium|vip)_([^\s]+)$/i);
@@ -1468,7 +1623,6 @@ function parseAdminCommand(text) {
   if (m) return '✅ ' + m[1] + ' unbanned.';
   return null;
 }
-
 function isScamTrigger(t) { return /\b(scam|scammed|fraud|stolen|fake seller)\b/i.test(t); }
 function aiLocalReply(raw) {
   if (isAdminCommand(raw)) { const r = parseAdminCommand(raw); if (r) return r; }
@@ -1481,7 +1635,6 @@ function aiLocalReply(raw) {
   if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; }
   return null;
 }
-
 async function askGroq(msg) {
   aiHistory.push({ role: 'user', content: msg });
   const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -1496,7 +1649,6 @@ async function askGroq(msg) {
   if (aiHistory.length > 11) aiHistory = [aiHistory[0], ...aiHistory.slice(-10)];
   return reply;
 }
-
 async function sendAIMessage() {
   const input = document.getElementById('aiInput');
   const text = input.value.trim();
@@ -1543,11 +1695,12 @@ function switchPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => { b.classList.toggle('active', b.dataset.page === pageId); });
-  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage'];
+  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage','referralPage'];
   document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
   if (pageId === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
+  if (pageId === 'referralPage') loadReferralInfo();
   if (pageId === 'home') { loadProducts(); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
