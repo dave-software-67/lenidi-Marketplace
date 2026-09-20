@@ -750,30 +750,10 @@ const BOOST_PACKS = [
 ];
 
 const SUBSCRIPTION_PLANS = [
-  {
-    id: 'plus', name: 'Plus', price: 99, boosts: 50, limit: PLUS_LIMIT,
-    verifyClass: 'verify-yellow', ringClass: 'ring-yellow',
-    btnClass: 'pack-btn-plus', desc: 'Great start for casual sellers',
-    features: ['Yellow verification mark','Higher search placement','50 free boosts','Standard chat support','More listing slots','Basic profile analytics']
-  },
-  {
-    id: 'pro', name: 'Pro', price: 399, boosts: 80, limit: PRO_LIMIT,
-    verifyClass: 'verify-orange', ringClass: 'ring-orange',
-    btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results', popular: true,
-    features: ['Orange verification mark','Top of search results','80 free boosts','Priority chat support','More listing slots','Full analytics dashboard','Featured + spotlight ads','Early access to features']
-  },
-  {
-    id: 'premium', name: 'Premium', price: 699, boosts: 100, limit: PREMIUM_LIMIT,
-    verifyClass: 'verify-purple', ringClass: 'ring-purple',
-    btnClass: 'pack-btn-premium', desc: 'For growing businesses & shops',
-    features: ['Purple verification mark','Verified badge on all ads','100 free boosts','Dedicated account support','More listing slots','Advanced analytics','Premium badge + spotlight','Bulk listing upload','Priority above Pro sellers','No commission on first 10 sales']
-  },
-  {
-    id: 'vip', name: 'VIP', price: 999, boosts: 200, limit: Infinity,
-    verifyClass: 'verify-blue', ringClass: 'ring-blue',
-    btnClass: 'pack-btn-vip', desc: 'For people who want more traffic and more sales',
-    features: ['Blue verification mark','Gain trust with verified badge','200 free boosts','Get more sales with 10x visibility','AUTO-BOOSTED every post','Priority chat support','#1 ranking in search','Dedicated account manager','Top of Home page always','Early access to all features','Products get BEST BUY badges','Good for big sellers']
-  }
+  { id: 'plus', name: 'Plus', price: 99, boosts: 50, limit: PLUS_LIMIT, verifyClass: 'verify-yellow', ringClass: 'ring-yellow', btnClass: 'pack-btn-plus', desc: 'Great start for casual sellers', features: ['Yellow verification mark','Higher search placement','50 free boosts','Standard chat support','More listing slots','Basic profile analytics'] },
+  { id: 'pro', name: 'Pro', price: 399, boosts: 80, limit: PRO_LIMIT, verifyClass: 'verify-orange', ringClass: 'ring-orange', btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results', popular: true, features: ['Orange verification mark','Top of search results','80 free boosts','Priority chat support','More listing slots','Full analytics dashboard','Featured + spotlight ads','Early access to features'] },
+  { id: 'premium', name: 'Premium', price: 699, boosts: 100, limit: PREMIUM_LIMIT, verifyClass: 'verify-purple', ringClass: 'ring-purple', btnClass: 'pack-btn-premium', desc: 'For growing businesses & shops', features: ['Purple verification mark','Verified badge on all ads','100 free boosts','Dedicated account support','More listing slots','Advanced analytics','Premium badge + spotlight','Bulk listing upload','Priority above Pro sellers','No commission on first 10 sales'] },
+  { id: 'vip', name: 'VIP', price: 999, boosts: 200, limit: Infinity, verifyClass: 'verify-blue', ringClass: 'ring-blue', btnClass: 'pack-btn-vip', desc: 'For people who want more traffic and more sales', features: ['Blue verification mark','Gain trust with verified badge','200 free boosts','Get more sales with 10x visibility','AUTO-BOOSTED every post','Priority chat support','#1 ranking in search','Dedicated account manager','Top of Home page always','Early access to all features','Products get BEST BUY badges','Good for big sellers'] }
 ];
 
 // ============================================================
@@ -800,7 +780,6 @@ let currentSellerName = '';
 let blockedSellers = JSON.parse(localStorage.getItem('lenidiBlocked')) || [];
 let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
 let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
-
 let pendingDeleteId = null;
 
 // ============================================================
@@ -871,8 +850,7 @@ async function apiDelete(path) {
 }
 
 // ============================================================
-// SYNC FROM BACKEND — pulls VIP / boosts / ban / plan
-// Also shows toasts + refreshes UI when something changed
+// SYNC FROM BACKEND
 // ============================================================
 async function syncFromBackend() {
   if (!userEmail) return;
@@ -880,7 +858,7 @@ async function syncFromBackend() {
     const data = await apiGet('/user-sync/' + userEmail);
     if (!data) return;
 
-    // Ban / suspend check
+    // Ban / suspend
     if (data.status === 'banned' || data.status === 'suspended') {
       document.getElementById('suspendedMsg').textContent =
         data.status === 'banned'
@@ -918,45 +896,30 @@ async function syncFromBackend() {
     localStorage.setItem('lenidiBoosts', userBoosts);
     localStorage.setItem('lenidiVerify', userVerify);
 
-    // Refresh UI
     applyVerifyMark();
     updateBoostsUI();
     updateSubTimer();
-    if (document.getElementById('productGrid')) renderProducts(homeList(), 'productGrid');
+    if (document.getElementById('productGrid') && products.length > 0) {
+      renderProducts(homeList(), 'productGrid');
+    }
     syncUserInfo();
 
-    // Live toasts
-    if (oldBoosts !== userBoosts && userBoosts > oldBoosts) {
-      showToast('🎉 +' + (userBoosts - oldBoosts) + ' boosts!');
-    }
-    if (oldVerify !== userVerify && userVerify) {
-      showToast('✅ You got verified!');
-    }
-    if (oldPlan !== (subscription ? subscription.plan : null) && subscription) {
-      showToast('👑 Plan updated to ' + subscription.plan.toUpperCase() + '!');
-    }
+    if (oldBoosts !== userBoosts && userBoosts > oldBoosts) showToast('🎉 +' + (userBoosts - oldBoosts) + ' boosts!');
+    if (oldVerify !== userVerify && userVerify) showToast('✅ You got verified!');
+    if (oldPlan !== (subscription ? subscription.plan : null) && subscription) showToast('👑 Plan updated to ' + subscription.plan.toUpperCase() + '!');
   } catch (e) { console.warn('Sync failed:', e); }
 }
 
 // ============================================================
-// PUSH USER TO BACKEND (used when user changes name/phone/email)
+// PUSH USER TO BACKEND
 // ============================================================
 async function pushUserToBackend() {
   if (!userEmail) return;
   try {
-    await apiPost('/users', {
-      email: userEmail,
-      name: userName,
-      phone: userPhone,
-      boosts: userBoosts,
-      verify: userVerify
-    });
-    await apiPost('/update-my-products', {
-      seller_email: userEmail,
-      seller_name: userName,
-      seller_phone: userPhone,
-      whatsapp: userPhone
-    }).catch(() => {});
+    await apiPost('/users', { email: userEmail, name: userName, phone: userPhone, boosts: userBoosts, verify: userVerify });
+    try {
+      await apiPost('/update-my-products', { seller_email: userEmail, seller_name: userName, seller_phone: userPhone, whatsapp: userPhone });
+    } catch (e) {}
     await syncFromBackend();
   } catch (e) { console.warn('Push failed:', e); }
 }
@@ -973,23 +936,10 @@ async function loadProducts() {
     const data = await apiGet('/products');
     if (Array.isArray(data)) {
       products = data.map(p => ({
-        ...p,
-        id: p.id,
-        priceRaw: p.price_raw || 0,
-        location: p.location || 'Accra',
-        date: 'Recently',
-        icon: 'fa-box',
-        seller: p.seller_name || 'Seller',
-        sellerEmail: p.seller_email,
-        sellerPhone: p.seller_phone,
-        whatsapp: p.whatsapp,
-        photos: p.photos || [],
-        desc: p.description || '',
-        badge: p.badge,
-        isBoosted: p.is_boosted,
-        isVip: p.is_vip,
-        boostedAt: p.boosted_at || 0,
-        postedAt: p.posted_at || 0
+        ...p, id: p.id, priceRaw: p.price_raw || 0, location: p.location || 'Accra', date: 'Recently', icon: 'fa-box',
+        seller: p.seller_name || 'Seller', sellerEmail: p.seller_email, sellerPhone: p.seller_phone, whatsapp: p.whatsapp,
+        photos: p.photos || [], desc: p.description || '', badge: p.badge, isBoosted: p.is_boosted, isVip: p.is_vip,
+        boostedAt: p.boosted_at || 0, postedAt: p.posted_at || 0
       }));
     }
   } catch (e) { console.warn('Load failed:', e); }
@@ -1087,7 +1037,7 @@ function applyFilter() {
   renderProducts(searchList(results), 'searchProductGrid');
   switchPage('search');
 }
-// ============================================================
+  // ============================================================
 // PRODUCT DETAIL
 // ============================================================
 function openProduct(id) {
@@ -1215,13 +1165,10 @@ async function confirmDeleteAd() {
   if (!pendingDeleteId) { switchPage('home'); return; }
   const id = pendingDeleteId;
   pendingDeleteId = null;
-
   try { await apiDelete('/products/' + id); } catch (e) {}
-
   products = products.filter(p => String(p.id) !== String(id));
   savedItems = savedItems.filter(x => String(x) !== String(id));
   localStorage.setItem('lenidiSaved', JSON.stringify(savedItems));
-
   showToast('🗑️ Ad deleted');
   applyCollectionFilter();
   updateActiveAdsCount();
@@ -1409,8 +1356,7 @@ async function postAd() {
       photos: uploadedPhotos,
       badge: isVip ? 'BEST BUY' : 'NEW',
       is_boosted: isVip, is_vip: isVip,
-      posted_at: Date.now(),
-      boosted_at: isVip ? Date.now() : 0
+      posted_at: Date.now(), boosted_at: isVip ? Date.now() : 0
     };
 
     const fieldIds = ['sellBrand','sellModel','sellCondition','sellStorage','sellRam','sellNetwork','sellRearCam','sellFrontCam','sellScreenSize','sellBattery','sellColor','sellYear','sellMileage','sellTransmission','sellFuel','sellBedrooms','sellBathrooms','sellSize','sellProcessor','sellMaterial','sellCompany','sellJobType','sellSalary','sellServiceType','sellExperience','sellGender'];
@@ -1463,17 +1409,13 @@ async function confirmBoost(id) {
   userBoosts -= 50;
   localStorage.setItem('lenidiBoosts', userBoosts);
   updateBoostsUI();
-
   const p = products.find(x => String(x.id) === String(id));
   if (p) {
     p.isBoosted = true;
     p.badge = 'BEST BUY';
     p.boostedAt = Date.now();
-    try {
-      await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() });
-    } catch (e) {}
+    try { await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() }); } catch (e) {}
   }
-
   showToast('🚀 Boosted! Now visible on Home.');
   applyCollectionFilter();
   switchPage('home');
@@ -1499,7 +1441,7 @@ async function updateActiveAdsCount() {
 }
 
 // ============================================================
-// FULLSCREEN IMAGE + SAVE
+// FULLSCREEN + SAVE
 // ============================================================
 function openFullscreen(productId, startIndex) {
   const p = products.find(x => String(x.id) === String(productId));
@@ -1596,10 +1538,7 @@ async function startPayment(email, amount, plan, type) {
   try {
     const data = await apiPost('/create-payment', { email: email, amount: amount, plan: plan, type: type });
     if (!data.authorization_url) { showToast('Payment start failed: ' + (data.error || 'unknown')); return; }
-    localStorage.setItem('lenidiPendingPayment', JSON.stringify({
-      reference: data.reference,
-      plan: plan, type: type, amount: amount, started: Date.now()
-    }));
+    localStorage.setItem('lenidiPendingPayment', JSON.stringify({ reference: data.reference, plan: plan, type: type, amount: amount, started: Date.now() }));
     window.location.href = data.authorization_url;
   } catch (e) { showToast('Payment error: ' + e.message); }
 }
@@ -1607,10 +1546,7 @@ async function startPayment(email, amount, plan, type) {
 function checkPendingPayment() {
   const pending = JSON.parse(localStorage.getItem('lenidiPendingPayment'));
   if (!pending) return;
-  if (Date.now() - pending.started > 30 * 60 * 1000) {
-    localStorage.removeItem('lenidiPendingPayment');
-    return;
-  }
+  if (Date.now() - pending.started > 30 * 60 * 1000) { localStorage.removeItem('lenidiPendingPayment'); return; }
   let attempts = 0;
   if (activePollingRef) clearInterval(activePollingRef);
   activePollingRef = setInterval(async () => {
@@ -1624,11 +1560,7 @@ function checkPendingPayment() {
         onPaymentSuccess(pending);
       }
     } catch (e) {}
-    if (attempts >= 60) {
-      clearInterval(activePollingRef);
-      activePollingRef = null;
-      localStorage.removeItem('lenidiPendingPayment');
-    }
+    if (attempts >= 60) { clearInterval(activePollingRef); activePollingRef = null; localStorage.removeItem('lenidiPendingPayment'); }
   }, 3000);
 }
 
@@ -1648,14 +1580,10 @@ function onPaymentSuccess(pending) {
       localStorage.setItem('lenidiBoosts', userBoosts);
       subscription = { plan: planData.id, verifyClass: planData.verifyClass, until: Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: planData.boosts };
       localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
-      applyVerifyMark();
-      updateBoostsUI();
-      updateSubTimer();
+      applyVerifyMark(); updateBoostsUI(); updateSubTimer();
       showToast('🎉 Subscribed to ' + planData.name + '!');
       if (planData.id === 'vip') {
-        products.filter(p => p.sellerEmail === userEmail).forEach(p => {
-          p.isBoosted = true; p.isVip = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now();
-        });
+        products.filter(p => p.sellerEmail === userEmail).forEach(p => { p.isBoosted = true; p.isVip = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now(); });
         applyCollectionFilter();
       }
       switchPage('profile');
@@ -1682,24 +1610,25 @@ function updateSubTimer() {
     subscription = null; localStorage.removeItem('lenidiSubscription');
     applyVerifyMark(); c.innerHTML = ''; return;
   }
-  const rem = subscription.until>' - now;
+  const rem = subscription.until - now;
   const d = Math.floor(rem / 86400000);
-  const : h = Math.floor((rem % 86400000) / 3600000);
-  const colourClass = { plus: ' '';
-sub-timer-yellow', pro: 'sub-timer-orange', premium: 'sub-timer-purple',}
-
- vip: 'sub-timer-blue' }[subscription.plan] || 'sub-timer-yellow';
-  cfunction.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
+  const h = Math.floor((rem % 86400000) / 3600000);
+  const colourClass = { plus: 'sub-timer-yellow', pro: 'sub-timer-orange', premium: 'sub-timer-purple', vip: 'sub-timer-blue' }[subscription.plan] || 'sub-timer-yellow';
+  c.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
 }
 
 function applyVerifyMark() {
   const el = document.getElementById('profileVerifyMark');
-  el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i updateBoostsUI() {
+  el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>' : '';
+}
+
+function updateBoostsUI() {
   const stat = document.getElementById('boostsStat');
   const count = document.getElementById('boostCount');
   if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; }
   else stat.style.display = 'none';
 }
+
 // ============================================================
 // AUTH
 // ============================================================
@@ -1722,10 +1651,7 @@ function doLogin() {
   setTimeout(syncFromBackend, 500);
 }
 
-function doLogout() {
-  localStorage.clear();
-  location.reload();
-}
+function doLogout() { localStorage.clear(); location.reload(); }
 
 function deleteMyAccount() {
   localStorage.clear();
@@ -1743,16 +1669,13 @@ function syncUserInfo() {
   document.getElementById('profileEmailText').textContent = userEmail || '—';
   document.getElementById('profilePhoneText').textContent = userPhone || '—';
   products.forEach(p => {
-    if (p.sellerEmail === userEmail) {
-      p.seller = userName; p.sellerPhone = userPhone; p.whatsapp = userPhone;
-    }
+    if (p.sellerEmail === userEmail) { p.seller = userName; p.sellerPhone = userPhone; p.whatsapp = userPhone; }
   });
   applyCollectionFilter();
   if (document.getElementById('myListingsPage').classList.contains('active')) renderMyListings();
   if (document.getElementById('savesPage').classList.contains('active')) renderSaves();
 }
 
-// ✅ changeName — pushes to backend
 function changeName() {
   const n = prompt('New name:', userName);
   if (n && n.trim()) {
@@ -1764,7 +1687,6 @@ function changeName() {
   }
 }
 
-// ✅ changeEmail — moves data in backend
 async function changeEmail() {
   const e = prompt('New email:', userEmail);
   if (e && e.trim()) {
@@ -1785,7 +1707,6 @@ async function changeEmail() {
   }
 }
 
-// ✅ changePhone — pushes to backend
 function changePhone() {
   const p = prompt('New phone:', userPhone);
   if (p && p.trim()) {
@@ -1913,16 +1834,13 @@ function aiLocalReply(raw) {
     const r = parseAdminCommand(raw);
     if (r) return r;
   }
-  if (reportingScam) {
-    if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; }
-    if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; }
-    reportingScam = false; scamDraft = {};
+  if (report sentingScam) {
+    if (!scamDraft.name) { scamDraft.name = raw; return '">What is their email?'; }
+    if (!scamDraft.email) { scamDraft.email' = raw; return 'Describe what happened.'; }
+    reportingScam = false; scamDraft + text = {};
     return '✅ Report submitted. They will be reviewed.';
   }
-  if (isScamTrigger(raw)) {
-    reportingScam = true; scamDraft = {};
-    return 'Sorry to hear. What is their name?';
-  }
+  if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; }
   return null;
 }
 
@@ -1946,7 +1864,7 @@ async function sendAIMessage() {
   const text = input.value.trim();
   if (!text) return;
   const msgs = document.getElementById('aiMessages');
-  msgs.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
+  msgs.innerHTML += '<div class="msg-bubble.replace(/</g, '&lt;') + '</div>';
   input.value = '';
   msgs.scrollTop = msgs.scrollHeight;
   const typing = document.createElement('div');
@@ -1990,7 +1908,7 @@ function buildAdStrip() {
 }
 
 // ============================================================
-// PAGE SWITCHING — profile auto-syncs
+// PAGE SWITCHING
 // ============================================================
 function switchPage(pageId) {
   if (pageId !== 'aiChatPage') {
@@ -2021,7 +1939,7 @@ function switchPage(pageId) {
 }
 
 // ============================================================
-// INIT — auto-poll every 15s + sync on tab focus
+// INIT
 // ============================================================
 buildAdStrip();
 buildBoostGrid();
@@ -2037,18 +1955,10 @@ buildPricingGrid();
   await loadProducts();
   checkPendingPayment();
   syncFromBackend();
-
-  // ✅ Auto-sync every 15 seconds — ALWAYS, no matter what page
-  setInterval(() => {
-    if (!isLoggedIn || !userEmail) return;
-    syncFromBackend();
-  }, 15000);
-
-  // ✅ Sync when user comes back to the tab/app
+  setInterval(() => { if (isLoggedIn && userEmail) syncFromBackend(); }, 15000);
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && isLoggedIn && userEmail) syncFromBackend();
   });
-
   switchPage('home');
 })();
 
