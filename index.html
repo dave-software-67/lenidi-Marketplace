@@ -731,34 +731,24 @@ button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor:
   <button data-page="profile" onclick="switchPage('profile')"><i class="far fa-user"></i><span>Profile</span></button>
 </nav>
 <script>
-// ============================================================
-// CONFIG
-// ============================================================
 const BACKEND_URL = "https://lenidi-backend.onrender.com";
 const GROQ_API_KEY = "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";
 const GROQ_MODEL = "openai/gpt-oss-20b";
-
 const FREE_LIMIT = 10;
 const PLUS_LIMIT = 20;
 const PRO_LIMIT = 50;
 const PREMIUM_LIMIT = 100;
-
 const BOOST_PACKS = [
   { amount: 20, price: 12 }, { amount: 40, price: 22 }, { amount: 60, price: 30 },
   { amount: 80, price: 38 }, { amount: 100, price: 45 }, { amount: 150, price: 50 },
   { amount: 200, price: 60 }, { amount: 250, price: 70 }, { amount: 300, price: 100 }
 ];
-
 const SUBSCRIPTION_PLANS = [
   { id: 'plus', name: 'Plus', price: 99, boosts: 50, limit: PLUS_LIMIT, verifyClass: 'verify-yellow', ringClass: 'ring-yellow', btnClass: 'pack-btn-plus', desc: 'Great start for casual sellers', features: ['Yellow verification mark','Higher search placement','50 free boosts','Standard chat support','More listing slots','Basic profile analytics'] },
   { id: 'pro', name: 'Pro', price: 399, boosts: 80, limit: PRO_LIMIT, verifyClass: 'verify-orange', ringClass: 'ring-orange', btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results', popular: true, features: ['Orange verification mark','Top of search results','80 free boosts','Priority chat support','More listing slots','Full analytics dashboard','Featured + spotlight ads','Early access to features'] },
   { id: 'premium', name: 'Premium', price: 699, boosts: 100, limit: PREMIUM_LIMIT, verifyClass: 'verify-purple', ringClass: 'ring-purple', btnClass: 'pack-btn-premium', desc: 'For growing businesses & shops', features: ['Purple verification mark','Verified badge on all ads','100 free boosts','Dedicated account support','More listing slots','Advanced analytics','Premium badge + spotlight','Bulk listing upload','Priority above Pro sellers','No commission on first 10 sales'] },
   { id: 'vip', name: 'VIP', price: 999, boosts: 200, limit: Infinity, verifyClass: 'verify-blue', ringClass: 'ring-blue', btnClass: 'pack-btn-vip', desc: 'For people who want more traffic and more sales', features: ['Blue verification mark','Gain trust with verified badge','200 free boosts','Get more sales with 10x visibility','AUTO-BOOSTED every post','Priority chat support','#1 ranking in search','Dedicated account manager','Top of Home page always','Early access to all features','Products get BEST BUY badges','Good for big sellers'] }
 ];
-
-// ============================================================
-// STATE
-// ============================================================
 let products = [];
 let savedItems = JSON.parse(localStorage.getItem('lenidiSaved')) || [];
 let isLoggedIn = JSON.parse(localStorage.getItem('lenidiLoggedIn')) || false;
@@ -782,34 +772,11 @@ let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
 let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
 let pendingDeleteId = null;
 
-// ============================================================
-// HELPERS
-// ============================================================
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  document.getElementById('toastText').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
-}
-
+function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastText').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
 function isMe(name) { return name === userName; }
+function avatarHtml(name) { if (isMe(name) && userPfp) return '<img src="' + userPfp + '" alt="">'; if (!name) return '?'; return name.split(' ').map(n => n[0]).join(''); }
+function verifyMarkFor(sellerEmail) { if (sellerEmail === userEmail && userVerify) return ' <i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>'; return ''; }
 
-function avatarHtml(name) {
-  if (isMe(name) && userPfp) return '<img src="' + userPfp + '" alt="">';
-  if (!name) return '?';
-  return name.split(' ').map(n => n[0]).join('');
-}
-
-function verifyMarkFor(sellerEmail) {
-  if (sellerEmail === userEmail && userVerify) {
-    return ' <i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>';
-  }
-  return '';
-}
-
-// ============================================================
-// RANKING
-// ============================================================
 function rankProducts(list) {
   const vip = list.filter(p => p.isVip);
   const boosted = list.filter(p => p.isBoosted && !p.isVip);
@@ -818,115 +785,57 @@ function rankProducts(list) {
   rest.sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
   return [...vip, ...boosted, ...rest];
 }
+function homeList() { return rankProducts(products.filter(p => p.isBoosted || p.isVip)); }
+function searchList(list) { return rankProducts(list); }
 
-function homeList() {
-  return rankProducts(products.filter(p => p.isBoosted || p.isVip));
-}
+async function apiGet(path) { const res = await fetch(BACKEND_URL + path); return res.json(); }
+async function apiPost(path, body) { const res = await fetch(BACKEND_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return res.json(); }
+async function apiDelete(path) { try { const res = await fetch(BACKEND_URL + path, { method: 'DELETE' }); return await res.json().catch(() => ({})); } catch (e) { return {}; } }
 
-function searchList(list) {
-  return rankProducts(list);
-}
-
-// ============================================================
-// BACKEND API
-// ============================================================
-async function apiGet(path) {
-  const res = await fetch(BACKEND_URL + path);
-  return res.json();
-}
-async function apiPost(path, body) {
-  const res = await fetch(BACKEND_URL + path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-  return res.json();
-}
-async function apiDelete(path) {
-  try {
-    const res = await fetch(BACKEND_URL + path, { method: 'DELETE' });
-    return await res.json().catch(() => ({}));
-  } catch (e) { return {}; }
-}
-
-// ============================================================
-// SYNC FROM BACKEND
-// ============================================================
 async function syncFromBackend() {
   if (!userEmail) return;
   try {
     const data = await apiGet('/user-sync/' + userEmail);
     if (!data) return;
-
-    // Ban / suspend
     if (data.status === 'banned' || data.status === 'suspended') {
-      document.getElementById('suspendedMsg').textContent =
-        data.status === 'banned'
-          ? 'Your account has been permanently banned for violating our rules.'
-          : 'Your account is temporarily suspended.';
-      document.getElementById('suspendedCountdown').textContent =
-        data.status === 'banned' ? '∞' : ((data.suspend_days || '?') + ' days');
+      document.getElementById('suspendedMsg').textContent = data.status === 'banned' ? 'Your account has been permanently banned for violating our rules.' : 'Your account is temporarily suspended.';
+      document.getElementById('suspendedCountdown').textContent = data.status === 'banned' ? '∞' : ((data.suspend_days || '?') + ' days');
       document.getElementById('suspendedOverlay').classList.add('show');
       return;
     } else {
       document.getElementById('suspendedOverlay').classList.remove('show');
     }
-
-    const oldBoosts = userBoosts;
-    const oldVerify = userVerify;
-    const oldPlan = subscription ? subscription.plan : null;
-
+    const oldBoosts = userBoosts; const oldVerify = userVerify; const oldPlan = subscription ? subscription.plan : null;
     if (data.boosts !== undefined) userBoosts = data.boosts || 0;
     if (data.verify !== undefined) userVerify = data.verify || '';
-
     if (data.plan && data.plan !== 'free') {
       const planData = SUBSCRIPTION_PLANS.find(p => p.id === data.plan);
-      subscription = {
-        plan: data.plan,
-        verifyClass: planData ? planData.verifyClass : '',
-        until: Date.now() + 31 * 24 * 60 * 60 * 1000,
-        boosts: data.boosts || 0
-      };
+      subscription = { plan: data.plan, verifyClass: planData ? planData.verifyClass : '', until: Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: data.boosts || 0 };
       localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
     } else {
       subscription = null;
       localStorage.removeItem('lenidiSubscription');
     }
-
     localStorage.setItem('lenidiBoosts', userBoosts);
     localStorage.setItem('lenidiVerify', userVerify);
-
-    applyVerifyMark();
-    updateBoostsUI();
-    updateSubTimer();
-    if (document.getElementById('productGrid') && products.length > 0) {
-      renderProducts(homeList(), 'productGrid');
-    }
+    applyVerifyMark(); updateBoostsUI(); updateSubTimer();
+    if (document.getElementById('productGrid') && products.length > 0) renderProducts(homeList(), 'productGrid');
     syncUserInfo();
-
     if (oldBoosts !== userBoosts && userBoosts > oldBoosts) showToast('🎉 +' + (userBoosts - oldBoosts) + ' boosts!');
     if (oldVerify !== userVerify && userVerify) showToast('✅ You got verified!');
     if (oldPlan !== (subscription ? subscription.plan : null) && subscription) showToast('👑 Plan updated to ' + subscription.plan.toUpperCase() + '!');
   } catch (e) { console.warn('Sync failed:', e); }
 }
 
-// ============================================================
-// PUSH USER TO BACKEND
-// ============================================================
 async function pushUserToBackend() {
   if (!userEmail) return;
   try {
     await apiPost('/users', { email: userEmail, name: userName, phone: userPhone, boosts: userBoosts, verify: userVerify });
-    try {
-      await apiPost('/update-my-products', { seller_email: userEmail, seller_name: userName, seller_phone: userPhone, whatsapp: userPhone });
-    } catch (e) {}
+    try { await apiPost('/update-my-products', { seller_email: userEmail, seller_name: userName, seller_phone: userPhone, whatsapp: userPhone }); } catch (e) {}
     await syncFromBackend();
   } catch (e) { console.warn('Push failed:', e); }
 }
 
-// ============================================================
-// LOAD PRODUCTS
-// ============================================================
 async function loadProducts() {
   const loader = document.getElementById('homeLoader');
   const grid = document.getElementById('productGrid');
@@ -935,12 +844,7 @@ async function loadProducts() {
   try {
     const data = await apiGet('/products');
     if (Array.isArray(data)) {
-      products = data.map(p => ({
-        ...p, id: p.id, priceRaw: p.price_raw || 0, location: p.location || 'Accra', date: 'Recently', icon: 'fa-box',
-        seller: p.seller_name || 'Seller', sellerEmail: p.seller_email, sellerPhone: p.seller_phone, whatsapp: p.whatsapp,
-        photos: p.photos || [], desc: p.description || '', badge: p.badge, isBoosted: p.is_boosted, isVip: p.is_vip,
-        boostedAt: p.boosted_at || 0, postedAt: p.posted_at || 0
-      }));
+      products = data.map(p => ({ ...p, id: p.id, priceRaw: p.price_raw || 0, location: p.location || 'Accra', date: 'Recently', icon: 'fa-box', seller: p.seller_name || 'Seller', sellerEmail: p.seller_email, sellerPhone: p.seller_phone, whatsapp: p.whatsapp, photos: p.photos || [], desc: p.description || '', badge: p.badge, isBoosted: p.is_boosted, isVip: p.is_vip, boostedAt: p.boosted_at || 0, postedAt: p.posted_at || 0 }));
     }
   } catch (e) { console.warn('Load failed:', e); }
   if (loader) loader.style.display = 'none';
@@ -949,18 +853,12 @@ async function loadProducts() {
   updateActiveAdsCount();
 }
 
-// ============================================================
-// RENDER PRODUCTS
-// ============================================================
 function renderProducts(list, containerId) {
   const grid = document.getElementById(containerId);
   if (!grid) return;
   grid.innerHTML = '';
   const visible = list.filter(p => !blockedSellers.includes(p.sellerEmail) && !blockedSellers.includes(p.seller));
-  if (visible.length === 0) {
-    grid.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><h3>No ads found</h3><p>Try a different search.</p></div>';
-    return;
-  }
+  if (visible.length === 0) { grid.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><h3>No ads found</h3><p>Try a different search.</p></div>'; return; }
   visible.forEach(p => {
     const card = document.createElement('div');
     const isBoosted = p.isBoosted || p.isVip;
@@ -970,11 +868,7 @@ function renderProducts(list, containerId) {
     const imgContent = firstPhoto ? '<img src="' + firstPhoto + '" alt="">' : '<i class="fas ' + (p.icon || 'fa-box') + '"></i>';
     const badge = p.isVip ? 'BEST BUY' : (p.badge || (isBoosted ? 'BEST BUY' : ''));
     const tick = verifyMarkFor(p.sellerEmail);
-    card.innerHTML = '<div class="card-img">' + imgContent + (badge ? '<span class="card-badge">' + badge + '</span>' : '') + '</div>' +
-      '<div class="card-details"><div class="price">' + p.price + '</div>' +
-      '<div class="product-title">' + p.title + '</div>' +
-      '<div class="location"><i class="fas fa-map-marker-alt"></i> ' + p.location + '</div>' +
-      '<div class="date-posted">' + p.seller + tick + ' · ' + p.date + '</div></div>';
+    card.innerHTML = '<div class="card-img">' + imgContent + (badge ? '<span class="card-badge">' + badge + '</span>' : '') + '</div>' + '<div class="card-details"><div class="price">' + p.price + '</div>' + '<div class="product-title">' + p.title + '</div>' + '<div class="location"><i class="fas fa-map-marker-alt"></i> ' + p.location + '</div>' + '<div class="date-posted">' + p.seller + tick + ' · ' + p.date + '</div></div>';
     grid.appendChild(card);
   });
 }
@@ -987,13 +881,7 @@ function applyCollectionFilter() {
   renderProducts(filtered, 'productGrid');
 }
 
-function filterCategory(e, cat) {
-  e.preventDefault();
-  currentHomeCategory = cat;
-  document.querySelectorAll('#categoryBar a').forEach(a => a.classList.remove('active'));
-  e.target.classList.add('active');
-  applyCollectionFilter();
-}
+function filterCategory(e, cat) { e.preventDefault(); currentHomeCategory = cat; document.querySelectorAll('#categoryBar a').forEach(a => a.classList.remove('active')); e.target.classList.add('active'); applyCollectionFilter(); }
 
 document.querySelectorAll('#collectionTabs .collection-tab').forEach(tab => {
   tab.addEventListener('click', function () {
@@ -1004,21 +892,12 @@ document.querySelectorAll('#collectionTabs .collection-tab').forEach(tab => {
   });
 });
 
-// ============================================================
-// SEARCH
-// ============================================================
-function openSearchPage() {
-  switchPage('search');
-  setTimeout(() => document.getElementById('searchInput').focus(), 100);
-}
+function openSearchPage() { switchPage('search'); setTimeout(() => document.getElementById('searchInput').focus(), 100); }
 function performSearch() {
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   if (!q) return;
   const tokens = q.split(/\s+/);
-  const results = products.filter(p => {
-    const hay = (p.title + ' ' + (p.desc || '') + ' ' + p.category + ' ' + (p.brand || '') + ' ' + p.location).toLowerCase();
-    return tokens.some(t => hay.includes(t));
-  });
+  const results = products.filter(p => { const hay = (p.title + ' ' + (p.desc || '') + ' ' + p.category + ' ' + (p.brand || '') + ' ' + p.location).toLowerCase(); return tokens.some(t => hay.includes(t)); });
   document.getElementById('searchSuggestions').style.display = 'none';
   document.getElementById('searchProductGrid').style.display = 'grid';
   renderProducts(searchList(results), 'searchProductGrid');
@@ -1037,31 +916,23 @@ function applyFilter() {
   renderProducts(searchList(results), 'searchProductGrid');
   switchPage('search');
 }
-  // ============================================================
-// PRODUCT DETAIL
-// ============================================================
+
 function openProduct(id) {
   const p = products.find(x => String(x.id) === String(id));
   if (!p) { showToast('Product no longer available'); return; }
   const isSaved = savedItems.includes(p.id);
   const sellerAds = products.filter(x => x.sellerEmail === p.sellerEmail && String(x.id) !== String(p.id));
-
   let slidesHtml = '', dotsHtml = '', slideCount = 0;
   if (p.photos && p.photos.length > 0) {
     slideCount = p.photos.length;
-    p.photos.forEach((photoUrl, idx) => {
-      slidesHtml += '<div class="gallery-slide" onclick="openFullscreen(' + p.id + ', ' + idx + ')"><img src="' + photoUrl + '" alt=""></div>';
-      dotsHtml += '<div class="gallery-dot' + (idx === 0 ? ' active' : '') + '"></div>';
-    });
+    p.photos.forEach((photoUrl, idx) => { slidesHtml += '<div class="gallery-slide" onclick="openFullscreen(' + p.id + ', ' + idx + ')"><img src="' + photoUrl + '" alt=""></div>'; dotsHtml += '<div class="gallery-dot' + (idx === 0 ? ' active' : '') + '"></div>'; });
   } else {
     slideCount = 1;
     slidesHtml = '<div class="gallery-slide"><i class="fas ' + (p.icon || 'fa-box') + '"></i></div>';
     dotsHtml = '<div class="gallery-dot active"></div>';
   }
-
   const waNumber = p.whatsapp || p.sellerPhone || '';
   const tick = verifyMarkFor(p.sellerEmail);
-
   const rows = [];
   const categoryLabels = {
     phones: [{l:'BRAND',k:'brand'},{l:'MODEL',k:'model'},{l:'CONDITION',k:'condition'},{l:'STORAGE',k:'storage'},{l:'RAM',k:'ram'},{l:'NETWORK',k:'network'},{l:'REAR CAMERA',k:'rear_cam'},{l:'FRONT CAMERA',k:'front_cam'},{l:'SCREEN SIZE',k:'screen_size'},{l:'BATTERY',k:'battery'},{l:'COLOR',k:'color'}],
@@ -1076,27 +947,15 @@ function openProduct(id) {
     other: [{l:'CONDITION',k:'condition'},{l:'COLOR',k:'color'}]
   };
   const catFields = categoryLabels[p.category] || categoryLabels.other;
-  catFields.forEach(f => {
-    const val = p[f.k];
-    if (val && val !== '—' && String(val).trim() !== '') rows.push({ label: f.l, value: val });
-  });
+  catFields.forEach(f => { const val = p[f.k]; if (val && val !== '—' && String(val).trim() !== '') rows.push({ label: f.l, value: val }); });
   rows.push({ label: 'LOCATION', value: p.location || '—' });
   rows.push({ label: 'PRICE', value: p.price });
-
   const leftCol = [], rightCol = [];
   rows.forEach((r, i) => { if (i % 2 === 0) leftCol.push(r); else rightCol.push(r); });
-
   const renderCell = (c) => '<div class="meta-cell"><div class="meta-value">' + c.value + '</div><div class="meta-label">' + c.label + '</div><span class="meta-chip"><i class="fas fa-check-circle"></i> Check</span></div>';
   const leftHtml = leftCol.map(renderCell).join('');
   const rightHtml = rightCol.map(renderCell).join('');
-
-  const ownerButtons = isMe(p.seller)
-    ? '<div class="detail-btn-stack">' +
-        '<button class="delete-inline-btn" onclick="requestDeleteAd(' + p.id + ')"><i class="fas fa-trash"></i> Delete</button>' +
-        '<button class="boost-inline-btn" onclick="openBoostPage(' + p.id + ')"><i class="fas fa-rocket"></i> Boost</button>' +
-      '</div>'
-    : '';
-
+  const ownerButtons = isMe(p.seller) ? '<div class="detail-btn-stack"><button class="delete-inline-btn" onclick="requestDeleteAd(' + p.id + ')"><i class="fas fa-trash"></i> Delete</button><button class="boost-inline-btn" onclick="openBoostPage(' + p.id + ')"><i class="fas fa-rocket"></i> Boost</button></div>' : '';
   document.getElementById('detailContent').innerHTML =
     '<div class="detail-gallery">' +
       '<button class="gallery-back" onclick="switchPage(\'home\')"><i class="fas fa-arrow-left"></i></button>' +
@@ -1131,9 +990,7 @@ function openProduct(id) {
       '<button class="chat-btn" onclick="openWhatsApp(\'' + waNumber + '\', \'' + p.title.replace(/'/g, "\\'") + '\', \'' + p.price.replace(/'/g, "\\'") + '\')">Chat</button>' +
       (sellerAds.length > 0 ? '<div class="other-ads-title">More from ' + p.seller + '</div><div class="product-grid" id="sellerAdsGrid"></div>' : '') +
     '</div>';
-
   if (sellerAds.length > 0) renderProducts(sellerAds, 'sellerAdsGrid');
-
   setTimeout(() => {
     const scroller = document.getElementById('galleryScroll');
     if (scroller) {
@@ -1144,23 +1001,11 @@ function openProduct(id) {
       }, { passive: true });
     }
   }, 50);
-
   switchPage('detail');
 }
 
-// ============================================================
-// DELETE AD
-// ============================================================
-function requestDeleteAd(id) {
-  pendingDeleteId = id;
-  switchPage('deleteAdConfirmPage');
-}
-
-function cancelDeleteAd() {
-  pendingDeleteId = null;
-  switchPage('detail');
-}
-
+function requestDeleteAd(id) { pendingDeleteId = id; switchPage('deleteAdConfirmPage'); }
+function cancelDeleteAd() { pendingDeleteId = null; switchPage('detail'); }
 async function confirmDeleteAd() {
   if (!pendingDeleteId) { switchPage('home'); return; }
   const id = pendingDeleteId;
@@ -1187,15 +1032,8 @@ function toggleSellerMenu(e, email, name) {
   allMenus.forEach(m => m.classList.remove('show'));
   if (!wasOpen) thisMenu.classList.add('show');
 }
-
-function toggleSellerProfileMenu(e) {
-  e.stopPropagation();
-  document.getElementById('sellerProfileMenuPopup').classList.toggle('show');
-}
-
-document.addEventListener('click', () => {
-  document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show'));
-});
+function toggleSellerProfileMenu(e) { e.stopPropagation(); document.getElementById('sellerProfileMenuPopup').classList.toggle('show'); }
+document.addEventListener('click', () => { document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show')); });
 
 function openSellerProfile(sellerEmail) {
   if (!sellerEmail) { showToast('Seller info unavailable'); return; }
@@ -1214,9 +1052,6 @@ function openSellerProfile(sellerEmail) {
   switchPage('sellerProfile');
 }
 
-// ============================================================
-// WHATSAPP
-// ============================================================
 function openWhatsApp(number, title, price) {
   let n = (number || '').replace(/[\s\-\+\(\)]/g, '');
   if (n.startsWith('0')) n = '233' + n.slice(1);
@@ -1225,9 +1060,6 @@ function openWhatsApp(number, title, price) {
   window.location.href = 'https://wa.me/' + n + '?text=' + msg;
 }
 
-// ============================================================
-// REPORT & BLOCK
-// ============================================================
 async function reportSeller(sellerEmail) {
   if (!isLoggedIn) { showToast('Please sign in first'); return; }
   const target = sellerEmail || currentSellerEmail;
@@ -1239,8 +1071,7 @@ async function reportSeller(sellerEmail) {
     const reported = JSON.parse(localStorage.getItem('lenidiReported')) || {};
     reported[target] = (reported[target] || 0) + 1;
     localStorage.setItem('lenidiReported', JSON.stringify(reported));
-    if (reported[target] >= 10) { showToast('🚨 Seller has been reported 10+ times'); }
-    else { showToast('🚨 Report submitted. Thank you.'); }
+    if (reported[target] >= 10) showToast('🚨 Seller has been reported 10+ times'); else showToast('🚨 Report submitted. Thank you.');
   } catch (e) { showToast('Failed to report. Try again.'); }
 }
 
@@ -1248,18 +1079,12 @@ function blockSeller(sellerEmail) {
   const target = sellerEmail || currentSellerEmail;
   if (!target) return;
   if (!confirm('Block this seller? You won\'t see their ads.')) return;
-  if (!blockedSellers.includes(target)) {
-    blockedSellers.push(target);
-    localStorage.setItem('lenidiBlocked', JSON.stringify(blockedSellers));
-  }
+  if (!blockedSellers.includes(target)) { blockedSellers.push(target); localStorage.setItem('lenidiBlocked', JSON.stringify(blockedSellers)); }
   showToast('🚫 Seller blocked');
   applyCollectionFilter();
   switchPage('home');
 }
 
-// ============================================================
-// SELL PAGE
-// ============================================================
 function updateSellDetailFields() {
   const cat = document.getElementById('sellCategory').value;
   const container = document.getElementById('dynamicDetailFields');
@@ -1286,13 +1111,7 @@ function handlePhotoUpload(event) {
   for (let i = 0; i < files.length; i++) {
     if (uploadedPhotos.length >= 2) break;
     const reader = new FileReader();
-    reader.onload = function (e) {
-      uploadedPhotos.push(e.target.result);
-      const div = document.createElement('div');
-      div.className = 'preview-item';
-      div.innerHTML = '<img src="' + e.target.result + '">';
-      preview.appendChild(div);
-    };
+    reader.onload = function (e) { uploadedPhotos.push(e.target.result); const div = document.createElement('div'); div.className = 'preview-item'; div.innerHTML = '<img src="' + e.target.result + '">'; preview.appendChild(div); };
     reader.readAsDataURL(files[i]);
   }
   event.target.value = '';
@@ -1310,17 +1129,8 @@ function clearForm() {
   uploadedPhotos = [];
 }
 
-function getListingLimit() {
-  if (!subscription || Date.now() >= subscription.until) return FREE_LIMIT;
-  const plan = SUBSCRIPTION_PLANS.find(p => p.id === subscription.plan);
-  return plan ? plan.limit : FREE_LIMIT;
-}
-
-function getUpgradeTarget() {
-  if (!subscription || Date.now() >= subscription.until) return 'Plus';
-  const nextMap = { plus: 'Pro', pro: 'Premium', premium: 'VIP', vip: null };
-  return nextMap[subscription.plan];
-}
+function getListingLimit() { if (!subscription || Date.now() >= subscription.until) return FREE_LIMIT; const plan = SUBSCRIPTION_PLANS.find(p => p.id === subscription.plan); return plan ? plan.limit : FREE_LIMIT; }
+function getUpgradeTarget() { if (!subscription || Date.now() >= subscription.until) return 'Plus'; const nextMap = { plus: 'Pro', pro: 'Premium', premium: 'VIP', vip: null }; return nextMap[subscription.plan]; }
 
 async function postAd() {
   try {
@@ -1330,23 +1140,14 @@ async function postAd() {
     const category = document.getElementById('sellCategory').value;
     const price = (document.getElementById('sellPrice').value || '').trim();
     const desc = (document.getElementById('sellDesc').value || '').trim();
-
     if (!title || !price) { showToast('Enter title and price'); return; }
     if (!category) { showToast('Select a category'); return; }
     if (!whatsapp) { showToast('Enter WhatsApp number'); return; }
     if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
-
     const myCount = products.filter(p => p.sellerEmail === userEmail).length;
     const limit = getListingLimit();
-    if (myCount >= limit) {
-      const target = getUpgradeTarget();
-      showToast('🚫 Limit reached, upgrade to ' + target + ' to post ad');
-      setTimeout(() => switchPage('packs'), 1300);
-      return;
-    }
-
+    if (myCount >= limit) { const target = getUpgradeTarget(); showToast('🚫 Limit reached, upgrade to ' + target + ' to post ad'); setTimeout(() => switchPage('packs'), 1300); return; }
     const isVip = subscription && Date.now() < subscription.until && subscription.plan === 'vip';
-
     const payload = {
       title: title, price: 'GHC ' + price, price_raw: parseInt(price) || 0,
       category: category, location: region || 'Accra',
@@ -1358,31 +1159,17 @@ async function postAd() {
       is_boosted: isVip, is_vip: isVip,
       posted_at: Date.now(), boosted_at: isVip ? Date.now() : 0
     };
-
     const fieldIds = ['sellBrand','sellModel','sellCondition','sellStorage','sellRam','sellNetwork','sellRearCam','sellFrontCam','sellScreenSize','sellBattery','sellColor','sellYear','sellMileage','sellTransmission','sellFuel','sellBedrooms','sellBathrooms','sellSize','sellProcessor','sellMaterial','sellCompany','sellJobType','sellSalary','sellServiceType','sellExperience','sellGender'];
-    fieldIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (el && el.value) {
-        const key = id.replace('sell', '');
-        payload[key.charAt(0).toLowerCase() + key.slice(1)] = el.value.trim();
-      }
-    });
-
+    fieldIds.forEach(id => { const el = document.getElementById(id); if (el && el.value) { const key = id.replace('sell', ''); payload[key.charAt(0).toLowerCase() + key.slice(1)] = el.value.trim(); } });
     const result = await apiPost('/products', payload);
     if (result.error) { showToast('Error: ' + result.error); return; }
-
     clearForm();
     showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted! It will show at the bottom of Search.');
     await loadProducts();
     switchPage('myListings');
-  } catch (err) {
-    showToast('Error posting: ' + err.message);
-  }
+  } catch (err) { showToast('Error posting: ' + err.message); }
 }
 
-// ============================================================
-// BOOST
-// ============================================================
 function openBoostPage(id) {
   const p = products.find(x => String(x.id) === String(id));
   if (!p) return;
@@ -1410,39 +1197,22 @@ async function confirmBoost(id) {
   localStorage.setItem('lenidiBoosts', userBoosts);
   updateBoostsUI();
   const p = products.find(x => String(x.id) === String(id));
-  if (p) {
-    p.isBoosted = true;
-    p.badge = 'BEST BUY';
-    p.boostedAt = Date.now();
-    try { await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() }); } catch (e) {}
-  }
+  if (p) { p.isBoosted = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now(); try { await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() }); } catch (e) {} }
   showToast('🚀 Boosted! Now visible on Home.');
   applyCollectionFilter();
   switchPage('home');
 }
 
-// ============================================================
-// MY LISTINGS
-// ============================================================
 function renderMyListings() {
   const grid = document.getElementById('myListingsGrid');
   const mine = products.filter(p => p.sellerEmail === userEmail);
-  if (mine.length === 0) {
-    grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i><h3>No listings yet</h3><p>Post an ad to see it here.</p></div>';
-    return;
-  }
+  if (mine.length === 0) { grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i><h3>No listings yet</h3><p>Post an ad to see it here.</p></div>'; return; }
   const sorted = [...mine].sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
   renderProducts(sorted, 'myListingsGrid');
 }
 
-async function updateActiveAdsCount() {
-  const mine = products.filter(p => p.sellerEmail === userEmail);
-  document.getElementById('activeAdsCount').textContent = mine.length;
-}
+async function updateActiveAdsCount() { const mine = products.filter(p => p.sellerEmail === userEmail); document.getElementById('activeAdsCount').textContent = mine.length; }
 
-// ============================================================
-// FULLSCREEN + SAVE
-// ============================================================
 function openFullscreen(productId, startIndex) {
   const p = products.find(x => String(x.id) === String(productId));
   if (!p || !p.photos || p.photos.length === 0) return;
@@ -1469,31 +1239,17 @@ function toggleSaveFromDetail(id) {
 function renderSaves() {
   const grid = document.getElementById('savesGrid');
   const saved = products.filter(p => savedItems.includes(p.id));
-  if (saved.length === 0) {
-    grid.innerHTML = '<div class="empty-state"><i class="far fa-star"></i><h3>No saved items</h3><p>Tap the star on any listing.</p></div>';
-    return;
-  }
+  if (saved.length === 0) { grid.innerHTML = '<div class="empty-state"><i class="far fa-star"></i><h3>No saved items</h3><p>Tap the star on any listing.</p></div>'; return; }
   renderProducts(searchList(saved), 'savesGrid');
 }
 
-// ============================================================
-// PRIVACY & TERMS
-// ============================================================
 function openPrivacy() { window.location.href = 'https://dave-software-67.github.io/lenidi-privacy/'; }
 function openTerms() { window.location.href = 'https://dave-software-67.github.io/lenidi-terms/'; }
 
-// ============================================================
-// PACKS & BOOSTS
-// ============================================================
 function buildBoostGrid() {
   const grid = document.getElementById('boostGrid');
   grid.innerHTML = '';
-  BOOST_PACKS.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'boost-card';
-    card.innerHTML = '<div class="boost-amount">' + p.amount + '</div><div class="boost-label">boosts</div><div class="boost-price">GHC ' + p.price + '</div><button class="boost-btn" onclick="buyBoosts(' + p.amount + ',' + p.price + ')">Buy</button>';
-    grid.appendChild(card);
-  });
+  BOOST_PACKS.forEach(p => { const card = document.createElement('div'); card.className = 'boost-card'; card.innerHTML = '<div class="boost-amount">' + p.amount + '</div><div class="boost-label">boosts</div><div class="boost-price">GHC ' + p.price + '</div><button class="boost-btn" onclick="buyBoosts(' + p.amount + ',' + p.price + ')">Buy</button>'; grid.appendChild(card); });
 }
 
 function buildPricingGrid() {
@@ -1503,13 +1259,7 @@ function buildPricingGrid() {
     const card = document.createElement('div');
     card.className = 'pricing-card ' + plan.ringClass + (plan.popular ? ' popular' : '');
     const features = plan.features.map(f => '<li><i class="fas fa-check-circle"></i> ' + f + '</li>').join('');
-    card.innerHTML =
-      (plan.popular ? '<div class="popular-badge">MOST POPULAR</div>' : '') +
-      '<div class="pack-name">' + plan.name + ' <i class="fas fa-check-circle ' + plan.verifyClass + ' verify-mark"></i></div>' +
-      '<div class="pack-price">GHC ' + plan.price + ' <span>/ month</span></div>' +
-      '<div class="pack-desc">' + plan.desc + '</div>' +
-      '<ul class="pack-features">' + features + '</ul>' +
-      '<button class="pack-btn ' + plan.btnClass + '" onclick="subscribePlan(\'' + plan.id + '\',' + plan.price + ',' + plan.boosts + ',\'' + plan.verifyClass + '\')">Upgrade to ' + plan.name + '</button>';
+    card.innerHTML = (plan.popular ? '<div class="popular-badge">MOST POPULAR</div>' : '') + '<div class="pack-name">' + plan.name + ' <i class="fas fa-check-circle ' + plan.verifyClass + ' verify-mark"></i></div>' + '<div class="pack-price">GHC ' + plan.price + ' <span>/ month</span></div>' + '<div class="pack-desc">' + plan.desc + '</div>' + '<ul class="pack-features">' + features + '</ul>' + '<button class="pack-btn ' + plan.btnClass + '" onclick="subscribePlan(\'' + plan.id + '\',' + plan.price + ',' + plan.boosts + ',\'' + plan.verifyClass + '\')">Upgrade to ' + plan.name + '</button>';
     grid.appendChild(card);
   });
 }
@@ -1520,20 +1270,10 @@ function switchPacksTab(tab) {
   const tabSubs = document.getElementById('tabSubscriptions');
   const boostsPanel = document.getElementById('boostsPanel');
   const subsPanel = document.getElementById('subscriptionsPanel');
-  if (tab === 'boosts') {
-    slider.className = 'packs-tab-slider left';
-    tabBoosts.classList.add('active'); tabSubs.classList.remove('active');
-    boostsPanel.classList.add('active'); subsPanel.classList.remove('active');
-  } else {
-    slider.className = 'packs-tab-slider right';
-    tabBoosts.classList.remove('active'); tabSubs.classList.add('active');
-    boostsPanel.classList.remove('active'); subsPanel.classList.add('active');
-  }
+  if (tab === 'boosts') { slider.className = 'packs-tab-slider left'; tabBoosts.classList.add('active'); tabSubs.classList.remove('active'); boostsPanel.classList.add('active'); subsPanel.classList.remove('active'); }
+  else { slider.className = 'packs-tab-slider right'; tabBoosts.classList.remove('active'); tabSubs.classList.add('active'); boostsPanel.classList.remove('active'); subsPanel.classList.add('active'); }
 }
 
-// ============================================================
-// PAYSTACK
-// ============================================================
 async function startPayment(email, amount, plan, type) {
   try {
     const data = await apiPost('/create-payment', { email: email, amount: amount, plan: plan, type: type });
@@ -1553,12 +1293,7 @@ function checkPendingPayment() {
     attempts++;
     try {
       const data = await apiGet('/check-payment/' + pending.reference);
-      if (data.status === 'paid') {
-        clearInterval(activePollingRef);
-        activePollingRef = null;
-        localStorage.removeItem('lenidiPendingPayment');
-        onPaymentSuccess(pending);
-      }
+      if (data.status === 'paid') { clearInterval(activePollingRef); activePollingRef = null; localStorage.removeItem('lenidiPendingPayment'); onPaymentSuccess(pending); }
     } catch (e) {}
     if (attempts >= 60) { clearInterval(activePollingRef); activePollingRef = null; localStorage.removeItem('lenidiPendingPayment'); }
   }, 3000);
@@ -1582,34 +1317,20 @@ function onPaymentSuccess(pending) {
       localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
       applyVerifyMark(); updateBoostsUI(); updateSubTimer();
       showToast('🎉 Subscribed to ' + planData.name + '!');
-      if (planData.id === 'vip') {
-        products.filter(p => p.sellerEmail === userEmail).forEach(p => { p.isBoosted = true; p.isVip = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now(); });
-        applyCollectionFilter();
-      }
+      if (planData.id === 'vip') { products.filter(p => p.sellerEmail === userEmail).forEach(p => { p.isBoosted = true; p.isVip = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now(); }); applyCollectionFilter(); }
       switchPage('profile');
     }
   }
 }
 
-function buyBoosts(amount, price) {
-  if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; }
-  startPayment(userEmail, price, amount + '', 'boost');
-}
-
-function subscribePlan(planId, price, freeBoosts, verifyClass) {
-  if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; }
-  startPayment(userEmail, price, planId, 'subscription');
-}
+function buyBoosts(amount, price) { if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; } startPayment(userEmail, price, amount + '', 'boost'); }
+function subscribePlan(planId, price, freeBoosts, verifyClass) { if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; } startPayment(userEmail, price, planId, 'subscription'); }
 
 function updateSubTimer() {
   const c = document.getElementById('subTimerContainer');
   if (!subscription) { c.innerHTML = ''; return; }
   const now = Date.now();
-  if (now >= subscription.until) {
-    userVerify = ''; localStorage.setItem('lenidiVerify', '');
-    subscription = null; localStorage.removeItem('lenidiSubscription');
-    applyVerifyMark(); c.innerHTML = ''; return;
-  }
+  if (now >= subscription.until) { userVerify = ''; localStorage.setItem('lenidiVerify', ''); subscription = null; localStorage.removeItem('lenidiSubscription'); applyVerifyMark(); c.innerHTML = ''; return; }
   const rem = subscription.until - now;
   const d = Math.floor(rem / 86400000);
   const h = Math.floor((rem % 86400000) / 3600000);
@@ -1617,21 +1338,9 @@ function updateSubTimer() {
   c.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
 }
 
-function applyVerifyMark() {
-  const el = document.getElementById('profileVerifyMark');
-  el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>' : '';
-}
+function applyVerifyMark() { const el = document.getElementById('profileVerifyMark'); el.innerHTML = userVerify ? '<i class="fas fa-check-circle ' + userVerify + ' verify-mark"></i>' : ''; }
+function updateBoostsUI() { const stat = document.getElementById('boostsStat'); const count = document.getElementById('boostCount'); if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; } else stat.style.display = 'none'; }
 
-function updateBoostsUI() {
-  const stat = document.getElementById('boostsStat');
-  const count = document.getElementById('boostCount');
-  if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; }
-  else stat.style.display = 'none';
-}
-
-// ============================================================
-// AUTH
-// ============================================================
 function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
   const email = (document.getElementById('loginEmail').value || '').trim();
@@ -1652,25 +1361,14 @@ function doLogin() {
 }
 
 function doLogout() { localStorage.clear(); location.reload(); }
-
-function deleteMyAccount() {
-  localStorage.clear();
-  showToast('Account deleted');
-  setTimeout(() => location.reload(), 1000);
-}
-
-function updateProfileView() {
-  document.getElementById('loggedInProfileView').style.display = isLoggedIn ? 'block' : 'none';
-  document.getElementById('loggedOutProfileView').style.display = isLoggedIn ? 'none' : 'block';
-}
+function deleteMyAccount() { localStorage.clear(); showToast('Account deleted'); setTimeout(() => location.reload(), 1000); }
+function updateProfileView() { document.getElementById('loggedInProfileView').style.display = isLoggedIn ? 'block' : 'none'; document.getElementById('loggedOutProfileView').style.display = isLoggedIn ? 'none' : 'block'; }
 
 function syncUserInfo() {
   document.getElementById('profileNameText').textContent = userName || 'John Doe';
   document.getElementById('profileEmailText').textContent = userEmail || '—';
   document.getElementById('profilePhoneText').textContent = userPhone || '—';
-  products.forEach(p => {
-    if (p.sellerEmail === userEmail) { p.seller = userName; p.sellerPhone = userPhone; p.whatsapp = userPhone; }
-  });
+  products.forEach(p => { if (p.sellerEmail === userEmail) { p.seller = userName; p.sellerPhone = userPhone; p.whatsapp = userPhone; } });
   applyCollectionFilter();
   if (document.getElementById('myListingsPage').classList.contains('active')) renderMyListings();
   if (document.getElementById('savesPage').classList.contains('active')) renderSaves();
@@ -1678,13 +1376,7 @@ function syncUserInfo() {
 
 function changeName() {
   const n = prompt('New name:', userName);
-  if (n && n.trim()) {
-    userName = n.trim();
-    localStorage.setItem('lenidiName', userName);
-    syncUserInfo();
-    pushUserToBackend();
-    showToast('✅ Name updated everywhere!');
-  }
+  if (n && n.trim()) { userName = n.trim(); localStorage.setItem('lenidiName', userName); syncUserInfo(); pushUserToBackend(); showToast('✅ Name updated everywhere!'); }
 }
 
 async function changeEmail() {
@@ -1694,57 +1386,31 @@ async function changeEmail() {
     if (newEmail === userEmail) { showToast('Same email, no change'); return; }
     try {
       const res = await apiPost('/change-email', { old_email: userEmail, new_email: newEmail });
-      if (res && res.success) {
-        userEmail = newEmail;
-        localStorage.setItem('lenidiEmail', userEmail);
-        syncUserInfo();
-        pushUserToBackend();
-        showToast('✅ Email updated everywhere!');
-      } else {
-        showToast('❌ ' + ((res && res.error) || 'Failed'));
-      }
+      if (res && res.success) { userEmail = newEmail; localStorage.setItem('lenidiEmail', userEmail); syncUserInfo(); pushUserToBackend(); showToast('✅ Email updated everywhere!'); }
+      else { showToast('❌ ' + ((res && res.error) || 'Failed')); }
     } catch (err) { showToast('Network error'); }
   }
 }
 
 function changePhone() {
   const p = prompt('New phone:', userPhone);
-  if (p && p.trim()) {
-    userPhone = p.trim();
-    localStorage.setItem('lenidiPhone', userPhone);
-    syncUserInfo();
-    pushUserToBackend();
-    showToast('✅ Phone updated everywhere!');
-  }
+  if (p && p.trim()) { userPhone = p.trim(); localStorage.setItem('lenidiPhone', userPhone); syncUserInfo(); pushUserToBackend(); showToast('✅ Phone updated everywhere!'); }
 }
 
 function handlePfpUpload(e) {
   const f = e.target.files[0];
   if (!f) return;
   const r = new FileReader();
-  r.onload = function (ev) {
-    userPfp = ev.target.result;
-    localStorage.setItem('lenidiPfp', userPfp);
-    document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>';
-  };
+  r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; };
   r.readAsDataURL(f);
 }
 
-// ============================================================
-// AI CHAT
-// ============================================================
 function openAISupport() { switchPage('aiSupportPage'); }
-
 function openAIChatWith(q) {
-  if (!aiConsented) {
-    document.getElementById('aiConsentOverlay').classList.add('show');
-    window.pendingAIQuestion = q || '';
-    return;
-  }
+  if (!aiConsented) { document.getElementById('aiConsentOverlay').classList.add('show'); window.pendingAIQuestion = q || ''; return; }
   switchPage('aiChatPage');
   if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
 }
-
 function acceptAIConsent() {
   aiConsented = true;
   localStorage.setItem('lenidiAiConsent', 'true');
@@ -1754,21 +1420,9 @@ function acceptAIConsent() {
   if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
   window.pendingAIQuestion = '';
 }
-
-function declineAIConsent() {
-  document.getElementById('aiConsentOverlay').classList.remove('show');
-  window.pendingAIQuestion = '';
-  showToast('AI chat unavailable without consent');
-}
-
-function toggleConvMenu(e) {
-  e.stopPropagation();
-  document.getElementById('convMenuPopup').classList.toggle('show');
-}
-function clearAIChat() {
-  document.getElementById('convMenuPopup').classList.remove('show');
-  document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>';
-}
+function declineAIConsent() { document.getElementById('aiConsentOverlay').classList.remove('show'); window.pendingAIQuestion = ''; showToast('AI chat unavailable without consent'); }
+function toggleConvMenu(e) { e.stopPropagation(); document.getElementById('convMenuPopup').classList.toggle('show'); }
+function clearAIChat() { document.getElementById('convMenuPopup').classList.remove('show'); document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
 
 function isAdminCommand(t) { return /^\/(suspend|ban|unban|gift|unpack|remove)/i.test(t.trim()); }
 
@@ -1796,26 +1450,14 @@ function parseAdminCommand(text) {
   if (m) {
     const amt = parseInt(m[1]);
     const target = m[2].toLowerCase();
-    if (target === userEmail) {
-      userBoosts += amt;
-      localStorage.setItem('lenidiBoosts', userBoosts);
-      updateBoostsUI();
-      return '✅ Gifted you ' + amt + ' boosts!';
-    }
+    if (target === userEmail) { userBoosts += amt; localStorage.setItem('lenidiBoosts', userBoosts); updateBoostsUI(); return '✅ Gifted you ' + amt + ' boosts!'; }
     return '✅ Gifted ' + amt + ' boosts to ' + target;
   }
   m = t.match(/^\/unpack_(plus|pro|premium|vip)_([^\s]+)$/i);
   if (m) {
     const plan = m[1].toLowerCase();
     const target = m[2].toLowerCase();
-    if (target === userEmail) {
-      userVerify = '';
-      localStorage.setItem('lenidiVerify', '');
-      subscription = null;
-      localStorage.removeItem('lenidiSubscription');
-      applyVerifyMark(); updateSubTimer();
-      return '✅ Removed your ' + plan.toUpperCase();
-    }
+    if (target === userEmail) { userVerify = ''; localStorage.setItem('lenidiVerify', ''); subscription = null; localStorage.removeItem('lenidiSubscription'); applyVerifyMark(); updateSubTimer(); return '✅ Removed your ' + plan.toUpperCase(); }
     return '✅ Removed ' + plan.toUpperCase() + ' from ' + target;
   }
   m = t.match(/^\/suspend_([^\s_]+)_(\d+)\s*days?$/i);
@@ -1828,16 +1470,12 @@ function parseAdminCommand(text) {
 }
 
 function isScamTrigger(t) { return /\b(scam|scammed|fraud|stolen|fake seller)\b/i.test(t); }
-
 function aiLocalReply(raw) {
-  if (isAdminCommand(raw)) {
-    const r = parseAdminCommand(raw);
-    if (r) return r;
-  }
-  if (report sentingScam) {
-    if (!scamDraft.name) { scamDraft.name = raw; return '">What is their email?'; }
-    if (!scamDraft.email) { scamDraft.email' = raw; return 'Describe what happened.'; }
-    reportingScam = false; scamDraft + text = {};
+  if (isAdminCommand(raw)) { const r = parseAdminCommand(raw); if (r) return r; }
+  if (reportingScam) {
+    if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; }
+    if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; }
+    reportingScam = false; scamDraft = {};
     return '✅ Report submitted. They will be reviewed.';
   }
   if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; }
@@ -1864,7 +1502,7 @@ async function sendAIMessage() {
   const text = input.value.trim();
   if (!text) return;
   const msgs = document.getElementById('aiMessages');
-  msgs.innerHTML += '<div class="msg-bubble.replace(/</g, '&lt;') + '</div>';
+  msgs.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
   input.value = '';
   msgs.scrollTop = msgs.scrollHeight;
   const typing = document.createElement('div');
@@ -1874,19 +1512,14 @@ async function sendAIMessage() {
   msgs.appendChild(typing);
   msgs.scrollTop = msgs.scrollHeight;
   let reply;
-  try {
-    const local = aiLocalReply(text);
-    reply = local !== null ? local : await askGroq(text);
-  } catch (e) { reply = '⚠️ AI error. Contact 0544840240.'; }
+  try { const local = aiLocalReply(text); reply = local !== null ? local : await askGroq(text); }
+  catch (e) { reply = '⚠️ AI error. Contact 0544840240.'; }
   const t = document.getElementById('aiTyping');
   if (t) t.remove();
   msgs.innerHTML += '<div class="msg-bubble received">' + reply.replace(/\n/g, '<br>') + '</div>';
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-// ============================================================
-// AD STRIP
-// ============================================================
 function buildAdStrip() {
   const strip = document.getElementById('adStrip');
   const cards = [
@@ -1899,48 +1532,26 @@ function buildAdStrip() {
     { title: 'Save items', desc: 'Star favourites', icon: 'fa-star', cls: 'amber-card' }
   ];
   strip.innerHTML = '';
-  cards.forEach(c => {
-    const card = document.createElement('div');
-    card.className = 'promo-card ' + c.cls;
-    card.innerHTML = '<div class="promo-icon"><i class="fas ' + c.icon + '"></i></div><div><div class="promo-title">' + c.title + '</div><div class="promo-desc">' + c.desc + '</div></div>';
-    strip.appendChild(card);
-  });
+  cards.forEach(c => { const card = document.createElement('div'); card.className = 'promo-card ' + c.cls; card.innerHTML = '<div class="promo-icon"><i class="fas ' + c.icon + '"></i></div><div><div class="promo-title">' + c.title + '</div><div class="promo-desc">' + c.desc + '</div></div>'; strip.appendChild(card); });
 }
 
-// ============================================================
-// PAGE SWITCHING
-// ============================================================
 function switchPage(pageId) {
-  if (pageId !== 'aiChatPage') {
-    const msgs = document.getElementById('aiMessages');
-    if (msgs) msgs.innerHTML = '<div class="msg-bubble received">Hi! I\'m Lenidi AI. How can I help? 😊</div>';
-  }
-
+  if (pageId !== 'aiChatPage') { const msgs = document.getElementById('aiMessages'); if (msgs) msgs.innerHTML = '<div class="msg-bubble received">Hi! I\'m Lenidi AI. How can I help? 😊</div>'; }
   let target = document.getElementById(pageId);
   if (!target) target = document.getElementById(pageId + 'Page');
   if (!target) { console.warn('Page not found:', pageId); return; }
-
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
-
-  document.querySelectorAll('.bottom-nav button').forEach(b => {
-    b.classList.toggle('active', b.dataset.page === pageId);
-  });
-
+  document.querySelectorAll('.bottom-nav button').forEach(b => { b.classList.toggle('active', b.dataset.page === pageId); });
   const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage'];
   document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
-
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
   if (pageId === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
   if (pageId === 'home') { loadProducts(); }
-
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================================================
-// INIT
-// ============================================================
 buildAdStrip();
 buildBoostGrid();
 buildPricingGrid();
@@ -1956,9 +1567,7 @@ buildPricingGrid();
   checkPendingPayment();
   syncFromBackend();
   setInterval(() => { if (isLoggedIn && userEmail) syncFromBackend(); }, 15000);
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && isLoggedIn && userEmail) syncFromBackend();
-  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && isLoggedIn && userEmail) syncFromBackend(); });
   switchPage('home');
 })();
 
@@ -1966,7 +1575,6 @@ document.addEventListener('click', () => {
   document.getElementById('convMenuPopup')?.classList.remove('show');
   document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show'));
 });
-
 </script>
 </body>
 </html>
