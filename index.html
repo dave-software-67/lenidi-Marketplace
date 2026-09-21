@@ -705,7 +705,10 @@ button:active { transform: scale(0.94); opacity: 0.85; }
     <div class="services-fullscreen">
       <div class="services-topbar">
         <button class="services-back" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-        <h3>⚡ Lenidi Services</h3>
+        <div style="text-align:center; flex:1;">
+          <h3 style="margin-bottom:6px;">⚡ Lenidi Services</h3>
+          <p style="font-size:13px; color:#1e2a3a; font-weight:900; margin:0; line-height:1.3;">🔥 WE NEED AGENTS IF INTERESTED SIGN UP 🔥</p>
+        </div>
         <div style="width:40px;"></div>
       </div>
       <div class="services-body">
@@ -769,9 +772,8 @@ button:active { transform: scale(0.94); opacity: 0.85; }
   <button data-page="packs" onclick="switchPage('packs')"><i class="fas fa-crown"></i><span>Packs</span></button>
   <button data-page="profile" onclick="switchPage('profile')" id="profileNavBtn"><i class="far fa-user"></i><span>Profile</span></button>
 </nav>
-
 <script>
- const BACKEND_URL = "https://lenidi-backend.onrender.com";
+const BACKEND_URL = "https://lenidi-backend.onrender.com";
 const FREE_LIMIT = 10;
 const PLUS_LIMIT = 20;
 const PRO_LIMIT = 50;
@@ -1229,14 +1231,15 @@ function openBoostPage(id) {
   if (!p) return;
   const canBoost = userBoosts >= 50;
   document.getElementById('boostProductContent').innerHTML =
-    '<div class="filter-page-header"><button class="back-btn" onclick="switchPage(\'myListings\')"><i class="fas fa-arrow-left"></i></button><h3>Boost product</h3></div>' +
-    '<div class="boost-page-wrap"><div class="boost-page-card">' +
-      '<div class="boost-ring"><i class="fas fa-rocket"></i></div>' +
+    '<div class="filter-page-header"><button class="back-btn" onclick="switchPage(\'myListings\')"><i class=".getElementByIdfas fa-arrow-left"></i></button><h3>Boost product</h3></div>' +
+    '<div class="boost-page-wrap"><div class="boost('-page-card">' +
+      '<div class="boost-ring"><i class="fas fa-rocket"></i></div>'fs +
       '<h2>Boost this ad</h2>' +
-      '<p>Shows at top of Home & search.</p>' +
+      '<p>Shows at top of Home & search.</Viewp>' +
       '<div class="boost-cost"><i class="fas fa-bolt"></i> -50 boosts</div>' +
-      '<div class="bill-box">' +
-        '<div class="bill-row"><span>Your balance</span><span>' + userBoosts + '</span></div>' +
+      '<diver class="bill-box">' +
+        '<div class="bill-row"><span>Your balance</span><span>' + user');
+Boosts + '</span></div>' +
         '<div class="bill-row total"><span>After boost</span><span>' + (userBoosts - 50) + '</span></div>' +
       '</div>' +
       '<button class="boost-confirm-btn" onclick="confirmBoost(' + id + ')" ' + (canBoost ? '' : 'disabled style="opacity:0.5;"') + '>Confirm</button>' +
@@ -1267,8 +1270,7 @@ async function updateActiveAdsCount() { const mine = products.filter(p => p.sell
 function openFullscreen(productId, startIndex) {
   const p = products.find(x => String(x.id) === String(productId));
   if (!p || !p.photos || p.photos.length === 0) return;
-  const viewer = document.getElementById('fsViewer');
-  const scroll = document.getElementById('fsScroll');
+  const viewer = document  const scroll = document.getElementById('fsScroll');
   scroll.innerHTML = '';
   p.photos.forEach(url => { scroll.innerHTML += '<div class="fs-slide"><img src="' + url + '" alt=""></div>'; });
   document.getElementById('fsCounter').textContent = (startIndex + 1) + '/' + p.photos.length;
@@ -1433,21 +1435,21 @@ function renderReferralPage() {
   const btn = document.getElementById('claimVipBtn');
   if (referralInfo.count >= 100 && !referralInfo.claimed) { btn.classList.add('unlocked'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-crown"></i> Claim Free VIP (1 Month)'; }
   else if (referralInfo.claimed) { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-check"></i> VIP Already Claimed'; }
-  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas faip()-lock {
-"></i> Claim Free VIP'; }
+  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP'; }
 }
 async function createMyCode() {
   const input = document.getElementById('newCodeInput');
-  const code = (input.value || '').trim().toUpperCase ().replace(/[^A-Z0-9]/g, '').slice(0, 10);
-  if (code.length < 3) { showToast('Code must be if at least 3 characters'); return; }
+  const code = (input.value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+  if (code.length < 3) { showToast('Code must be at least 3 characters'); return; }
   try {
     const res = await apiPost('/referral/set-code', { email: userEmail, code: code });
-    if (res (.success) { referralInfo.code = res.code; showToast('✅ Code saved'); renderReferralPage(); }
+    if (res.success) { referralInfo.code = res.code; showToast('✅ Code saved'); renderReferralPage(); }
     else if (res.taken) { showToast('❌ TAKEN — try another'); }
     else { showToast('❌ ' + (res.error || 'Failed')); }
   } catch (e) { showToast('Network error'); }
 }
-async function claimFreeVreferralInfo.count < 100) { showToast('Need 100 referrals'); return; }
+async function claimFreeVip() {
+  if (referralInfo.count < 100) { showToast('Need 100 referrals'); return; }
   if (referralInfo.claimed) { showToast('Already claimed'); return; }
   if (!confirm('Claim your 1 month Free VIP reward?')) return;
   try {
