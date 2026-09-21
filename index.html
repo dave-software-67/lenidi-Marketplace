@@ -2,14 +2,340 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
 <title>Lenidi · Marketplace</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
+/* ============================================================
+   LENIDI · LIQUID GLASS (FINAL)
+   No blur · No orange pills · Raised plates (except profile/sell/home cards)
+   Sliding pills: nav + collection + categories + packs + inbox
+   ============================================================ */
+
+:root {
+  /* Raised plate (transparent glass) */
+  --plate-bg: linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.55) 55%, rgba(255,255,255,0.42) 100%);
+  --plate-border: rgba(255,255,255,0.8);
+  --plate-lift-soft:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -2px 3px rgba(30,42,58,0.05),
+    0 4px 12px rgba(30,42,58,0.08),
+    0 10px 24px rgba(30,42,58,0.05);
+  --plate-lift:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 1px 0 0 rgba(255,255,255,0.55),
+    inset -1px 0 0 rgba(255,255,255,0.55),
+    inset 0 -2px 3px rgba(30,42,58,0.06),
+    0 2px 4px rgba(30,42,58,0.06),
+    0 8px 20px rgba(30,42,58,0.10),
+    0 16px 32px rgba(30,42,58,0.06);
+}
+
+/* ---------- NO BLUR ANYWHERE ---------- */
+*, *::before, *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* ---------- BODY ---------- */
+body {
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #fff7ee 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, #eef4ff 0%, transparent 55%),
+    #eef1f6 !important;
+  background-attachment: fixed;
+  padding-bottom: 118px !important;
+}
+
+/* ---------- RAISED PLATES (everything except profile + sell + home cards) ---------- */
+.top-bar, .search-page-bar, .filter-row, .filter-page-header,
+.conv-header, .listings-header,
+.pricing-card, .boost-card,
+.seller-card, .detail-desc, .detail-meta,
+.filter-section, .ai-support-hero, .ai-contact-card,
+.referral-progress-card, .boost-page-card,
+.confirm-card, .auth-page-card, .promo-card,
+.seller-profile-header, .bill-box,
+.referral-code-box,
+.packs-tab-bar {
+  background: var(--plate-bg) !important;
+  border: 1px solid var(--plate-border) !important;
+  box-shadow: var(--plate-lift-soft) !important;
+  position: relative;
+  border-radius: 16px;
+}
+.confirm-card, .auth-page-card,
+.boost-page-card, .ai-support-hero, .referral-progress-card,
+.seller-profile-header {
+  border-radius: 20px !important;
+  box-shadow: var(--plate-lift) !important;
+}
+
+/* Upload area (only on sell page → keep flat) — reset to flat */
+.sell-container .upload-area {
+  background: #fafcff !important;
+  border: 2px dashed #d0d7de !important;
+  box-shadow: none !important;
+}
+
+/* ---------- INPUTS (flat glass) ---------- */
+.form-group input, .form-group select, .form-group textarea,
+.filter-input, .filter-select, .filter-price-row input,
+.search-trigger, .search-input-wrap, .search-input-wrap input,
+.conv-input-bar input, .referral-input-row input,
+.auth-page-card .form-group input {
+  background: rgba(255,255,255,0.6) !important;
+  border: 1px solid rgba(255,255,255,0.85) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 2px rgba(30,42,58,0.04),
+    0 2px 6px rgba(30,42,58,0.05) !important;
+  border-radius: 14px !important;
+}
+.form-group input:focus, .form-group select:focus,
+.form-group textarea:focus, .filter-input:focus,
+.filter-select:focus, .search-input-wrap:focus-within,
+.referral-input-row input:focus, .auth-page-card .form-group input:focus {
+  border-color: #ff6b00 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    0 0 0 3px rgba(255,107,0,0.14),
+    0 4px 12px rgba(255,107,0,0.16) !important;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn-primary, .chat-btn, .boost-btn, .boost-confirm-btn,
+.filter-show-btn, .pack-btn, .auth-btn.signin, .conv-send-btn,
+.btn-blue, .ai-consent-accept, .boost-inline-btn,
+.delete-inline-btn, .create-account-btn, .btn-clear,
+.boost-cancel-btn, .filter-btn, .btn-claim,
+.ai-consent-decline, .confirm-no, .auth-btn.logout {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    inset 0 -2px 3px rgba(0,0,0,0.12),
+    0 4px 10px rgba(0,0,0,0.10),
+    0 10px 22px rgba(0,0,0,0.06) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------- HERO BANNERS ---------- */
+.promo-banner, .referral-hero, .sub-timer-banner {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.25),
+    inset 0 -2px 4px rgba(0,0,0,0.18),
+    0 6px 18px rgba(0,0,0,0.14),
+    0 14px 32px rgba(0,0,0,0.10) !important;
+}
+
+/* ---------- TOAST / MODALS ---------- */
+.toast { background: rgba(30,42,58,0.92) !important; color: #fff !important; box-shadow: 0 12px 36px rgba(0,0,0,0.25) !important; }
+.ai-consent-box { background: rgba(255,255,255,0.92) !important; border: 1px solid rgba(255,255,255,0.9) !important; box-shadow: 0 12px 36px rgba(0,0,0,0.18) !important; }
+
+/* ---------- BOTTOM NAV (floating pill) ---------- */
+.bottom-nav {
+  position: fixed !important;
+  bottom: 14px !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: min(94vw, 520px) !important;
+  height: 72px !important;
+  padding: 8px 10px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 4px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  border-radius: 999px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -2px 3px rgba(30,42,58,0.06),
+    0 6px 16px rgba(30,42,58,0.14),
+    0 16px 40px rgba(30,42,58,0.10) !important;
+  z-index: 1000;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.bottom-nav button {
+  position: relative;
+  z-index: 3;
+  flex: 1 !important;
+  max-width: none !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: 8px 4px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  font-size: 10.5px !important;
+  color: #5e6f7e !important;
+  transition: color 0.25s ease;
+}
+.bottom-nav button i { font-size: 19px !important; transition: transform 0.25s ease; }
+.bottom-nav button span { font-weight: 600; }
+.bottom-nav button.active { background: transparent !important; box-shadow: none !important; color: #1e2a3a !important; }
+.bottom-nav button.active i { color: #1e2a3a !important; transform: scale(1.08); }
+.bottom-nav button.active::before { display: none !important; }
+
+.nav-platter {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -2px 3px rgba(30,42,58,0.06),
+    0 3px 8px rgba(30,42,58,0.14),
+    0 6px 14px rgba(30,42,58,0.08);
+  transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+.bottom-nav.dragging .nav-platter { transition: none; }
+
+/* ---------- SLIDE PILL GROUPS ---------- */
+.slide-pill-group {
+  position: relative !important;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.categories.slide-pill-group {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  touch-action: pan-x;
+}
+
+.slide-pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -2px 3px rgba(30,42,58,0.06),
+    0 3px 8px rgba(30,42,58,0.14),
+    0 6px 14px rgba(30,42,58,0.08);
+  transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1), width 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+.slide-pill-group.dragging .slide-pill { transition: none; }
+.slide-pill-group button,
+.slide-pill-group a,
+.slide-pill-group .collection-tab {
+  position: relative;
+  z-index: 3;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ---------- COLLECTION TABS ---------- */
+#collectionTabs { background: transparent !important; overflow: visible !important; }
+#collectionTabs .collection-tab {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #5e6f7e !important;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: color 0.2s ease;
+}
+#collectionTabs .collection-tab::after { display: none !important; }
+#collectionTabs .collection-tab.active {
+  background: transparent !important;
+  color: #1e2a3a !important;
+  font-weight: 700;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* ---------- CATEGORY BAR ---------- */
+.categories a {
+  background: transparent !important;
+  border-bottom-color: transparent !important;
+  color: #5e6f7e !important;
+  box-shadow: none !important;
+  padding: 8px 14px !important;
+  border-radius: 999px;
+}
+.categories a.active {
+  background: transparent !important;
+  color: #1e2a3a !important;
+  font-weight: 700;
+  border-bottom-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* ---------- PACKS + INBOX TAB BARS ---------- */
+.packs-tab-bar button {
+  background: transparent !important;
+  color: #5e6f7e !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.packs-tab-bar button.active { color: #1e2a3a !important; font-weight: 700; }
+.packs-tab-slider { display: none !important; visibility: hidden !important; }
+
+/* ---------- HIDE MOST POPULAR BADGE ---------- */
+.popular-badge { display: none !important; visibility: hidden !important; }
+
+/* ---------- FLAT SECTIONS (profile + home cards + sell) ---------- */
+.profile-header, .menu-item, .auth-bar {
+  background: #fff !important;
+  border: 1px solid #edf0f3 !important;
+  box-shadow: 0 2px 8px rgba(30,42,58,0.04) !important;
+}
+.product-card {
+  background: #fff !important;
+  border: 1px solid #edf0f3 !important;
+  box-shadow: 0 2px 8px rgba(30,42,58,0.05) !important;
+}
+.sell-container {
+  background: #fff !important;
+  border: 1px solid #edf0f3 !important;
+  box-shadow: 0 2px 8px rgba(30,42,58,0.04) !important;
+}
+.sell-container .form-group input,
+.sell-container .form-group select,
+.sell-container .form-group textarea {
+  background: #fafcff !important;
+  border: 1.5px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+/* ---------- PAGE SLIDE TRANSITIONS ---------- */
+.page { will-change: transform, opacity; }
+.page.slide-in-right { animation: slideInRight 0.32s cubic-bezier(0.22,1,0.36,1) both; }
+.page.slide-in-left  { animation: slideInLeft  0.32s cubic-bezier(0.22,1,0.36,1) both; }
+@keyframes slideInRight { from { opacity: 0.4; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInLeft  { from { opacity: 0.4; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+
+.main-container { scroll-behavior: auto !important; }
+
+/* ============================================================
+   ▼▼▼ YOUR ORIGINAL CSS — UNCHANGED ▼▼▼
+   ============================================================ */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 body { background: #f5f7fa; min-height: 100vh; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
-button, [onclick], .menu-item, .product-card, .collection-tab, .bottom-nav button, .watch-ad-card, .pricing-card, .boost-card, .promo-card { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1); }
+button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; }
 button:active, [onclick]:active, .menu-item:active, .product-card:active, .collection-tab:active, .bottom-nav button:active, .watch-ad-card:active, .pricing-card:active, .boost-card:active, .promo-card:active { transform: scale(0.92); }
 .top-bar { background: #fff; border-bottom: 1px solid #e9ecef; padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 8px rgba(0,0,0,0.02); }
 .logo-text { font-size: 22px; font-weight: 800; color: #1e2a3a; letter-spacing: -0.4px; }
@@ -127,16 +453,13 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .seller-menu-item.report, .seller-menu-item.block { color: #b91c1c; }
 .chat-btn { background: linear-gradient(135deg, #25D366, #1eaf54); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; box-shadow: 0 6px 16px rgba(37,211,102,0.3); }
 .other-ads-title { font-size: 15px; font-weight: 700; color: #1e2a3a; margin: 20px 0 10px; }
-
-/* VERIFY BADGE — star seal shape */
-.verify-badge { display: inline-flex; position: relative; width: 16px; height: 16px; vertical-align: middle; margin-left: 3px; flex-shrink: 0; }
-.verify-badge i.fa-certificate { font-size: 16px; position: absolute; top: 0; left: 0; line-height: 1; }
-.verify-badge i.fa-check { font-size: 6.5px; color: #fff !important; position: absolute; top: 5px; left: 5px; line-height: 1; }
+.verify-badge { display: inline-flex; position: relative; width: 16px; height: 16px; vertical-align: middle; margin-left: 3px; }
+.verify-badge i.fa-certificate { font-size: 16px; position: absolute; top: 0; left: 0; }
+.verify-badge i.fa-check { font-size: 6.5px; color: #fff !important; position: absolute; top: 5px; left: 5px; }
 .verify-badge.verify-yellow i.fa-certificate { color: #f5c518; }
 .verify-badge.verify-orange i.fa-certificate { color: #ff6b00; }
 .verify-badge.verify-purple i.fa-certificate { color: #8b5cf6; }
 .verify-badge.verify-blue i.fa-certificate { color: #3b82f6; }
-
 .saves-header { margin-bottom: 16px; }
 .saves-header h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
 .saves-header p { color: #5e6f7e; font-size: 14px; }
@@ -244,7 +567,7 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .stat-label { font-size: 11px; color: #7f8c8d; }
 .stat.boosts .stat-number { color: #ff6b00; }
 .profile-menu { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 24px; }
-.menu-item { background: #fff; border-radius: 14px; padding: 15px; display: flex; align-items: center; gap: 14px; border: 1px solid #edf0f3; cursor: pointer; box-shadow: 0 2px 8px rgba(30,42,58,0.04); transition: transform 0.15s; }
+.menu-item { background: #fff; border-radius: 14px; padding: 15px; display: flex; align-items: center; gap: 14px; border: 1px solid #edf0f3; cursor: pointer; box-shadow: 0 2px 8px rgba(30,42,58,0.04); transition: transform 0.15s; position: relative; }
 .menu-item:active { transform: scale(0.985); }
 .menu-item i:first-child { font-size: 20px; color: #ff6b00; width: 28px; text-align: center; }
 .menu-item span { font-weight: 600; color: #1e2a3a; font-size: 14px; flex: 1; }
@@ -254,15 +577,6 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .menu-item.referral-item i:first-child { color: #3b82f6; }
 .menu-item.referral-item span { color: #3b82f6; font-weight: 700; }
 .menu-item .unread-badge { position: absolute; top: 12px; right: 40px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 20px; display: none; align-items: center; justify-content: center; padding: 0 5px; }
-.menu-item { position: relative; }
-.watch-ad-card { background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 16px; padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; border: none; width: 100%; text-align: left; box-shadow: 0 6px 20px rgba(255,107,0,0.3); position: relative; overflow: hidden; }
-.watch-ad-card::before { content: ''; position: absolute; top: -50%; left: -10%; width: 150px; height: 150px; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 60%); border-radius: 50%; pointer-events: none; }
-.watch-ad-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
-.watch-ad-icon i { font-size: 20px; color: #fff; }
-.watch-ad-text { flex: 1; }
-.watch-ad-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
-.watch-ad-text p { font-size: 12px; opacity: 0.9; }
-.watch-ad-btn { background: #fff; color: #ff6b00; border: none; padding: 9px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
 .auth-bar { display: flex; align-items: center; justify-content: space-between; background: #fff; border-radius: 16px; padding: 14px 18px; border: 1px solid #edf0f3; gap: 12px; }
 .auth-bar-info h4 { font-size: 14px; color: #1e2a3a; margin-bottom: 2px; }
 .auth-bar-info p { font-size: 12px; color: #7f8c8d; }
@@ -288,9 +602,9 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 .msg-bubble.received { background: #fff; color: #1e2a3a; align-self: flex-start; border-bottom-left-radius: 4px; }
 .msg-bubble.sent { background: #d9fdd3; color: #1e2a3a; align-self: flex-end; border-bottom-right-radius: 4px; }
-.conv-input-bar { display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 12px; border-top: 1px solid #e9ecef; }
-.conv-input-bar input { flex: 1; border: 1px solid #e4e7ec; background: #f5f7fa; padding: 12px 16px; border-radius: 24px; font-size: 14px; outline: none; min-width: 0; }
-.conv-send-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 12px 18px; border-radius: 24px; font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
+.conv-input-bar { display: flex; align-items: center; gap: 8px; background: transparent; padding: 8px 12px 20px 12px; border-top: none; }
+.conv-input-bar input { flex: 1; border: 1px solid #e4e7ec; background: #f5f7fa; padding: 13px 18px; border-radius: 24px; font-size: 14px; outline: none; min-width: 0; }
+.conv-send-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 13px 22px; border-radius: 24px; font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
 .seller-profile-header { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 20px; padding: 18px; border: 1px solid #edf0f3; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
 .seller-profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; box-shadow: 0 4px 12px rgba(255,107,0,0.3); }
 .seller-profile-info h2 { font-size: 19px; color: #1e2a3a; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -333,8 +647,6 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .bottom-nav button { background: transparent; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #8f9aa8; flex: 1; max-width: 90px; }
 .bottom-nav button i { font-size: 22px; }
 .bottom-nav button.active, .bottom-nav button.active i { color: #ff6b00; font-weight: 600; }
-.bottom-nav .nav-dot { position: absolute; top: 2px; right: 20px; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
-.bottom-nav button { position: relative; }
 .typing-dots { display: inline-flex; align-items: center; gap: 4px; padding: 4px 0; }
 .typing-dots span { width: 8px; height: 8px; background: #b0bec5; border-radius: 50%; display: inline-block; animation: typingBounce 1.2s infinite ease-in-out; }
 .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -375,8 +687,6 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .ai-consent-buttons button { flex: 1; padding: 13px; border-radius: 60px; font-weight: 700; font-size: 13px; border: none; }
 .ai-consent-accept { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; box-shadow: 0 4px 12px rgba(255,107,0,0.3); }
 .ai-consent-decline { background: #f0f4f9; color: #1e2a3a; }
-
-/* REFERRAL */
 .referral-hero { background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 20px; padding: 26px 22px; color: #fff; text-align: center; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(30,64,175,0.25); position: relative; overflow: hidden; }
 .referral-hero::before { content: ''; position: absolute; top: -60%; right: -20%; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%); border-radius: 50%; }
 .referral-hero .hero-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; position: relative; }
@@ -389,55 +699,33 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .referral-code-box .code-value { font-size: 24px; font-weight: 800; color: #1e40af; letter-spacing: 3px; }
 .referral-code-box .code-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
 .referral-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; outline: none; }
+.referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase font; letter-spacing: 2px;-weight: 700; outline: none; }
 .referral-input-row input:focus { border-color: #3b82f6; }
 .btn-claim { width: 100%; padding: 16px; border-radius: 60px; border: none; font-weight: 800; font-size: 15px; background: #cbd5e1; color: #64748b; cursor: not-allowed; }
 .btn-claim.unlocked { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; cursor: pointer; box-shadow: 0 6px 16px rgba(30,64,175,0.3); }
 .btn-blue { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; box-shadow: 0 4px 12px rgba(30,64,175,0.25); }
 .referral-badge-inline { font-size: 10px; color: #94a3b8; font-weight: 500; margin-left: 4px; text-transform: none; letter-spacing: 0; }
-
-/* SERVICES PAGE */
-.services-body { padding: 16px; max-width: 520px; margin: 0 auto; }
-.services-warning { text-align: center; font-size: 15px; font-weight: 900; color: #000; margin-bottom: 22px; line-height: 1.4; }
-.services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.service-card { background: #fff7ed; border: 2px solid #ff6b00; border-radius: 20px; padding: 32px 14px; text-align: center; cursor: pointer; }
-.service-card h4 { font-size: 15px; font-weight: 800; color: #c2410c; margin-bottom: 6px; }
-.service-card p { font-size: 12px; color: #ff6b00; }
-
-/* INBOX */
-.inbox-tab-bar { display: flex; background: #fff; border-radius: 60px; padding: 4px; margin: 0 auto 20px; max-width: 380px; border: 1px solid #e4e7ec; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(30,42,58,0.06); }
-.inbox-tab-slider { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 60px; transition: transform 0.3s; z-index: 1; }
-.inbox-tab-slider.left { transform: translateX(0); }
-.inbox-tab-slider.right { transform: translateX(100%); }
-.inbox-tab-bar button { flex: 1; background: transparent; border: none; padding: 10px 8px; font-size: 13px; font-weight: 700; color: #3a4b5c; position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.inbox-tab-bar button.active { color: #fff; }
-.inbox-panel { display: none; }
-.inbox-panel.active { display: block; }
-.notif-item { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; box-shadow: 0 2px 8px rgba(30,42,58,0.04); }
-.notif-icon { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
-.notif-body { flex: 1; min-width: 0; }
-.notif-body h4 { font-size: 14px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
-.notif-body p { font-size: 13px; color: #5e6f7e; line-height: 1.5; margin-bottom: 6px; }
-.notif-body .notif-date { font-size: 11px; color: #94a3b8; }
-.notif-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9500; display: none; align-items: center; justify-content: center; padding: 20px; }
-.notif-popup.show { display: flex; }
-.notif-popup-box { background: #fff; border-radius: 20px; padding: 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-.notif-popup-box .notif-popup-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px; box-shadow: 0 6px 16px rgba(255,107,0,0.35); }
-.notif-popup-box h3 { font-size: 18px; color: #1e2a3a; margin-bottom: 10px; font-weight: 800; }
-.notif-popup-box p { font-size: 14px; color: #5e6f7e; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap; }
-.notif-popup-box button { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; box-shadow: 0 6px 16px rgba(255,107,0,0.3); }
-
 .create-account-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px 28px; border-radius: 60px; font-weight: 700; font-size: 15px; margin-bottom: 16px; box-shadow: 0 6px 16px rgba(255,107,0,0.35); }
-
 @media (min-width: 600px) {
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .saves-grid { grid-template-columns: repeat(3, 1fr); }
   .pricing-grid { grid-template-columns: repeat(2, 1fr); }
   .profile-menu { grid-template-columns: repeat(2, 1fr); }
 }
+
 @media (min-width: 900px) {
   .product-grid { grid-template-columns: repeat(4, 1fr); }
   .pricing-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Tighter category tabs */
+.categories {
+  gap: 4px !important;
+  padding: 10px 12px !important;
+}
+.categories a {
+  padding: 8px 12px !important;
+  font-size: 13.5px !important;
 }
 </style>
 </head>
@@ -471,15 +759,6 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
   <div class="fs-scroll" id="fsScroll"></div>
 </div>
 
-<div class="notif-popup" id="notifPopup">
-  <div class="notif-popup-box">
-    <div class="notif-popup-icon"><i class="fas fa-bell"></i></div>
-    <h3 id="notifPopupTitle">Notification</h3>
-    <p id="notifPopupBody"></p>
-    <button onclick="closeNotifPopup()">Got it</button>
-  </div>
-</div>
-
 <header id="mainHeader">
   <div class="top-bar">
     <div class="logo-text">Len<span>idi</span></div>
@@ -487,14 +766,15 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
       <i class="fas fa-search"></i><span>Search on Lenidi...</span>
     </div>
   </div>
-  <div class="categories" id="categoryBar">
-    <a href="#" class="active" data-category="all" onclick="filterCategory(event, 'all')">All</a>
-    <a href="#" data-category="vehicles" onclick="filterCategory(event, 'vehicles')">Vehicles</a>
-    <a href="#" data-category="clothing" onclick="filterCategory(event, 'clothing')">Clothing</a>
-    <a href="#" data-category="phones" onclick="filterCategory(event, 'phones')">Phones</a>
-    <a href="#" data-category="electronics" onclick="filterCategory(event, 'electronics')">Electronics</a>
-    <a href="#" data-category="home" onclick="filterCategory(event, 'home')">Home</a>
-    <a href="#" data-category="jobs" onclick="filterCategory(event, 'jobs')">Jobs</a>
+  <div class="categories slide-pill-group" id="categoryBar">
+    <div class="slide-pill"></div>
+    <a href="#" class="active" data-category="all" data-index="0" onclick="slideGroupTap(event, 'all')">All</a>
+    <a href="#" data-category="vehicles" data-index="1" onclick="slideGroupTap(event, 'vehicles')">Vehicles</a>
+    <a href="#" data-category="clothing" data-index="2" onclick="slideGroupTap(event, 'clothing')">Clothing</a>
+    <a href="#" data-category="phones" data-index="3" onclick="slideGroupTap(event, 'phones')">Phones</a>
+    <a href="#" data-category="electronics" data-index="4" onclick="slideGroupTap(event, 'electronics')">Electronics</a>
+    <a href="#" data-category="home" data-index="5" onclick="slideGroupTap(event, 'home')">Home</a>
+    <a href="#" data-category="jobs" data-index="6" onclick="slideGroupTap(event, 'jobs')">Jobs</a>
   </div>
 </header>
 
@@ -508,11 +788,12 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
       </div>
     </div>
     <div class="collection-tabs" id="adStrip" style="margin-bottom:20px; padding-bottom:6px; gap:12px;"></div>
-    <div class="collection-tabs" id="collectionTabs">
-      <div class="collection-tab active" data-collection="fresh">Fresh</div>
-      <div class="collection-tab" data-collection="hot">Hot deals</div>
-      <div class="collection-tab" data-collection="near">Near you</div>
-      <div class="collection-tab" data-collection="trending">Trending</div>
+    <div class="collection-tabs slide-pill-group" id="collectionTabs">
+      <div class="slide-pill"></div>
+      <div class="collection-tab active" data-collection="fresh" data-index="0" onclick="slideGroupTap(this)">Fresh</div>
+      <div class="collection-tab" data-collection="hot" data-index="1" onclick="slideGroupTap(this)">Hot deals</div>
+      <div class="collection-tab" data-collection="near" data-index="2" onclick="slideGroupTap(this)">Near you</div>
+      <div class="collection-tab" data-collection="trending" data-index="3" onclick="slideGroupTap(this)">Trending</div>
     </div>
     <div class="section-header"><h2 id="sectionTitle">Fresh recommendations</h2></div>
     <div class="loader-3dots" id="homeLoader"><span></span><span></span><span></span></div>
@@ -638,10 +919,10 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
       <h2>Packs & Boosts</h2>
       <p>Boost your listings.</p>
     </div>
-    <div class="packs-tab-bar">
-      <div class="packs-tab-slider right" id="packsSlider"></div>
-      <button id="tabBoosts" onclick="switchPacksTab('boosts')">Boosts</button>
-      <button id="tabSubscriptions" class="active" onclick="switchPacksTab('subscriptions')">Subscriptions</button>
+    <div class="packs-tab-bar slide-pill-group" id="packsTabBar">
+      <div class="slide-pill"></div>
+      <button id="tabBoosts" data-index="0" onclick="slideGroupTap(this, 'boosts')">Boosts</button>
+      <button id="tabSubscriptions" class="active" data-index="1" onclick="slideGroupTap(this, 'subscriptions')">Subscriptions</button>
     </div>
     <div class="packs-panel" id="boostsPanel"><div class="boost-grid" id="boostGrid"></div></div>
     <div class="packs-panel active" id="subscriptionsPanel"><div class="pricing-grid" id="pricingGrid"></div></div>
@@ -662,17 +943,12 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
           </div>
         </div>
       </div>
-      <button class="watch-ad-card" onclick="document.getElementById('comingSoonOverlay')?.classList.add('show')">
-        <div class="watch-ad-icon"><i class="fas fa-play"></i></div>
-        <div class="watch-ad-text"><h4>Watch an ad for 2 boosts</h4><p>Free boosts</p></div>
-        <div class="watch-ad-btn"><i class="fas fa-gift"></i> Watch</div>
-      </button>
       <div id="subTimerContainer"></div>
       <div class="profile-menu">
         <div class="menu-item referral-item" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item referral-item" onclick="openServices()"><i class="fas fa-bolt"></i><span>Lenidi Services</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="switchPage('myListings')"><i class="fas fa-box"></i><span>My listings</span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item" onclick="openInbox()"><i class="fas fa-inbox"></i><span>Inbox</span><span class="unread-badge" id="inboxBadge">0</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item" onclick="openInbox()"><i class="fas fa-inbox"></i><span>Inbox</span><span class="unread-badge" id="inboxBadge" style="display:none;">0</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openAISupport()"><i class="fas fa-robot"></i><span>Lenidi Ai Chat Support</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openPrivacy()"><i class="fas fa-shield-alt"></i><span>Privacy & Policy</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openTerms()"><i class="fas fa-file-contract"></i><span>Terms of Service</span><i class="fas fa-chevron-right"></i></div>
@@ -722,6 +998,52 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
     </div>
   </div>
 
+  <div id="servicesPage" class="page">
+    <div class="filter-page-header">
+      <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
+      <h3>Lenidi Services</h3>
+    </div>
+    <div style="padding:20px 16px; max-width:520px; margin:0 auto;">
+      <div style="background:linear-gradient(135deg,#1e40af,#3b82f6); border-radius:20px; padding:22px; color:#fff; text-align:center; margin-bottom:24px; box-shadow:0 8px 24px rgba(30,64,175,0.25);">
+        <div style="font-size:32px; margin-bottom:8px;">⚡</div>
+        <h2 style="font-size:17px; font-weight:900; margin-bottom:6px; letter-spacing:0.3px;">WE NEED AGENTS</h2>
+        <p style="font-size:13px; opacity:0.9; line-height:1.5;">Interested? Sign up today and start earning.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr; gap:14px;">
+        <div onclick="openAgentLink()" style="background:#fff; border:2px solid #3b82f6; border-radius:18px; padding:22px 18px; display:flex; align-items:center; gap:16px; cursor:pointer; box-shadow:0 4px 12px rgba(59,130,246,0.12);">
+          <div style="width:54px; height:54px; border-radius:50%; background:linear-gradient(135deg,#3b82f6,#1e40af); display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(59,130,246,0.35);">
+            <i class="fas fa-user-plus" style="font-size:22px; color:#fff;"></i>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <h4 style="font-size:16px; font-weight:800; color:#1e40af; margin-bottom:4px;">Become an Agent</h4>
+            <p style="font-size:12px; color:#64748b;">Sign up & earn money</p>
+          </div>
+          <i class="fas fa-chevron-right" style="color:#cbd5e1; font-size:16px;"></i>
+        </div>
+        <div onclick="openDataBundleLink()" style="background:#fff; border:2px solid #3b82f6; border-radius:18px; padding:22px 18px; display:flex; align-items:center; gap:16px; cursor:pointer; box-shadow:0 4px 12px rgba(59,130,246,0.12);">
+          <div style="width:54px; height:54px; border-radius:50%; background:linear-gradient(135deg,#3b82f6,#1e40af); display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(59,130,246,0.35);">
+            <i class="fas fa-wifi" style="font-size:22px; color:#fff;"></i>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <h4 style="font-size:16px; font-weight:800; color:#1e40af; margin-bottom:4px;">Buy Data Bundles</h4>
+            <p style="font-size:12px; color:#64748b;">Cheap data for everyone</p>
+          </div>
+          <i class="fas fa-chevron-right" style="color:#cbd5e1; font-size:16px;"></i>
+        </div>
+        <div onclick="showToast('🚀 Ad player coming soon!')" style="background:#fff; border:2px solid #3b82f6; border-radius:18px; padding:22px 18px; display:flex; align-items:center; gap:16px; cursor:pointer; box-shadow:0 4px 12px rgba(59,130,246,0.12);">
+          <div style="width:54px; height:54px; border-radius:50%; background:linear-gradient(135deg,#3b82f6,#1e40af); display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(59,130,246,0.35);">
+            <i class="fas fa-play" style="font-size:22px; color:#fff;"></i>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <h4 style="font-size:16px; font-weight:800; color:#1e40af; margin-bottom:4px;">Watch an Ad for boost</h4>
+            <p style="font-size:12px; color:#64748b;">Get 2 free boosts</p>
+          </div>
+          <i class="fas fa-chevron-right" style="color:#cbd5e1; font-size:16px;"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="myListingsPage" class="page">
     <div class="listings-header">
       <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
@@ -730,51 +1052,51 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
     <div class="product-grid" id="myListingsGrid"></div>
   </div>
 
-  <div id="servicesPage" class="page">
-    <div class="filter-page-header">
-      <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-      <h3>Lenidi Services</h3>
-    </div>
-    <div class="services-body">
-      <p class="services-warning">WE NEED AGENTS IF INTERESTED SIGN UP</p>
-      <div class="services-grid">
-        <div class="service-card" onclick="openAgentLink()">
-          <h4>Become an Agent</h4>
-          <p>Sign up & earn</p>
-        </div>
-        <div class="service-card" onclick="openDataBundleLink()">
-          <h4>Buy Data Bundles</h4>
-          <p>Cheap data</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="inboxPage" class="page">
+ <div id="inboxPage" class="page">
     <div class="filter-page-header">
       <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
       <h3>Inbox</h3>
     </div>
-    <div style="padding:16px; max-width:600px; margin:0 auto;">
-      <div class="inbox-tab-bar">
-        <div class="inbox-tab-slider left" id="inboxSlider"></div>
-        <button id="tabNotif" class="active" onclick="switchInboxTab('notif')"><i class="fas fa-bell"></i> Notifications</button>
-        <button id="tabSupport" onclick="switchInboxTab('support')"><i class="fas fa-comments"></i> Support</button>
+    <div style="padding:0; max-width:600px; margin: 0 auto;">
+      <div class="packs-tab-bar slide-pill-group" id="inboxTabBar" style="max-width:380px; margin:16px auto 0;">
+        <div class="slide-pill"></div>
+        <button id="tabNotif" class="active" data-index="0" onclick="slideGroupTap(this, 'notif')"><i class="fas fa-bell"></i> Notifications</button>
+        <button id="tabSupport" data-index="1" onclick="slideGroupTap(this, 'support')"><i class="fas fa-comments"></i> Support</button>
       </div>
-      <div class="inbox-panel active" id="notifPanel">
+      <div id="notifPanel" style="padding:16px;">
         <div id="notifList"><div class="no-results"><i class="fas fa-bell"></i><h3>No notifications</h3><p>You're all caught up!</p></div></div>
       </div>
-      <div class="inbox-panel" id="supportPanel">
-        <div class="conversation-page" style="height: calc(100dvh - 280px);">
-          <div class="conv-messages" id="supportMessages">
-            <div class="msg-bubble received">Hi! 👋 How can we help you today?</div>
-          </div>
-          <div class="conv-input-bar">
-            <input type="text" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendSupportMsg()">
-            <button class="conv-send-btn" onclick="sendSupportMsg()">Send</button>
-          </div>
+      <div id="supportPanel" style="display:none; padding:16px;">
+        <div class="ai-support-hero">
+          <div class="ai-big-icon"><i class="fas fa-headset"></i></div>
+          <h2>Support <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h2>
+          <p>Chat with our team — we'll help with anything you need.</p>
         </div>
+        <div class="ai-contact-card">
+          <i class="fab fa-whatsapp"></i>
+          <div><h4>WhatsApp Support</h4><p>0544840240</p></div>
+        </div>
+        <button class="btn-primary" style="margin-top:18px;" onclick="openSupportChatPage()">Start chatting</button>
       </div>
+    </div>
+  </div>
+
+  <div id="supportChatPage" class="page">
+    <div class="conversation-page">
+      <div class="conv-header">
+        <button class="back-btn" onclick="switchPage('inboxPage'); switchInboxTab('support');"><i class="fas fa-arrow-left"></i></button>
+        <div class="conv-avatar"><i class="fas fa-headset"></i></div>
+        <div class="conv-user"><h4>Support <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h4><span>Online</span></div>
+      </div>
+      <div class="conv-messages" id="supportMessages">
+        <div class="msg-bubble received">Hi! 👋 How can we help you today?</div>
+      </div>
+      <div class="conv-input-bar">
+        <input type="text" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendSupportMsg()">
+        <button class="conv-send-btn" onclick="sendSupportMsg()">Send</button>
+            </div>
+         </div>
+       </div>
     </div>
   </div>
 
@@ -787,7 +1109,7 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
       <div class="referral-hero">
         <div class="hero-icon"><i class="fas fa-gift"></i></div>
         <h2>Refer 100 People</h2>
-        <p>Get <b>1 month of Free VIP</b></p>
+        <p>Get <b>a month of Free VIP</b></p>
       </div>
       <div class="referral-progress-card">
         <div class="count-big" id="refCount">0/100</div>
@@ -889,15 +1211,303 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastText">Done</span></div>
 
-<nav class="bottom-nav">
-  <button class="active" data-page="home" onclick="switchPage('home')"><i class="fas fa-home"></i><span>Home</span></button>
-  <button data-page="saves" onclick="switchPage('saves')"><i class="far fa-star"></i><span>Saves</span></button>
-  <button data-page="sell" onclick="switchPage('sell')"><i class="fas fa-plus-circle"></i><span>Sell</span></button>
-  <button data-page="packs" onclick="switchPage('packs')"><i class="fas fa-crown"></i><span>Packs</span></button>
-  <button data-page="profile" onclick="switchPage('profile')" id="profileNavBtn"><i class="far fa-user"></i><span>Profile</span></button>
+<nav class="bottom-nav" id="bottomNav">
+  <div class="nav-platter" id="navPlatter"></div>
+  <button class="active" data-page="home" data-index="0" onclick="navTap(this)"><i class="fas fa-home"></i><span>Home</span></button>
+  <button data-page="saves" data-index="1" onclick="navTap(this)"><i class="far fa-star"></i><span>Saves</span></button>
+  <button data-page="sell" data-index="2" onclick="navTap(this)"><i class="fas fa-plus-circle"></i><span>Sell</span></button>
+  <button data-page="packs" data-index="3" onclick="navTap(this)"><i class="fas fa-crown"></i><span>Packs</span></button>
+  <button data-page="profile" data-index="4" onclick="navTap(this)"><i class="far fa-user"></i><span>Profile</span></button>
 </nav>
 
 <script>
+/* ============================================================
+   LENIDI · SLIDING PILL SYSTEM (bottom nav + all tab groups)
+   ============================================================ */
+const NAV_PAGES = ['home', 'saves', 'sell', 'packs', 'profile'];
+let navCurrentIndex = 0;
+
+function moveNavPlatterToIndex(idx, animate = true) {
+  const platter = document.getElementById('navPlatter');
+  const nav = document.getElementById('bottomNav');
+  if (!platter || !nav) return;
+  idx = Math.max(0, Math.min(NAV_PAGES.length - 1, idx));
+  const padding = 10;
+  const tabWidth = (nav.clientWidth - padding * 2) / NAV_PAGES.length;
+  if (!animate) platter.style.transition = 'none';
+  platter.style.width = tabWidth + 'px';
+  platter.style.transform = `translateX(${tabWidth * idx}px)`;
+  if (!animate) requestAnimationFrame(() => { platter.style.transition = ''; });
+  navCurrentIndex = idx;
+}
+
+function navTap(btn) {
+  const idx = parseInt(btn.dataset.index, 10);
+  const page = btn.dataset.page;
+  slideToPage(page, idx, navCurrentIndex);
+  moveNavPlatterToIndex(idx, true);
+}
+
+function slideToPage(page, newIdx, oldIdx) {
+  const target = document.getElementById(page) || document.getElementById(page + 'Page');
+  if (!target) return;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active','slide-in-right','slide-in-left'));
+  target.classList.add('active');
+  if (newIdx > oldIdx) target.classList.add('slide-in-right');
+  else if (newIdx < oldIdx) target.classList.add('slide-in-left');
+  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+
+  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage','referralPage','servicesPage','inboxPage'];
+  document.getElementById('mainHeader').style.display = hideHeader.includes(page) ? 'none' : 'block';
+  if (page === 'saves') renderSaves();
+  if (page === 'myListings') renderMyListings();
+  if (page === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
+  if (page === 'referralPage') loadReferralInfo();
+  if (page === 'home') loadProducts();
+  if (page !== 'inboxPage' && supportPollRef) { clearInterval(supportPollRef); supportPollRef = null; }
+  window.scrollTo({ top: 0, behavior: 'auto' });
+}
+
+function initNavSwipe() {
+  const nav = document.getElementById('bottomNav');
+  const platter = document.getElementById('navPlatter');
+  if (!nav || !platter) return;
+  let dragging = false;
+  let pointerId = null;
+  let lockedWidth = 0;
+  let lockedLeft = 0;
+
+  function refreshLayout() {
+    const rect = nav.getBoundingClientRect();
+    lockedWidth = (rect.width - 20) / NAV_PAGES.length;
+    lockedLeft = rect.left + 10;
+  }
+
+  function idxFromX(x) {
+    const rel = x - lockedLeft;
+    const raw = rel / lockedWidth;
+    const idx = Math.round(raw - 0.5);
+    return Math.max(0, Math.min(NAV_PAGES.length - 1, idx));
+  }
+
+  function onDown(e) {
+    if (e.target.closest('.nav-platter')) return;
+    refreshLayout();
+    dragging = true;
+    pointerId = e.pointerId || 'touch';
+    nav.classList.add('dragging');
+    platter.style.transition = 'none';
+    try { nav.setPointerCapture(pointerId); } catch (err) {}
+    moveToFinger(e.clientX);
+  }
+  function moveToFinger(x) {
+    const w = lockedWidth;
+    let px = x - lockedLeft - w / 2;
+    px = Math.max(0, Math.min(w * (NAV_PAGES.length - 1), px));
+    platter.style.transform = `translateX(${px}px)`;
+    platter.style.width = w + 'px';
+  }
+  function onMove(e) {
+    if (!dragging) return;
+    if (e.pointerId && e.pointerId !== pointerId) return;
+    moveToFinger(e.clientX);
+  }
+  function onUp(e) {
+    if (!dragging) return;
+    dragging = false;
+    nav.classList.remove('dragging');
+    const idx = idxFromX(e.clientX);
+    const btn = nav.querySelector(`button[data-index="${idx}"]`);
+    if (btn) navTap(btn);
+    pointerId = null;
+  }
+  function onCancel() {
+    if (!dragging) return;
+    dragging = false;
+    nav.classList.remove('dragging');
+    moveNavPlatterToIndex(navCurrentIndex, true);
+    pointerId = null;
+  }
+
+  nav.addEventListener('pointerdown', onDown);
+  nav.addEventListener('pointermove', onMove);
+  nav.addEventListener('pointerup', onUp);
+  nav.addEventListener('pointercancel', onCancel);
+
+  nav.addEventListener('touchstart', (e) => { if (!dragging) onDown({ target: e.target, clientX: e.touches[0].clientX }); }, { passive: true });
+  nav.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    onMove({ clientX: e.touches[0].clientX });
+  }, { passive: false });
+  nav.addEventListener('touchend', (e) => {
+    if (!dragging) return;
+    onUp({ clientX: e.changedTouches[0].clientX });
+  });
+}
+
+window.addEventListener('resize', () => moveNavPlatterToIndex(navCurrentIndex, false));
+
+/* ---------- GENERIC SLIDE GROUPS ---------- */
+const SLIDE_GROUPS = {};
+
+function initSlideGroup(groupEl) {
+  if (!groupEl) return;
+  const id = groupEl.id;
+  if (!id) return;
+  const pill = groupEl.querySelector('.slide-pill');
+  const items = Array.from(groupEl.querySelectorAll('[data-index]'));
+  if (!pill || items.length === 0) return;
+
+  let dragging = false;
+  let pointerId = null;
+
+  function movePillToItem(item, animate = true) {
+    if (!item) return;
+    const gRect = groupEl.getBoundingClientRect();
+    const iRect = item.getBoundingClientRect();
+    const scrollLeft = groupEl.scrollLeft || 0;
+    const realWidth = item.offsetWidth;
+    const left = iRect.left - gRect.left + scrollLeft;
+    if (!animate) pill.style.transition = 'none';
+    pill.style.width = realWidth + 'px';
+    pill.style.transform = `translateX(${left - 4}px)`;
+    if (!animate) requestAnimationFrame(() => { pill.style.transition = ''; });
+  }
+
+  SLIDE_GROUPS[id] = { groupEl, pill, items, movePillToItem, get dragging() { return dragging; } };
+
+  items.forEach(el => el.addEventListener('click', (e) => {
+    if (dragging) return;
+    items.forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    movePillToItem(el, true);
+  }));
+
+  function idxFromX(x) {
+    let best = 0, bestD = Infinity;
+    items.forEach((el, i) => {
+      const r = el.getBoundingClientRect();
+      const d = Math.abs(x - (r.left + r.width / 2));
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    return best;
+  }
+
+  function setPillX(px) {
+    const maxX = groupEl.clientWidth - pill.offsetWidth - 4;
+    px = Math.max(0, Math.min(maxX, px));
+    pill.style.transition = 'none';
+    pill.style.transform = `translateX(${px}px)`;
+  }
+
+  function onDown(e) {
+    if (e.target.closest('.slide-pill')) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    dragging = true;
+    pointerId = e.pointerId || 'touch';
+    groupEl.classList.add('dragging');
+    const gRect = groupEl.getBoundingClientRect();
+    const scrollLeft = groupEl.scrollLeft || 0;
+    setPillX(e.clientX - gRect.left - pill.offsetWidth / 2 + scrollLeft);
+    try { groupEl.setPointerCapture(pointerId); } catch (err) {}
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    if (e.pointerId && e.pointerId !== pointerId) return;
+    const gRect = groupEl.getBoundingClientRect();
+    const scrollLeft = groupEl.scrollLeft || 0;
+    setPillX(e.clientX - gRect.left - pill.offsetWidth / 2 + scrollLeft);
+  }
+
+  function onUp(e) {
+    if (!dragging) return;
+    dragging = false;
+    groupEl.classList.remove('dragging');
+    const target = items[idxFromX(e.clientX)];
+    if (target) target.click();
+    pointerId = null;
+  }
+
+  function onCancel() {
+    if (!dragging) return;
+    dragging = false;
+    groupEl.classList.remove('dragging');
+    movePillToItem(items.find(i => i.classList.contains('active')) || items[0], true);
+    pointerId = null;
+  }
+
+  groupEl.addEventListener('pointerdown', onDown);
+  groupEl.addEventListener('pointermove', onMove);
+  groupEl.addEventListener('pointerup', onUp);
+  groupEl.addEventListener('pointercancel', onCancel);
+
+  groupEl.addEventListener('touchstart', (e) => { if (!dragging) onDown({ target: e.target, clientX: e.touches[0].clientX }); }, { passive: true });
+  groupEl.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    onMove({ clientX: e.touches[0].clientX });
+  }, { passive: false });
+  groupEl.addEventListener('touchend', (e) => {
+    if (!dragging) return;
+    onUp({ clientX: e.changedTouches[0].clientX });
+  });
+
+  requestAnimationFrame(() => movePillToItem(items.find(i => i.classList.contains('active')) || items[0], false));
+  window.addEventListener('resize', () => movePillToItem(items.find(i => i.classList.contains('active')) || items[0], false));
+}
+
+function slideGroupTap(elOrEvent, value) {
+  let el;
+  if (elOrEvent && elOrEvent.target) { elOrEvent.preventDefault(); el = elOrEvent.currentTarget || elOrEvent.target.closest('[data-index]'); }
+  else el = elOrEvent;
+  if (!el) return;
+  const groupEl = el.closest('.slide-pill-group');
+  if (!groupEl) return;
+  const state = SLIDE_GROUPS[groupEl.id];
+  if (state) { state.items.forEach(i => i.classList.remove('active')); el.classList.add('active'); state.movePillToItem(el, true); }
+
+  if (groupEl.id === 'categoryBar' && value) { currentHomeCategory = value; applyCollectionFilter(); }
+  if (groupEl.id === 'packsTabBar' && value) switchPacksTabRaw(value);
+  if (groupEl.id === 'inboxTabBar' && value) switchInboxTabRaw(value);
+  if (groupEl.id === 'collectionTabs') {
+    currentCollection = el.dataset.collection || 'fresh';
+    applyCollectionFilter();
+  }
+}
+
+function switchPacksTabRaw(tab) {
+  const b = document.getElementById('tabBoosts'), s = document.getElementById('tabSubscriptions');
+  const bp = document.getElementById('boostsPanel'), sp = document.getElementById('subscriptionsPanel');
+  if (tab === 'boosts') { b.classList.add('active'); s.classList.remove('active'); bp.classList.add('active'); sp.classList.remove('active'); }
+  else { b.classList.remove('active'); s.classList.add('active'); bp.classList.remove('active'); sp.classList.add('active'); }
+}
+function switchInboxTabRaw(tab) {
+  const n = document.getElementById('tabNotif'), s = document.getElementById('tabSupport');
+  const np = document.getElementById('notifPanel'), sp = document.getElementById('supportPanel');
+  if (tab === 'notif') {
+    n.classList.add('active'); s.classList.remove('active');
+    np.style.display = 'block'; sp.style.display = 'none'; loadNotifications();
+  } else {
+    n.classList.remove('active'); s.classList.add('active');
+    np.style.display = 'none'; sp.style.display = 'block'; loadSupportMessages();
+    if (supportPollRef) clearInterval(supportPollRef);
+    supportPollRef = setInterval(loadSupportMessages, 4000);
+  }
+}
+
+function initAllSlideGroups() {
+  ['collectionTabs','categoryBar','packsTabBar','inboxTabBar'].forEach(id => initSlideGroup(document.getElementById(id)));
+  moveNavPlatterToIndex(0, false);
+  initNavSwipe();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAllSlideGroups);
+else initAllSlideGroups();
+
+/* ============================================================
+   APP LOGIC
+   ============================================================ */
 const BACKEND_URL = "https://lenidi-backend.onrender.com";
 const GROQ_API_KEY = "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";
 const GROQ_MODEL = "openai/gpt-oss-20b";
@@ -912,7 +1522,7 @@ const BOOST_PACKS = [
 ];
 const SUBSCRIPTION_PLANS = [
   { id: 'plus', name: 'Plus', price: 99, boosts: 50, limit: PLUS_LIMIT, verifyClass: 'verify-yellow', ringClass: 'ring-yellow', btnClass: 'pack-btn-plus', desc: 'Great start for casual sellers', features: ['Yellow verification mark','Higher search placement','50 free boosts','Standard chat support','More listing slots','Basic profile analytics'] },
-  { id: 'pro', name: 'Pro', price: 399, boosts: 80, limit: PRO_LIMIT, verifyClass: 'verify-orange', ringClass: 'ring-orange', btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results', popular: true, features: ['Orange verification mark','Top of search results','80 free boosts','Priority chat support','More listing slots','Full analytics dashboard','Featured + spotlight ads','Early access to features'] },
+  { id: 'pro', name: 'Pro', price: 399, boosts: 80, limit: PRO_LIMIT, verifyClass: 'verify-orange', ringClass: 'ring-orange', btnClass: 'pack-btn-pro', desc: 'For serious sellers who want results', features: ['Orange verification mark','Top of search results','80 free boosts','Priority chat support','More listing slots','Full analytics dashboard','Featured + spotlight ads','Early access to features'] },
   { id: 'premium', name: 'Premium', price: 699, boosts: 100, limit: PREMIUM_LIMIT, verifyClass: 'verify-purple', ringClass: 'ring-purple', btnClass: 'pack-btn-premium', desc: 'For growing businesses & shops', features: ['Purple verification mark','Verified badge on all ads','100 free boosts','Dedicated account support','More listing slots','Advanced analytics','Premium badge + spotlight','Bulk listing upload','Priority above Pro sellers','No commission on first 10 sales'] },
   { id: 'vip', name: 'VIP', price: 999, boosts: 200, limit: Infinity, verifyClass: 'verify-blue', ringClass: 'ring-blue', btnClass: 'pack-btn-vip', desc: 'For people who want more traffic and more sales', features: ['Blue verification mark','Gain trust with verified badge','200 free boosts','Get more sales with 10x visibility','AUTO-BOOSTED every post','Priority chat support','#1 ranking in search','Dedicated account manager','Top of Home page always','Early access to all features','Products get BEST BUY badges','Good for big sellers'] }
 ];
@@ -942,7 +1552,6 @@ let referralInfo = { code: null, count: 0, claimed: false };
 let accountDeleted = false;
 let broadcasts = [];
 let notifications = [];
-let lastSeenBroadcastId = Number(localStorage.getItem('lenidiLastBroadcast') || 0);
 let supportPollRef = null;
 
 function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastText').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
@@ -972,6 +1581,7 @@ async function apiDelete(path) { try { const res = await fetch(BACKEND_URL + pat
 function openServices() { switchPage('servicesPage'); }
 function openAgentLink() { window.location.href = 'https://dataplug-gh.com/auth?ref=5734ba5d-3096-44ce-90b9-ba8d90bd89ab'; }
 function openDataBundleLink() { window.location.href = 'https://dataplug-gh.com/pay/data-max-buy-5734ba5d'; }
+function openSupportChatPage() { switchPage('supportChatPage'); }
 
 async function syncFromBackend() {
   if (!userEmail) return;
@@ -1084,15 +1694,6 @@ function applyCollectionFilter() {
   if (currentHomeCategory !== 'all') filtered = filtered.filter(p => p.category === currentHomeCategory);
   renderProducts(filtered, 'productGrid');
 }
-function filterCategory(e, cat) { e.preventDefault(); currentHomeCategory = cat; document.querySelectorAll('#categoryBar a').forEach(a => a.classList.remove('active')); e.target.classList.add('active'); applyCollectionFilter(); }
-document.querySelectorAll('#collectionTabs .collection-tab').forEach(tab => {
-  tab.addEventListener('click', function () {
-    document.querySelectorAll('#collectionTabs .collection-tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-    currentCollection = this.dataset.collection;
-    applyCollectionFilter();
-  });
-});
 
 function openSearchPage() { switchPage('search'); setTimeout(() => document.getElementById('searchInput').focus(), 100); }
 function performSearch() {
@@ -1442,19 +2043,11 @@ function buildPricingGrid() {
     const card = document.createElement('div');
     card.className = 'pricing-card ' + plan.ringClass + (plan.popular ? ' popular' : '');
     const features = plan.features.map(f => '<li><i class="fas fa-check-circle"></i> ' + f + '</li>').join('');
-    card.innerHTML = (plan.popular ? '<div class="popular-badge">MOST POPULAR</div>' : '') + '<div class="pack-name">' + plan.name + ' <span class="verify-badge ' + plan.verifyClass + '"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></div>' + '<div class="pack-price">GHC ' + plan.price + ' <span>/ month</span></div>' + '<div class="pack-desc">' + plan.desc + '</div>' + '<ul class="pack-features">' + features + '</ul>' + '<button class="pack-btn ' + plan.btnClass + '" onclick="subscribePlan(\'' + plan.id + '\',' + plan.price + ',' + plan.boosts + ',\'' + plan.verifyClass + '\')">Upgrade to ' + plan.name + '</button>';
+    card.innerHTML = '<div class="pack-name">' + plan.name + ' <span class="verify-badge ' + plan.verifyClass + '"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></div>' + '<div class="pack-price">GHC ' + plan.price + ' <span>/ month</span></div>' + '<div class="pack-desc">' + plan.desc + '</div>' + '<ul class="pack-features">' + features + '</ul>' + '<button class="pack-btn ' + plan.btnClass + '" onclick="subscribePlan(\'' + plan.id + '\',' + plan.price + ',' + plan.boosts + ',\'' + plan.verifyClass + '\')">Upgrade to ' + plan.name + '</button>';
     grid.appendChild(card);
   });
 }
-function switchPacksTab(tab) {
-  const slider = document.getElementById('packsSlider');
-  const tabBoosts = document.getElementById('tabBoosts');
-  const tabSubs = document.getElementById('tabSubscriptions');
-  const boostsPanel = document.getElementById('boostsPanel');
-  const subsPanel = document.getElementById('subscriptionsPanel');
-  if (tab === 'boosts') { slider.className = 'packs-tab-slider left'; tabBoosts.classList.add('active'); tabSubs.classList.remove('active'); boostsPanel.classList.add('active'); subsPanel.classList.remove('active'); }
-  else { slider.className = 'packs-tab-slider right'; tabBoosts.classList.remove('active'); tabSubs.classList.add('active'); boostsPanel.classList.remove('active'); subsPanel.classList.add('active'); }
-}
+function switchPacksTab(tab) { switchPacksTabRaw(tab); }
 
 async function startPayment(email, amount, plan, type) {
   try {
@@ -1560,9 +2153,19 @@ function renderReferralPage() {
     codeHint.style.color = '#64748b';
   }
   const btn = document.getElementById('claimVipBtn');
-  if (referralInfo.count >= 100 && !referralInfo.claimed) { btn.classList.add('unlocked'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-crown"></i> Claim Free VIP (1 Month)'; }
-  else if (referralInfo.claimed) { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-check"></i> VIP Already Claimed'; }
-  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP (' + referralInfo.count + '/100)'; }
+  if (referralInfo.count >= 100 && !referralInfo.claimed) {
+    btn.classList.add('unlocked');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-crown"></i> Claim Free VIP (1 Month)';
+  } else if (referralInfo.claimed) {
+    btn.classList.remove('unlocked');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-check"></i> VIP Already Claimed';
+  } else {
+    btn.classList.remove('unlocked');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP (' + referralInfo.count + '/100)';
+  }
 }
 async function createMyCode() {
   const input = document.getElementById('newCodeInput');
@@ -1586,33 +2189,13 @@ async function claimFreeVip() {
   } catch (e) { showToast('Network error'); }
 }
 
-// ============ INBOX ============
 function openInbox() {
   if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
   switchPage('inboxPage');
   switchInboxTab('notif');
   loadNotifications();
 }
-function switchInboxTab(tab) {
-  const slider = document.getElementById('inboxSlider');
-  const tabNotif = document.getElementById('tabNotif');
-  const tabSupport = document.getElementById('tabSupport');
-  const notifPanel = document.getElementById('notifPanel');
-  const supportPanel = document.getElementById('supportPanel');
-  if (tab === 'notif') {
-    slider.className = 'inbox-tab-slider left';
-    tabNotif.classList.add('active'); tabSupport.classList.remove('active');
-    notifPanel.classList.add('active'); supportPanel.classList.remove('active');
-    loadNotifications();
-  } else {
-    slider.className = 'inbox-tab-slider right';
-    tabNotif.classList.remove('active'); tabSupport.classList.add('active');
-    notifPanel.classList.remove('active'); supportPanel.classList.add('active');
-    loadSupportMessages();
-    if (supportPollRef) clearInterval(supportPollRef);
-    supportPollRef = setInterval(loadSupportMessages, 4000);
-  }
-}
+function switchInboxTab(tab) { switchInboxTabRaw(tab); }
 async function loadNotifications() {
   try {
     const data = await apiGet('/broadcasts');
@@ -1626,33 +2209,28 @@ function renderNotifications() {
   if (!notifications.length) { el.innerHTML = '<div class="no-results"><i class="fas fa-bell"></i><h3>No notifications</h3><p>You\'re all caught up!</p></div>'; return; }
   el.innerHTML = notifications.map(b => {
     const dt = b.created_at ? new Date(b.created_at).toLocaleString() : '';
-    return '<div class="notif-item" onclick="openNotification(' + b.id + ')">' +
-      '<div class="notif-icon"><i class="fas fa-bell"></i></div>' +
-      '<div class="notif-body"><h4>' + (b.title || 'Notification') + '</h4><p>' + (b.body || '') + '</p><div class="notif-date">' + dt + '</div></div>' +
+    return '<div class="notif-item" onclick="openNotification(' + b.id + ')" style="background:#fff; border-radius:14px; padding:14px; border:1px solid #edf0f3; margin-bottom:10px; display:flex; gap:12px; align-items:flex-start; cursor:pointer; box-shadow:0 2px 8px rgba(30,42,58,0.04);">' +
+      '<div style="width:42px; height:42px; border-radius:50%; background:linear-gradient(135deg,#ff6b00,#ff8f3f); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; box-shadow:0 3px 10px rgba(255,107,0,0.3);"><i class="fas fa-bell"></i></div>' +
+      '<div style="flex:1; min-width:0;"><h4 style="font-size:14px; font-weight:800; color:#1e2a3a; margin-bottom:4px;">' + (b.title || 'Notification') + '</h4><p style="font-size:13px; color:#5e6f7e; line-height:1.5; margin-bottom:6px;">' + (b.body || '') + '</p><div style="font-size:11px; color:#94a3b8;">' + dt + '</div></div>' +
     '</div>';
   }).join('');
 }
 async function openNotification(id) {
   const b = notifications.find(x => String(x.id) === String(id));
   if (!b) return;
-  document.getElementById('notifPopupTitle').textContent = b.title || 'Notification';
-  document.getElementById('notifPopupBody').textContent = b.body || '';
-  document.getElementById('notifPopup').classList.add('show');
+  alert((b.title || 'Notification') + '\n\n' + (b.body || ''));
   try { await apiPost('/admin/delete-broadcast', { id: id }); } catch (e) {}
   notifications = notifications.filter(x => String(x.id) !== String(id));
   renderNotifications();
   updateInboxBadge();
 }
-function closeNotifPopup() {
-  document.getElementById('notifPopup').classList.remove('show');
-}
 function updateInboxBadge() {
   const badge = document.getElementById('inboxBadge');
+  if (!badge) return;
   const count = notifications.length;
-  if (count > 0) { badge.textContent = count; badge.style.display = 'flex'; }
+  if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
   else { badge.style.display = 'none'; }
 }
-
 async function loadSupportMessages() {
   if (!userEmail) return;
   try {
@@ -1679,7 +2257,6 @@ async function sendSupportMsg() {
   try { const res = await apiPost('/dm/send', { user_email: userEmail, sender: 'user', body: text }); if (res && res.success) setTimeout(loadSupportMessages, 400); } catch (e) {}
 }
 
-// AUTH
 async function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
   const email = (document.getElementById('loginEmail').value || '').trim();
@@ -1747,7 +2324,6 @@ function handlePfpUpload(e) {
   r.readAsDataURL(f);
 }
 
-// AI CHAT
 function openAISupport() { switchPage('aiSupportPage'); }
 function openAIChatWith(q) {
   if (!aiConsented) { document.getElementById('aiConsentOverlay').classList.add('show'); window.pendingAIQuestion = q || ''; return; }
@@ -1875,7 +2451,6 @@ function buildAdStrip() {
 
 function switchPage(pageId) {
   if (accountDeleted) return;
-  if (pageId !== 'aiChatPage') { const msgs = document.getElementById('aiMessages'); if (msgs) msgs.innerHTML = '<div class="msg-bubble received">Hi! I\'m Lenidi AI. How can I help? 😊</div>'; }
   let target = document.getElementById(pageId);
   if (!target) target = document.getElementById(pageId + 'Page');
   if (!target) { console.warn('Page not found:', pageId); return; }
@@ -1890,7 +2465,7 @@ function switchPage(pageId) {
   if (pageId === 'referralPage') loadReferralInfo();
   if (pageId === 'home') { loadProducts(); }
   if (pageId !== 'inboxPage' && supportPollRef) { clearInterval(supportPollRef); supportPollRef = null; }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 buildAdStrip();
