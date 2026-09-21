@@ -9,12 +9,13 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 body { background: #f5f7fa; min-height: 100vh; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
-button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; transition: transform 0.1s ease, opacity 0.1s ease; }
-button:active { transform: scale(0.94); opacity: 0.85; }
-.top-bar { background: #fff; border-bottom: 1px solid #e9ecef; padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; }
+button, [onclick], .menu-item, .product-card, .collection-tab, .bottom-nav button, .watch-ad-card, .pricing-card, .boost-card, .promo-card { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1); }
+button:active, [onclick]:active, .menu-item:active, .product-card:active, .collection-tab:active, .bottom-nav button:active, .watch-ad-card:active, .pricing-card:active, .boost-card:active, .promo-card:active { transform: scale(0.92); }
+.top-bar { background: #fff; border-bottom: 1px solid #e9ecef; padding: 12px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50; box-shadow: 0 1px 8px rgba(0,0,0,0.02); }
 .logo-text { font-size: 22px; font-weight: 800; color: #1e2a3a; letter-spacing: -0.4px; }
 .logo-text span { color: #ff6b00; }
-.search-trigger { flex: 1; display: flex; align-items: center; gap: 10px; background: #f0f2f5; border-radius: 60px; padding: 11px 18px; border: 1px solid #e4e7ec; cursor: pointer; min-width: 0; }
+.search-trigger { flex: 1; display: flex; align-items: center; gap: 10px; background: #f0f2f5; border-radius: 60px; padding: 11px 18px; border: 1px solid #e4e7ec; cursor: pointer; min-width: 0; transition: all 0.2s; }
+.search-trigger:active { background: #e8ebef; }
 .search-trigger i { color: #8f9aa8; font-size: 15px; }
 .search-trigger span { color: #8f9aa8; font-size: 14px; }
 .categories { background: #fff; padding: 10px 16px; display: flex; gap: 22px; overflow-x: auto; border-bottom: 1px solid #e9ecef; scrollbar-width: none; }
@@ -24,28 +25,31 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .main-container { max-width: 1400px; margin: 0 auto; padding: 16px; width: 100%; }
 .page { display: none; }
 .page.active { display: block; }
-.promo-banner { background: linear-gradient(135deg, #1e2a3a, #2c3e50); border-radius: 16px; padding: 18px 20px; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; }
+.promo-banner { background: linear-gradient(135deg, #1e2a3a, #2c3e50); border-radius: 18px; padding: 20px 22px; color: #fff; display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(30,42,58,0.18); position: relative; overflow: hidden; }
+.promo-banner::before { content: ''; position: absolute; top: -50%; right: -20%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,107,0,0.18), transparent 60%); border-radius: 50%; pointer-events: none; }
 .promo-text h1 { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #fff; }
-.promo-text p { font-size: 12px; opacity: 0.9; color: #e0e6ed; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.promo-text p { font-size: 12px; opacity: 0.85; color: #e0e6ed; }
 .collection-tabs { display: flex; gap: 12px; margin-bottom: 18px; overflow-x: auto; scrollbar-width: none; padding-bottom: 6px; }
 .collection-tabs::-webkit-scrollbar { display: none; }
-.collection-tab { background: #fff; border: 1px solid #e4e7ec; padding: 9px 18px; border-radius: 30px; font-size: 13px; font-weight: 500; color: #1e2a3a; white-space: nowrap; cursor: pointer; }
-.collection-tab.active { background: #ff6b00; color: #fff; border-color: #ff6b00; font-weight: 600; }
+.collection-tab { background: #fff; border: 1px solid #e4e7ec; padding: 9px 18px; border-radius: 30px; font-size: 13px; font-weight: 500; color: #1e2a3a; white-space: nowrap; cursor: pointer; transition: all 0.2s; }
+.collection-tab.active { background: #ff6b00; color: #fff; border-color: #ff6b00; font-weight: 600; box-shadow: 0 4px 12px rgba(255,107,0,0.3); }
 .section-header { margin-bottom: 12px; }
 .section-header h2 { font-size: 18px; font-weight: 800; color: #1e2a3a; }
 .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.product-card { background: #fff; border-radius: 14px; overflow: hidden; border: 1px solid #edf0f3; display: flex; flex-direction: column; cursor: pointer; position: relative; }
-.product-card.boosted { border: 2px solid #ff6b00; box-shadow: 0 0 0 1px #ff6b00 inset; }
+.product-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid #edf0f3; display: flex; flex-direction: column; cursor: pointer; position: relative; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 2px 8px rgba(30,42,58,0.05); }
+.product-card:active { transform: scale(0.98); }
+.product-card.boosted { border: 2px solid #ff6b00; box-shadow: 0 4px 16px rgba(255,107,0,0.15); }
 .card-img { background: #eef1f5; height: 130px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
 .card-img i { font-size: 46px; color: #97a5b5; }
 .card-img img { width: 100%; height: 100%; object-fit: cover; }
-.card-badge { position: absolute; top: 8px; left: 8px; background: #ff6b00; color: #fff; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 20px; z-index: 2; }
+.card-img::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, rgba(255,255,255,0.15), transparent); pointer-events: none; }
+.card-badge { position: absolute; top: 8px; left: 8px; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; font-size: 9px; font-weight: 700; padding: 3px 9px; border-radius: 20px; z-index: 2; box-shadow: 0 2px 6px rgba(255,107,0,0.35); }
 .card-details { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
 .price { font-size: 15px; font-weight: 800; color: #1e2a3a; }
 .product-title { font-size: 12px; color: #2c3e50; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 32px; }
 .location { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #7f8c8d; }
 .location i { font-size: 10px; }
-.date-posted { font-size: 10px; color: #95a5a6; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.date-posted { font-size: 10px; color: #95a5a6; }
 .loader-3dots { display: flex; justify-content: center; align-items: center; gap: 8px; padding: 40px 16px; }
 .loader-3dots span { width: 14px; height: 14px; background: #3b82f6; border-radius: 50%; animation: bounce3 1.4s infinite ease-in-out both; }
 .loader-3dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -60,7 +64,7 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .search-input-wrap { flex: 1; display: flex; align-items: center; gap: 10px; background: #f0f2f5; border-radius: 60px; padding: 4px 4px 4px 16px; border: 1.5px solid #ff6b00; }
 .search-input-wrap i { color: #8f9aa8; font-size: 15px; }
 .search-input-wrap input { flex: 1; border: none; background: transparent; padding: 10px 8px; font-size: 14px; outline: none; min-width: 0; }
-.search-input-wrap button { background: #ff6b00; color: #fff; border: none; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 13px; }
+.search-input-wrap button { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 13px; box-shadow: 0 2px 8px rgba(255,107,0,0.3); }
 .filter-row { display: flex; align-items: center; justify-content: flex-end; padding: 10px 16px; background: #fff; border-bottom: 1px solid #e9ecef; }
 .filter-btn { display: flex; align-items: center; gap: 6px; background: #f0f2f5; border: 1px solid #e4e7ec; padding: 8px 18px; border-radius: 40px; font-size: 13px; font-weight: 600; color: #1e2a3a; }
 .filter-btn i { color: #ff6b00; font-size: 14px; }
@@ -69,14 +73,14 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .suggestion-tag { display: inline-block; background: #fff; border: 1px solid #e4e7ec; padding: 8px 16px; border-radius: 40px; font-size: 13px; color: #2c3e50; margin: 0 8px 8px 0; cursor: pointer; }
 .filter-page-header { display: flex; align-items: center; gap: 12px; background: #fff; padding: 14px 16px; border-bottom: 1px solid #e9ecef; }
 .filter-page-header .back-btn { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px; }
-.filter-page-header h3 { font-size: 17px; color: #1e2a3a; display: flex; align-items: center; gap: 6px; }
+.filter-page-header h3 { font-size: 17px; color: #1e2a3a; }
 .filter-body { padding: 16px; max-width: 380px; margin: 0 auto; }
-.filter-section { background: #fff; border-radius: 16px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 12px; }
+.filter-section { background: #fff; border-radius: 16px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(30,42,58,0.04); }
 .filter-section h4 { font-size: 13px; color: #1e2a3a; margin-bottom: 10px; font-weight: 700; }
 .filter-price-row { display: flex; gap: 8px; align-items: center; }
 .filter-price-row input { width: 80px; padding: 8px 10px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 13px; outline: none; }
 .filter-select, .filter-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid #e2e8f0; font-size: 13px; outline: none; }
-.filter-show-btn { background: #ff6b00; color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; }
+.filter-show-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; box-shadow: 0 6px 16px rgba(255,107,0,0.3); }
 .detail-gallery { background: #000; height: 55vh; min-height: 340px; max-height: 560px; position: relative; overflow: hidden; }
 .gallery-scroll { display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; }
 .gallery-scroll::-webkit-scrollbar { display: none; }
@@ -87,7 +91,7 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .gallery-heart { position: absolute; top: 10px; right: 10px; background: transparent; border: none; font-size: 20px; color: #fff; z-index: 3; padding: 4px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
 .gallery-heart.saved { color: #000; }
 .gallery-back { position: absolute; top: 10px; left: 10px; background: transparent; border: none; font-size: 20px; color: #fff; z-index: 3; padding: 4px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
-.detail-badge-overlay { position: absolute; top: 54px; left: 12px; background: #ff6b00; color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; z-index: 3; }
+.detail-badge-overlay { position: absolute; top: 54px; left: 12px; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; z-index: 3; box-shadow: 0 2px 8px rgba(255,107,0,0.4); }
 .gallery-dots { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 3; }
 .gallery-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.5); }
 .gallery-dot.active { background: #fff; width: 18px; border-radius: 4px; }
@@ -98,20 +102,20 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .detail-price-big { font-size: 22px; font-weight: 800; color: #16a34a; }
 .detail-neg { font-size: 13px; color: #7f8c8d; }
 .detail-btn-stack { display: flex; flex-direction: column; gap: 8px; margin-left: auto; }
-.boost-inline-btn, .delete-inline-btn { color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; text-align: center; }
-.boost-inline-btn { background: #ff6b00; }
-.delete-inline-btn { background: #ef4444; }
-.detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #fff; border-radius: 14px; padding: 16px; border: 1px solid #edf0f3; }
+.boost-inline-btn, .delete-inline-btn { color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; text-align: center; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.boost-inline-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); }
+.delete-inline-btn { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.detail-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; background: #fff; border-radius: 14px; padding: 16px; border: 1px solid #edf0f3; box-shadow: 0 2px 8px rgba(30,42,58,0.04); }
 .meta-cell { display: flex; flex-direction: column; gap: 4px; }
 .meta-cell .meta-value { font-size: 15px; font-weight: 700; color: #1e2a3a; word-break: break-word; }
 .meta-cell .meta-label { font-size: 10px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
 .meta-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; color: #166534; background: #dcfce7; padding: 4px 10px; border-radius: 20px; font-weight: 700; width: fit-content; margin-top: 2px; }
 .meta-chip i { color: #16a34a; font-size: 10px; }
-.detail-desc { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-top: 16px; margin-bottom: 18px; }
+.detail-desc { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-top: 16px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(30,42,58,0.04); }
 .detail-desc h4 { font-size: 12px; color: #7f8c8d; margin-bottom: 6px; text-transform: uppercase; }
 .detail-desc p { font-size: 14px; color: #2c3e50; line-height: 1.6; }
-.seller-card { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 14px; cursor: pointer; position: relative; }
-.seller-avatar { width: 48px; height: 48px; border-radius: 50%; background: #ff6b00; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
+.seller-card { display: flex; align-items: center; gap: 14px; background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 14px; cursor: pointer; position: relative; box-shadow: 0 2px 8px rgba(30,42,58,0.04); }
+.seller-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0; overflow: hidden; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
 .seller-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .seller-info { flex: 1; min-width: 0; }
 .seller-info h4 { font-size: 15px; color: #1e2a3a; margin-bottom: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
@@ -121,16 +125,18 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .seller-menu-popup.show { display: block; }
 .seller-menu-item { display: flex; align-items: center; gap: 10px; padding: 13px 16px; font-size: 13px; font-weight: 700; color: #1e2a3a; cursor: pointer; }
 .seller-menu-item.report, .seller-menu-item.block { color: #b91c1c; }
-.chat-btn { background: #25D366; color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; }
+.chat-btn { background: linear-gradient(135deg, #25D366, #1eaf54); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; box-shadow: 0 6px 16px rgba(37,211,102,0.3); }
 .other-ads-title { font-size: 15px; font-weight: 700; color: #1e2a3a; margin: 20px 0 10px; }
-.verify-mark { font-size: 14px; }
+
+/* VERIFY BADGE — star seal shape */
 .verify-badge { display: inline-flex; position: relative; width: 16px; height: 16px; vertical-align: middle; margin-left: 3px; flex-shrink: 0; }
 .verify-badge i.fa-certificate { font-size: 16px; position: absolute; top: 0; left: 0; line-height: 1; }
-.verify-badge i.fa-check { font-size: 6.5px; color: #fff !important; position: absolute; top: 4.5px; left: 4.5px; line-height: 1; }
+.verify-badge i.fa-check { font-size: 6.5px; color: #fff !important; position: absolute; top: 5px; left: 5px; line-height: 1; }
 .verify-badge.verify-yellow i.fa-certificate { color: #f5c518; }
 .verify-badge.verify-orange i.fa-certificate { color: #ff6b00; }
 .verify-badge.verify-purple i.fa-certificate { color: #8b5cf6; }
 .verify-badge.verify-blue i.fa-certificate { color: #3b82f6; }
+
 .saves-header { margin-bottom: 16px; }
 .saves-header h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
 .saves-header p { color: #5e6f7e; font-size: 14px; }
@@ -139,12 +145,13 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .empty-state i { font-size: 48px; color: #cbd5e0; margin-bottom: 12px; }
 .empty-state h3 { font-size: 18px; color: #1e2a3a; margin-bottom: 6px; }
 .empty-state p { color: #7f8c8d; font-size: 13px; }
-.sell-container { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #edf0f3; }
+.sell-container { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #edf0f3; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
 .sell-container h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
 .sell-container > p { color: #5e6f7e; margin-bottom: 18px; font-size: 13px; }
 .form-group { margin-bottom: 14px; }
 .form-group label { display: block; font-weight: 600; font-size: 13px; color: #1e2a3a; margin-bottom: 6px; }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; background: #fafcff; outline: none; font-family: inherit; }
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; background: #fafcff; outline: none; font-family: inherit; transition: border-color 0.2s; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #ff6b00; }
 .form-group textarea { min-height: 90px; resize: vertical; }
 .upload-area { border: 2px dashed #d0d7de; border-radius: 16px; padding: 22px 12px; text-align: center; background: #fafcff; cursor: pointer; }
 .upload-area i { font-size: 28px; color: #ff6b00; margin-bottom: 8px; }
@@ -153,10 +160,10 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .upload-preview .preview-item { width: 70px; height: 70px; border-radius: 12px; border: 1px solid #e4e7ec; overflow: hidden; }
 .upload-preview .preview-item img { width: 100%; height: 100%; object-fit: cover; }
 .sell-actions { display: flex; gap: 10px; margin-top: 14px; }
-.btn-primary { background: #ff6b00; color: #fff; border: none; padding: 14px 24px; border-radius: 60px; font-weight: 700; font-size: 15px; flex: 1; }
+.btn-primary { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px 24px; border-radius: 60px; font-weight: 700; font-size: 15px; flex: 1; box-shadow: 0 6px 16px rgba(255,107,0,0.3); }
 .btn-clear { background: #f0f4f9; color: #1e2a3a; border: none; padding: 14px 24px; border-radius: 60px; font-weight: 700; font-size: 15px; flex: 1; }
 .boost-page-wrap { padding: 16px; max-width: 420px; margin: 0 auto; }
-.boost-page-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; text-align: center; box-shadow: 0 8px 24px rgba(255,107,0,0.15); }
+.boost-page-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; text-align: center; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
 .boost-ring { width: 90px; height: 90px; border-radius: 50%; background: #fff7ed; border: 3px dashed #ff6b00; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
 .boost-ring i { font-size: 38px; color: #ff6b00; }
 .boost-page-card h2 { font-size: 20px; font-weight: 800; color: #1e2a3a; margin-bottom: 8px; }
@@ -165,13 +172,13 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .bill-box { background: #f5f7fa; border-radius: 14px; padding: 16px; margin-bottom: 16px; text-align: left; }
 .bill-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 13px; color: #3a4b5c; }
 .bill-row.total { border-top: 1px dashed #d0d7de; margin-top: 6px; padding-top: 10px; font-weight: 800; color: #1e2a3a; font-size: 15px; }
-.boost-confirm-btn { background: #16a34a; color: #fff; border: none; padding: 15px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-bottom: 10px; }
+.boost-confirm-btn { background: linear-gradient(135deg, #16a34a, #22c55e); color: #fff; border: none; padding: 15px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-bottom: 10px; box-shadow: 0 6px 16px rgba(22,163,74,0.3); }
 .boost-cancel-btn { background: #f0f4f9; color: #1e2a3a; border: none; padding: 15px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; }
 .packs-header { text-align: center; margin-bottom: 16px; }
 .packs-header h2 { font-size: 22px; font-weight: 800; color: #1e2a3a; margin-bottom: 6px; }
 .packs-header p { font-size: 13px; color: #5e6f7e; }
-.packs-tab-bar { display: flex; background: #fff; border-radius: 60px; padding: 4px; margin: 0 auto 20px; max-width: 340px; border: 1px solid #e4e7ec; position: relative; overflow: hidden; }
-.packs-tab-slider { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: #ff6b00; border-radius: 60px; transition: transform 0.3s; z-index: 1; }
+.packs-tab-bar { display: flex; background: #fff; border-radius: 60px; padding: 4px; margin: 0 auto 20px; max-width: 340px; border: 1px solid #e4e7ec; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(30,42,58,0.06); }
+.packs-tab-slider { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 60px; transition: transform 0.3s; z-index: 1; }
 .packs-tab-slider.left { transform: translateX(0); }
 .packs-tab-slider.right { transform: translateX(100%); }
 .packs-tab-bar button { flex: 1; background: transparent; border: none; padding: 10px 8px; font-size: 13px; font-weight: 700; color: #3a4b5c; position: relative; z-index: 2; }
@@ -179,13 +186,13 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .packs-panel { display: none; }
 .packs-panel.active { display: block; }
 .pricing-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.pricing-card { background: #fff; border-radius: 16px; padding: 14px; border: 1px solid #edf0f3; display: flex; flex-direction: column; position: relative; }
+.pricing-card { background: #fff; border-radius: 16px; padding: 14px; border: 1px solid #edf0f3; display: flex; flex-direction: column; position: relative; box-shadow: 0 3px 12px rgba(30,42,58,0.05); }
 .pricing-card.popular { border: 2px solid #ff6b00; }
 .pricing-card.ring-yellow { border: 3px solid #f5c518; }
 .pricing-card.ring-orange { border: 3px solid #ff6b00; }
 .pricing-card.ring-purple { border: 3px solid #8b5cf6; }
 .pricing-card.ring-blue { border: 3px solid #3b82f6; }
-.popular-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #ff6b00; color: #fff; font-weight: 700; font-size: 10px; padding: 4px 14px; border-radius: 40px; }
+.popular-badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; font-weight: 700; font-size: 10px; padding: 4px 14px; border-radius: 40px; box-shadow: 0 4px 10px rgba(255,107,0,0.3); }
 .pack-name { font-size: 16px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 .pack-price { font-size: 22px; font-weight: 800; color: #1e2a3a; margin-bottom: 2px; }
 .pack-price span { font-size: 12px; font-weight: 500; color: #7f8c8d; }
@@ -197,24 +204,23 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .pricing-card.ring-orange .pack-features i { color: #ff6b00; }
 .pricing-card.ring-purple .pack-features i { color: #8b5cf6; }
 .pricing-card.ring-blue .pack-features i { color: #3b82f6; }
-.pack-btn { border: none; padding: 11px; border-radius: 60px; font-weight: 700; font-size: 13px; }
-.pack-btn-plus { background: #f5c518; color: #fff; }
-.pack-btn-pro { background: #ff6b00; color: #fff; }
-.pack-btn-premium { background: #8b5cf6; color: #fff; }
-.pack-btn-vip { background: #3b82f6; color: #fff; }
+.pack-btn { border: none; padding: 11px; border-radius: 60px; font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.pack-btn-plus { background: linear-gradient(135deg, #f5c518, #e6b400); color: #fff; }
+.pack-btn-pro { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; }
+.pack-btn-premium { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; }
+.pack-btn-vip { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
 .boost-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.boost-card { background: #fff; border-radius: 16px; padding: 14px 8px; border: 1px solid #edf0f3; text-align: center; }
+.boost-card { background: #fff; border-radius: 16px; padding: 14px 8px; border: 1px solid #edf0f3; text-align: center; box-shadow: 0 3px 10px rgba(30,42,58,0.04); }
 .boost-amount { font-size: 18px; font-weight: 800; color: #1e2a3a; margin-bottom: 2px; }
 .boost-label { font-size: 10px; color: #7f8c8d; margin-bottom: 8px; }
 .boost-price { font-size: 14px; font-weight: 800; color: #ff6b00; margin-bottom: 10px; }
-.boost-btn { background: #ff6b00; color: #fff; border: none; padding: 10px 6px; border-radius: 40px; font-weight: 700; font-size: 12px; width: 100%; }
-.sub-timer-banner { border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; border: 1px solid; }
+.boost-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 10px 6px; border-radius: 40px; font-weight: 700; font-size: 12px; width: 100%; box-shadow: 0 3px 10px rgba(255,107,0,0.25); }
+.sub-timer-banner { border-radius: 14px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 12px; border: 1px solid; box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
 .sub-timer-banner i { font-size: 22px; }
 .sub-timer-banner .sub-info { flex: 1; }
 .sub-timer-banner .sub-info h4 { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
 .sub-timer-banner .sub-info p { font-size: 12px; }
 .sub-timer-banner .sub-countdown { font-size: 18px; font-weight: 800; }
-.sub-renew-btn { background: #3b82f6; color: #fff; border: none; padding: 10px 16px; border-radius: 60px; font-weight: 700; font-size: 12px; }
 .sub-timer-yellow { background: linear-gradient(135deg, #fef9c3, #fde68a); border-color: #f5c518; }
 .sub-timer-yellow i, .sub-timer-yellow .sub-info h4, .sub-timer-yellow .sub-info p, .sub-timer-yellow .sub-countdown { color: #854d0e; }
 .sub-timer-orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); border-color: #ff6b00; }
@@ -223,8 +229,8 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .sub-timer-purple i, .sub-timer-purple .sub-info h4, .sub-timer-purple .sub-info p, .sub-timer-purple .sub-countdown { color: #5b21b6; }
 .sub-timer-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-color: #3b82f6; }
 .sub-timer-blue i, .sub-timer-blue .sub-info h4, .sub-timer-blue .sub-info p, .sub-timer-blue .sub-countdown { color: #1e40af; }
-.profile-header { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 20px; padding: 18px; border: 1px solid #edf0f3; margin-bottom: 20px; flex-wrap: wrap; }
-.profile-avatar { width: 68px; height: 68px; background: #ff6b00; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 700; flex-shrink: 0; cursor: pointer; position: relative; overflow: hidden; }
+.profile-header { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 20px; padding: 18px; border: 1px solid #edf0f3; margin-bottom: 20px; flex-wrap: wrap; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
+.profile-avatar { width: 68px; height: 68px; background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 700; flex-shrink: 0; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(255,107,0,0.3); }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-avatar .edit-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.5); color: #fff; font-size: 9px; text-align: center; padding: 2px 0; font-weight: 600; }
 .profile-info { flex: 1; min-width: 0; }
@@ -238,37 +244,38 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .stat-label { font-size: 11px; color: #7f8c8d; }
 .stat.boosts .stat-number { color: #ff6b00; }
 .profile-menu { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 24px; }
-.menu-item { background: #fff; border-radius: 14px; padding: 15px; display: flex; align-items: center; gap: 14px; border: 1px solid #edf0f3; cursor: pointer; position: relative; }
+.menu-item { background: #fff; border-radius: 14px; padding: 15px; display: flex; align-items: center; gap: 14px; border: 1px solid #edf0f3; cursor: pointer; box-shadow: 0 2px 8px rgba(30,42,58,0.04); transition: transform 0.15s; }
+.menu-item:active { transform: scale(0.985); }
 .menu-item i:first-child { font-size: 20px; color: #ff6b00; width: 28px; text-align: center; }
-.menu-item span { font-weight: 600; color: #1e2a3a; font-size: 14px; flex: 1; display: flex; align-items: center; gap: 6px; }
+.menu-item span { font-weight: 600; color: #1e2a3a; font-size: 14px; flex: 1; }
 .menu-item .fa-chevron-right { color: #b0bec5; font-size: 12px; }
 .menu-item.delete-item i:first-child { color: #ef4444; }
 .menu-item.delete-item span { color: #ef4444; }
-.menu-item.referral-blue i:first-child { color: #3b82f6 !important; }
-.menu-item.referral-blue span { color: #3b82f6 !important; font-weight: 700 !important; }
+.menu-item.referral-item i:first-child { color: #3b82f6; }
+.menu-item.referral-item span { color: #3b82f6; font-weight: 700; }
 .menu-item .unread-badge { position: absolute; top: 12px; right: 40px; background: #ef4444; color: #fff; font-size: 10px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 20px; display: none; align-items: center; justify-content: center; padding: 0 5px; }
-.watch-ad-card { background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 16px; padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; border: none; width: 100%; text-align: left; }
-.watch-ad-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.menu-item { position: relative; }
+.watch-ad-card { background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 16px; padding: 16px 18px; color: #fff; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; border: none; width: 100%; text-align: left; box-shadow: 0 6px 20px rgba(255,107,0,0.3); position: relative; overflow: hidden; }
+.watch-ad-card::before { content: ''; position: absolute; top: -50%; left: -10%; width: 150px; height: 150px; background: radial-gradient(circle, rgba(255,255,255,0.18), transparent 60%); border-radius: 50%; pointer-events: none; }
+.watch-ad-icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
 .watch-ad-icon i { font-size: 20px; color: #fff; }
 .watch-ad-text { flex: 1; }
 .watch-ad-text h4 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
 .watch-ad-text p { font-size: 12px; opacity: 0.9; }
-.watch-ad-btn { background: #fff; color: #ff6b00; border: none; padding: 9px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; flex-shrink: 0; }
-.auth-bar { display: none; }
-.auth-page-container { max-width: 420px; margin: 0 auto; padding: 16px; }
-.auth-page-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; }
-.auth-page-card h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
-.auth-page-card > p { font-size: 14px; color: #7f8c8d; margin-bottom: 20px; }
-.auth-page-card .form-group { margin-bottom: 16px; }
-.auth-page-card .form-group input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; text-align: left; }
-.referral-input-signup { text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
-.referral-optional-tag { font-size: 11px; color: #94a3b8; font-weight: 500; margin-left: 4px; text-transform: none; letter-spacing: 0; }
+.watch-ad-btn { background: #fff; color: #ff6b00; border: none; padding: 9px 16px; border-radius: 40px; font-weight: 700; font-size: 12px; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,0,0,0.12); }
+.auth-bar { display: flex; align-items: center; justify-content: space-between; background: #fff; border-radius: 16px; padding: 14px 18px; border: 1px solid #edf0f3; gap: 12px; }
+.auth-bar-info h4 { font-size: 14px; color: #1e2a3a; margin-bottom: 2px; }
+.auth-bar-info p { font-size: 12px; color: #7f8c8d; }
+.auth-bar-buttons { display: flex; gap: 8px; flex-shrink: 0; }
+.auth-btn { padding: 10px 22px; border-radius: 60px; font-weight: 600; font-size: 13px; border: none; white-space: nowrap; }
+.auth-btn.signin { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
+.auth-btn.logout { background: #f0f4f9; color: #1e2a3a; }
 .listings-header { margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
 .listings-header .back-btn { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px; }
 .listings-header h2 { font-size: 20px; color: #1e2a3a; }
 .conv-header { display: flex; align-items: center; gap: 12px; background: #fff; padding: 10px 12px; border-bottom: 1px solid #e9ecef; }
 .conv-header .back-btn { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px; }
-.conv-avatar { width: 40px; height: 40px; border-radius: 50%; background: #ff6b00; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; }
+.conv-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
 .conv-user { flex: 1; }
 .conv-user h4 { font-size: 15px; color: #1e2a3a; display: flex; align-items: center; gap: 6px; }
 .conv-user span { font-size: 11px; color: #22c55e; font-weight: 600; }
@@ -278,16 +285,25 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .conv-menu-item { display: flex; align-items: center; gap: 10px; padding: 13px 16px; font-size: 13px; font-weight: 700; color: #ef4444; cursor: pointer; }
 .conversation-page { display: flex; flex-direction: column; height: calc(100dvh - 68px); }
 .conv-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; background: #f5f7fa; }
-.msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+.msg-bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; word-wrap: break-word; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 .msg-bubble.received { background: #fff; color: #1e2a3a; align-self: flex-start; border-bottom-left-radius: 4px; }
 .msg-bubble.sent { background: #d9fdd3; color: #1e2a3a; align-self: flex-end; border-bottom-right-radius: 4px; }
 .conv-input-bar { display: flex; align-items: center; gap: 8px; background: #fff; padding: 8px 12px; border-top: 1px solid #e9ecef; }
 .conv-input-bar input { flex: 1; border: 1px solid #e4e7ec; background: #f5f7fa; padding: 12px 16px; border-radius: 24px; font-size: 14px; outline: none; min-width: 0; }
-.conv-send-btn { background: #ff6b00; color: #fff; border: none; padding: 12px 18px; border-radius: 24px; font-weight: 700; font-size: 13px; }
-.seller-profile-header { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 20px; padding: 18px; border: 1px solid #edf0f3; margin-bottom: 20px; }
-.seller-profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: #ff6b00; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; }
+.conv-send-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 12px 18px; border-radius: 24px; font-weight: 700; font-size: 13px; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
+.seller-profile-header { display: flex; align-items: center; gap: 16px; background: #fff; border-radius: 20px; padding: 18px; border: 1px solid #edf0f3; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
+.seller-profile-avatar { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; box-shadow: 0 4px 12px rgba(255,107,0,0.3); }
 .seller-profile-info h2 { font-size: 19px; color: #1e2a3a; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .seller-profile-info p { font-size: 13px; color: #7f8c8d; }
+.ai-support-hero { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #edf0f3; margin-bottom: 16px; text-align: center; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
+.ai-support-hero .ai-big-icon { width: 68px; height: 68px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 6px 16px rgba(255,107,0,0.35); }
+.ai-support-hero .ai-big-icon i { font-size: 28px; color: #fff; }
+.ai-support-hero h2 { font-size: 19px; font-weight: 800; color: #1e2a3a; margin-bottom: 6px; }
+.ai-support-hero p { font-size: 13px; color: #7f8c8d; line-height: 1.5; }
+.ai-contact-card { background: #fff7ed; border: 1px solid #ffe0b2; border-radius: 16px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+.ai-contact-card i { color: #25D366; font-size: 22px; }
+.ai-contact-card h4 { font-size: 13px; color: #c2410c; font-weight: 700; margin-bottom: 2px; }
+.ai-contact-card p { font-size: 15px; color: #1e2a3a; font-weight: 700; }
 .suspended-overlay { position: fixed; inset: 0; background: #0f172a; color: #fff; z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 32px 24px; text-align: center; }
 .suspended-overlay.show { display: flex; }
 .lock-icon { width: 90px; height: 90px; border-radius: 50%; background: rgba(239,68,68,0.15); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
@@ -297,21 +313,28 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .countdown { font-size: 40px; font-weight: 800; color: #ff6b00; margin: 16px 0; }
 .contact { font-size: 13px; color: #94a3b8; margin-top: 20px; }
 .contact a { color: #22c55e; text-decoration: none; font-weight: 700; }
-.create-account-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px 28px; border-radius: 60px; font-weight: 700; font-size: 15px; margin-bottom: 16px; margin-top: 8px; }
-.confirm-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; text-align: center; max-width: 420px; margin: 0 auto; }
+.auth-page-container { max-width: 420px; margin: 0 auto; padding: 16px; }
+.auth-page-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
+.auth-page-card h2 { font-size: 20px; color: #1e2a3a; margin-bottom: 6px; }
+.auth-page-card > p { font-size: 14px; color: #7f8c8d; margin-bottom: 20px; }
+.auth-page-card .form-group { margin-bottom: 16px; }
+.auth-page-card .form-group input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; }
+.auth-page-card .form-group input:focus { border-color: #ff6b00; }
+.confirm-card { background: #fff; border-radius: 20px; padding: 22px; border: 1px solid #edf0f3; text-align: center; max-width: 420px; margin: 0 auto; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
 .confirm-card h2 { font-size: 19px; color: #1e2a3a; margin-bottom: 8px; }
 .confirm-card p { font-size: 14px; color: #7f8c8d; margin-bottom: 22px; }
 .confirm-buttons { display: flex; gap: 12px; }
 .confirm-buttons button { flex: 1; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 14px; border: none; }
-.confirm-yes { background: #ef4444; color: #fff; }
+.confirm-yes { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
 .confirm-no { background: #f0f4f9; color: #1e2a3a; }
-.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #1e2a3a; color: #fff; padding: 12px 22px; border-radius: 60px; font-size: 13px; font-weight: 600; z-index: 2000; display: none; align-items: center; gap: 10px; }
+.toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #1e2a3a; color: #fff; padding: 12px 22px; border-radius: 60px; font-size: 13px; font-weight: 600; z-index: 2000; display: none; align-items: center; gap: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
 .toast.show { display: flex; }
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e9ecef; display: flex; justify-content: space-around; align-items: center; padding: 8px 4px 10px; z-index: 1000; height: 68px; }
-.bottom-nav button { background: transparent; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #8f9aa8; flex: 1; max-width: 90px; position: relative; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e9ecef; display: flex; justify-content: space-around; align-items: center; padding: 8px 4px 10px; z-index: 1000; height: 68px; box-shadow: 0 -2px 12px rgba(0,0,0,0.04); }
+.bottom-nav button { background: transparent; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: #8f9aa8; flex: 1; max-width: 90px; }
 .bottom-nav button i { font-size: 22px; }
 .bottom-nav button.active, .bottom-nav button.active i { color: #ff6b00; font-weight: 600; }
 .bottom-nav .nav-dot { position: absolute; top: 2px; right: 20px; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 16px; height: 16px; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.bottom-nav button { position: relative; }
 .typing-dots { display: inline-flex; align-items: center; gap: 4px; padding: 4px 0; }
 .typing-dots span { width: 8px; height: 8px; background: #b0bec5; border-radius: 50%; display: inline-block; animation: typingBounce 1.2s infinite ease-in-out; }
 .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
@@ -325,7 +348,7 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .fs-scroll::-webkit-scrollbar { display: none; }
 .fs-slide { flex: 0 0 100%; height: 100%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; }
 .fs-slide img { width: 100%; height: 100%; object-fit: cover; }
-.promo-card { min-width: 170px; border-radius: 18px; padding: 16px 14px; display: flex; align-items: center; gap: 14px; border: 2px solid; min-height: 96px; }
+.promo-card { min-width: 170px; border-radius: 18px; padding: 16px 14px; display: flex; align-items: center; gap: 14px; border: 2px solid; min-height: 96px; box-shadow: 0 4px 12px rgba(30,42,58,0.06); }
 .promo-card .promo-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
 .promo-card .promo-title { font-size: 15px; font-weight: 800; color: #1e2a3a; line-height: 1.2; }
 .promo-card .promo-desc { font-size: 12px; color: #5e6f7e; line-height: 1.3; }
@@ -341,41 +364,70 @@ button:active { transform: scale(0.94); opacity: 0.85; }
 .promo-card.red-card .promo-icon { background: #e53935; color: #fff; }
 .promo-card.amber-card { background: #fff8e1; border-color: #ffca28; }
 .promo-card.amber-card .promo-icon { background: #ffa000; color: #fff; }
-.referral-hero { background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 20px; padding: 26px 22px; color: #fff; text-align: center; margin-bottom: 16px; }
-.referral-hero .hero-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; }
-.referral-hero h2 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-.referral-hero p { font-size: 13px; opacity: 0.9; line-height: 1.5; }
-.referral-progress-card { background: #fff; border-radius: 20px; padding: 24px 20px; border: 1px solid #edf0f3; text-align: center; margin-bottom: 16px; }
-.referral-progress-card .count-big { font-size: 48px; font-weight: 800; color: #1e40af; line-height: 1; margin-bottom: 8px; letter-spacing: -1px; }
-.referral-progress-card .count-label { font-size: 14px; color: #7f8c8d; font-weight: 600; }
+.ai-consent-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 8000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.ai-consent-overlay.show { display: flex; }
+.ai-consent-box { background: #fff; border-radius: 20px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.ai-consent-box .ai-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; box-shadow: 0 6px 16px rgba(255,107,0,0.35); }
+.ai-consent-box .ai-icon i { font-size: 26px; color: #fff; }
+.ai-consent-box h3 { font-size: 18px; color: #1e2a3a; margin-bottom: 8px; }
+.ai-consent-box p { font-size: 13px; color: #5e6f7e; line-height: 1.6; margin-bottom: 18px; }
+.ai-consent-buttons { display: flex; gap: 10px; }
+.ai-consent-buttons button { flex: 1; padding: 13px; border-radius: 60px; font-weight: 700; font-size: 13px; border: none; }
+.ai-consent-accept { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; box-shadow: 0 4px 12px rgba(255,107,0,0.3); }
+.ai-consent-decline { background: #f0f4f9; color: #1e2a3a; }
+
+/* REFERRAL */
+.referral-hero { background: linear-gradient(135deg, #3b82f6, #1e40af); border-radius: 20px; padding: 26px 22px; color: #fff; text-align: center; margin-bottom: 16px; box-shadow: 0 8px 24px rgba(30,64,175,0.25); position: relative; overflow: hidden; }
+.referral-hero::before { content: ''; position: absolute; top: -60%; right: -20%; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,255,255,0.15), transparent 60%); border-radius: 50%; }
+.referral-hero .hero-icon { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 32px; position: relative; }
+.referral-hero h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; position: relative; }
+.referral-hero p { font-size: 13px; opacity: 0.9; line-height: 1.5; position: relative; }
+.referral-progress-card { background: #fff; border-radius: 20px; padding: 20px; border: 1px solid #edf0f3; text-align: center; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(30,42,58,0.05); }
+.referral-progress-card .count-big { font-size: 32px; font-weight: 800; color: #1e40af; line-height: 1; }
 .referral-code-box { background: #f0f9ff; border: 2px dashed #3b82f6; border-radius: 14px; padding: 16px; margin-bottom: 14px; text-align: center; }
 .referral-code-box .code-label { font-size: 11px; color: #1e40af; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
 .referral-code-box .code-value { font-size: 24px; font-weight: 800; color: #1e40af; letter-spacing: 3px; }
 .referral-code-box .code-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
 .referral-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
 .referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; outline: none; }
+.referral-input-row input:focus { border-color: #3b82f6; }
 .btn-claim { width: 100%; padding: 16px; border-radius: 60px; border: none; font-weight: 800; font-size: 15px; background: #cbd5e1; color: #64748b; cursor: not-allowed; }
-.btn-claim.unlocked { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; cursor: pointer; }
-.btn-blue { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; }
-.inbox-item { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
-.inbox-icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-.inbox-body { flex: 1; min-width: 0; }
-.inbox-body h4 { font-size: 14px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
-.inbox-body p { font-size: 13px; color: #5e6f7e; line-height: 1.5; margin-bottom: 6px; }
-.inbox-body .inbox-date { font-size: 11px; color: #94a3b8; }
+.btn-claim.unlocked { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; cursor: pointer; box-shadow: 0 6px 16px rgba(30,64,175,0.3); }
+.btn-blue { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; margin-top: 8px; box-shadow: 0 4px 12px rgba(30,64,175,0.25); }
+.referral-badge-inline { font-size: 10px; color: #94a3b8; font-weight: 500; margin-left: 4px; text-transform: none; letter-spacing: 0; }
 
-/* SERVICES FULLSCREEN */
-.services-fullscreen { position: fixed; inset: 0; background: #f5f7fa; z-index: 2000; display: flex; flex-direction: column; overflow-y: auto; }
-.services-topbar { display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 14px 16px; border-bottom: 1px solid #e9ecef; position: sticky; top: 0; z-index: 10; }
-.services-topbar h3 { font-size: 17px; font-weight: 800; color: #1e2a3a; }
-.services-back { background: transparent; border: none; font-size: 20px; color: #1e2a3a; padding: 4px 8px; cursor: pointer; }
-.services-body { flex: 1; padding: 28px 20px; max-width: 520px; margin: 0 auto; width: 100%; }
-.services-label { font-size: 13px; font-weight: 800; color: #1e2a3a; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 18px; text-align: center; }
+/* SERVICES PAGE */
+.services-body { padding: 16px; max-width: 520px; margin: 0 auto; }
+.services-warning { text-align: center; font-size: 15px; font-weight: 900; color: #000; margin-bottom: 22px; line-height: 1.4; }
 .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.service-card { background: #eff6ff; border: 2px solid #3b82f6; border-radius: 20px; padding: 32px 14px; text-align: center; cursor: pointer; transition: all 0.15s; }
-.service-card:active { transform: scale(0.97); background: #dbeafe; }
-.service-card h4 { font-size: 15px; font-weight: 800; color: #1e40af; margin-bottom: 6px; line-height: 1.3; }
-.service-card p { font-size: 12px; color: #3b82f6; }
+.service-card { background: #fff7ed; border: 2px solid #ff6b00; border-radius: 20px; padding: 32px 14px; text-align: center; cursor: pointer; }
+.service-card h4 { font-size: 15px; font-weight: 800; color: #c2410c; margin-bottom: 6px; }
+.service-card p { font-size: 12px; color: #ff6b00; }
+
+/* INBOX */
+.inbox-tab-bar { display: flex; background: #fff; border-radius: 60px; padding: 4px; margin: 0 auto 20px; max-width: 380px; border: 1px solid #e4e7ec; position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(30,42,58,0.06); }
+.inbox-tab-slider { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: linear-gradient(135deg, #ff6b00, #ff8f3f); border-radius: 60px; transition: transform 0.3s; z-index: 1; }
+.inbox-tab-slider.left { transform: translateX(0); }
+.inbox-tab-slider.right { transform: translateX(100%); }
+.inbox-tab-bar button { flex: 1; background: transparent; border: none; padding: 10px 8px; font-size: 13px; font-weight: 700; color: #3a4b5c; position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.inbox-tab-bar button.active { color: #fff; }
+.inbox-panel { display: none; }
+.inbox-panel.active { display: block; }
+.notif-item { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #edf0f3; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; cursor: pointer; box-shadow: 0 2px 8px rgba(30,42,58,0.04); }
+.notif-icon { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; box-shadow: 0 3px 10px rgba(255,107,0,0.3); }
+.notif-body { flex: 1; min-width: 0; }
+.notif-body h4 { font-size: 14px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
+.notif-body p { font-size: 13px; color: #5e6f7e; line-height: 1.5; margin-bottom: 6px; }
+.notif-body .notif-date { font-size: 11px; color: #94a3b8; }
+.notif-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9500; display: none; align-items: center; justify-content: center; padding: 20px; }
+.notif-popup.show { display: flex; }
+.notif-popup-box { background: #fff; border-radius: 20px; padding: 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+.notif-popup-box .notif-popup-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 14px; box-shadow: 0 6px 16px rgba(255,107,0,0.35); }
+.notif-popup-box h3 { font-size: 18px; color: #1e2a3a; margin-bottom: 10px; font-weight: 800; }
+.notif-popup-box p { font-size: 14px; color: #5e6f7e; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap; }
+.notif-popup-box button { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; box-shadow: 0 6px 16px rgba(255,107,0,0.3); }
+
+.create-account-btn { background: linear-gradient(135deg, #ff6b00, #ff8f3f); color: #fff; border: none; padding: 14px 28px; border-radius: 60px; font-weight: 700; font-size: 15px; margin-bottom: 16px; box-shadow: 0 6px 16px rgba(255,107,0,0.35); }
 
 @media (min-width: 600px) {
   .product-grid { grid-template-columns: repeat(3, 1fr); gap: 14px; }
@@ -401,10 +453,31 @@ button:active { transform: scale(0.94); opacity: 0.85; }
   <div class="contact">Contact <a href="https://wa.me/233544840240">0544840240 on WhatsApp</a></div>
 </div>
 
+<div class="ai-consent-overlay" id="aiConsentOverlay">
+  <div class="ai-consent-box">
+    <div class="ai-icon"><i class="fas fa-robot"></i></div>
+    <h3>Before you chat with Lenidi AI</h3>
+    <p>Your messages will be processed by <b>Groq</b>, our trusted AI partner, to provide responses. Do not share passwords, bank details, or sensitive information.</p>
+    <div class="ai-consent-buttons">
+      <button class="ai-consent-decline" onclick="declineAIConsent()">Decline</button>
+      <button class="ai-consent-accept" onclick="acceptAIConsent()">I Agree</button>
+    </div>
+  </div>
+</div>
+
 <div class="fs-viewer" id="fsViewer">
   <button class="fs-close" onclick="closeFullscreen()"><i class="fas fa-times"></i></button>
   <div class="fs-counter" id="fsCounter">1/1</div>
   <div class="fs-scroll" id="fsScroll"></div>
+</div>
+
+<div class="notif-popup" id="notifPopup">
+  <div class="notif-popup-box">
+    <div class="notif-popup-icon"><i class="fas fa-bell"></i></div>
+    <h3 id="notifPopupTitle">Notification</h3>
+    <p id="notifPopupBody"></p>
+    <button onclick="closeNotifPopup()">Got it</button>
+  </div>
 </div>
 
 <header id="mainHeader">
@@ -431,7 +504,7 @@ button:active { transform: scale(0.94); opacity: 0.85; }
     <div class="promo-banner">
       <div class="promo-text">
         <h1>Buy & sell near you</h1>
-        <p>Trust verified sellers <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></p>
+        <p>Great and the best app that connects buyers and sellers 😊</p>
       </div>
     </div>
     <div class="collection-tabs" id="adStrip" style="margin-bottom:20px; padding-bottom:6px; gap:12px;"></div>
@@ -589,21 +662,25 @@ button:active { transform: scale(0.94); opacity: 0.85; }
           </div>
         </div>
       </div>
-      <button class="watch-ad-card">
+      <button class="watch-ad-card" onclick="document.getElementById('comingSoonOverlay')?.classList.add('show')">
         <div class="watch-ad-icon"><i class="fas fa-play"></i></div>
         <div class="watch-ad-text"><h4>Watch an ad for 2 boosts</h4><p>Free boosts</p></div>
         <div class="watch-ad-btn"><i class="fas fa-gift"></i> Watch</div>
       </button>
       <div id="subTimerContainer"></div>
       <div class="profile-menu">
-        <div class="menu-item referral-blue" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item referral-item" onclick="openReferralPage()"><i class="fas fa-users"></i><span>Refer someone and get Free VIP</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item referral-item" onclick="openServices()"><i class="fas fa-bolt"></i><span>Lenidi Services</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="switchPage('myListings')"><i class="fas fa-box"></i><span>My listings</span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item referral-blue" onclick="openServices()"><i class="fas fa-bolt"></i><span>⚡ Lenidi Services</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openInbox()"><i class="fas fa-inbox"></i><span>Inbox</span><span class="unread-badge" id="inboxBadge">0</span><i class="fas fa-chevron-right"></i></div>
-        <div class="menu-item" onclick="openSupportChat()"><i class="fas fa-comments"></i><span>Chat with Support</span><i class="fas fa-chevron-right"></i></div>
+        <div class="menu-item" onclick="openAISupport()"><i class="fas fa-robot"></i><span>Lenidi Ai Chat Support</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openPrivacy()"><i class="fas fa-shield-alt"></i><span>Privacy & Policy</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item" onclick="openTerms()"><i class="fas fa-file-contract"></i><span>Terms of Service</span><i class="fas fa-chevron-right"></i></div>
         <div class="menu-item delete-item" onclick="switchPage('deleteAccountPage')"><i class="fas fa-user-slash"></i><span>Delete My Account</span><i class="fas fa-chevron-right"></i></div>
+      </div>
+      <div class="auth-bar">
+        <div class="auth-bar-info"><h4 id="authTitle">Welcome back!</h4><p id="authSubtitle">You are signed in</p></div>
+        <div class="auth-bar-buttons"><button class="auth-btn logout" onclick="switchPage('logoutConfirm')">Log out</button></div>
       </div>
     </div>
     <div id="loggedOutProfileView" style="display:none;">
@@ -613,8 +690,21 @@ button:active { transform: scale(0.94); opacity: 0.85; }
         <div class="form-group"><label>Full name</label><input type="text" id="loginName" placeholder="John Doe"></div>
         <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="john@example.com"></div>
         <div class="form-group"><label>Phone</label><input type="tel" id="loginPhone" placeholder="0244 000 000"></div>
-        <div class="form-group"><label>Referral code <span class="referral-optional-tag">(Optional)</span></label><input type="text" id="loginReferral" class="referral-input-signup" placeholder="DAVE123" maxlength="10"></div>
+        <div class="form-group"><label>Referral code <span class="referral-badge-inline">(Optional)</span></label><input type="text" id="loginReferral" placeholder="DAVE123" maxlength="10" style="text-transform:uppercase;letter-spacing:2px;text-align:center;font-weight:700;"></div>
         <button class="btn-primary" onclick="doLogin()">Sign in</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="logoutConfirmPage" class="page">
+    <div class="auth-page-container">
+      <div class="confirm-card">
+        <h2>Log out?</h2>
+        <p>You'll be signed out of your account.</p>
+        <div class="confirm-buttons">
+          <button class="confirm-no" onclick="switchPage('profile')">No</button>
+          <button class="confirm-yes" onclick="doLogout()">Yes, log out</button>
+        </div>
       </div>
     </div>
   </div>
@@ -640,6 +730,54 @@ button:active { transform: scale(0.94); opacity: 0.85; }
     <div class="product-grid" id="myListingsGrid"></div>
   </div>
 
+  <div id="servicesPage" class="page">
+    <div class="filter-page-header">
+      <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
+      <h3>Lenidi Services</h3>
+    </div>
+    <div class="services-body">
+      <p class="services-warning">WE NEED AGENTS IF INTERESTED SIGN UP</p>
+      <div class="services-grid">
+        <div class="service-card" onclick="openAgentLink()">
+          <h4>Become an Agent</h4>
+          <p>Sign up & earn</p>
+        </div>
+        <div class="service-card" onclick="openDataBundleLink()">
+          <h4>Buy Data Bundles</h4>
+          <p>Cheap data</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="inboxPage" class="page">
+    <div class="filter-page-header">
+      <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
+      <h3>Inbox</h3>
+    </div>
+    <div style="padding:16px; max-width:600px; margin:0 auto;">
+      <div class="inbox-tab-bar">
+        <div class="inbox-tab-slider left" id="inboxSlider"></div>
+        <button id="tabNotif" class="active" onclick="switchInboxTab('notif')"><i class="fas fa-bell"></i> Notifications</button>
+        <button id="tabSupport" onclick="switchInboxTab('support')"><i class="fas fa-comments"></i> Support</button>
+      </div>
+      <div class="inbox-panel active" id="notifPanel">
+        <div id="notifList"><div class="no-results"><i class="fas fa-bell"></i><h3>No notifications</h3><p>You're all caught up!</p></div></div>
+      </div>
+      <div class="inbox-panel" id="supportPanel">
+        <div class="conversation-page" style="height: calc(100dvh - 280px);">
+          <div class="conv-messages" id="supportMessages">
+            <div class="msg-bubble received">Hi! 👋 How can we help you today?</div>
+          </div>
+          <div class="conv-input-bar">
+            <input type="text" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendSupportMsg()">
+            <button class="conv-send-btn" onclick="sendSupportMsg()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="referralPage" class="page">
     <div class="filter-page-header">
       <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
@@ -648,12 +786,11 @@ button:active { transform: scale(0.94); opacity: 0.85; }
     <div style="padding:16px;max-width:480px;margin:0 auto;">
       <div class="referral-hero">
         <div class="hero-icon"><i class="fas fa-gift"></i></div>
-        <h2>Refer 100 people and GET FREE VIP</h2>
-        <p>Get a month of free VIP when you refer a friend</p>
+        <h2>Refer 100 People</h2>
+        <p>Get <b>1 month of Free VIP</b></p>
       </div>
       <div class="referral-progress-card">
         <div class="count-big" id="refCount">0/100</div>
-        <div class="count-label">Referrals</div>
       </div>
       <div id="myCodeSection">
         <div class="referral-code-box" id="codeBox">
@@ -663,7 +800,7 @@ button:active { transform: scale(0.94); opacity: 0.85; }
         </div>
         <div id="createCodeSection">
           <div class="referral-input-row">
-            <input type="text" id="newCodeInput" placeholder="DAVE123" maxlength="10">
+            <input type="text" id="newCodeInput" placeholder="DAVE123" maxlength="10" style="text-transform:uppercase;">
           </div>
           <button class="btn-blue" onclick="createMyCode()"><i class="fas fa-check"></i> Save My Referral Code</button>
           <p style="font-size:11px;color:#94a3b8;text-align:center;margin-top:8px;">Max 10 characters. Letters & numbers only.</p>
@@ -674,55 +811,42 @@ button:active { transform: scale(0.94); opacity: 0.85; }
     </div>
   </div>
 
-  <div id="inboxPage" class="page">
+  <div id="aiSupportPage" class="page">
     <div class="filter-page-header">
       <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-      <h3>Inbox</h3>
+      <h3>Lenidi Ai <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h3>
     </div>
-    <div style="padding:16px;max-width:600px;margin:0 auto;">
-      <div id="inboxList"><div class="no-results"><i class="fas fa-inbox"></i><h3>No messages yet</h3><p>You'll see announcements here.</p></div></div>
+    <div style="padding:16px;">
+      <div class="ai-support-hero">
+        <div class="ai-big-icon"><i class="fas fa-robot"></i></div>
+        <h2>Hi, I'm Lenidi AI <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h2>
+        <p>Ask me anything — I can help if you were scammed or need support.</p>
+      </div>
+      <div class="ai-contact-card">
+        <i class="fab fa-whatsapp"></i>
+        <div><h4>WhatsApp Support</h4><p>0544840240</p></div>
+      </div>
+      <button class="btn-primary" style="margin-top:18px;" onclick="openAIChatWith('')">Start chatting</button>
     </div>
   </div>
 
-  <div id="supportChatPage" class="page">
+  <div id="aiChatPage" class="page">
     <div class="conversation-page">
       <div class="conv-header" style="position:relative;">
-        <button class="back-btn" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-        <div class="conv-avatar"><i class="fas fa-headset"></i></div>
-        <div class="conv-user"><h4>Chat with Support</h4><span>Online</span></div>
+        <button class="back-btn" onclick="switchPage('aiSupportPage')"><i class="fas fa-arrow-left"></i></button>
+        <div class="conv-avatar"><i class="fas fa-robot"></i></div>
+        <div class="conv-user"><h4>Lenidi AI <span class="verify-badge verify-blue"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span></h4><span>Online</span></div>
+        <button class="conv-menu-btn" onclick="toggleConvMenu(event)"><i class="fas fa-ellipsis-v"></i></button>
+        <div class="conv-menu-popup" id="convMenuPopup">
+          <div class="conv-menu-item" onclick="clearAIChat()"><i class="fas fa-trash-alt"></i> Clear chat</div>
+        </div>
       </div>
-      <div class="conv-messages" id="supportMessages">
-        <div class="msg-bubble received">Hi! 👋 How can we help you today?</div>
+      <div class="conv-messages" id="aiMessages">
+        <div class="msg-bubble received">Hi! I'm Lenidi AI. How can I help? 😊</div>
       </div>
       <div class="conv-input-bar">
-        <input type="text" id="supportInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendSupportMsg()">
-        <button class="conv-send-btn" onclick="sendSupportMsg()">Send</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="servicesPage" class="page">
-    <div class="services-fullscreen">
-      <div class="services-topbar">
-        <button class="services-back" onclick="switchPage('profile')"><i class="fas fa-arrow-left"></i></button>
-        <div style="text-align:center; flex:1;">
-          <h3 style="margin-bottom:6px;">⚡ Lenidi Services</h3>
-          <p style="font-size:13px; color:#1e2a3a; font-weight:900; margin:0; line-height:1.3;">🔥 WE NEED AGENTS IF INTERESTED SIGN UP 🔥</p>
-        </div>
-        <div style="width:40px;"></div>
-      </div>
-      <div class="services-body">
-        <div class="services-label">CHOOSE ACTION</div>
-        <div class="services-grid">
-          <div class="service-card" onclick="openAgentLink()">
-            <h4>⚡ Become an Agent</h4>
-            <p>Sign up &amp; earn</p>
-          </div>
-          <div class="service-card" onclick="openDataBundleLink()">
-            <h4>⚡ Buy Data Bundles</h4>
-            <p>Cheap data</p>
-          </div>
-        </div>
+        <input type="text" id="aiInput" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter') sendAIMessage()">
+        <button class="conv-send-btn" onclick="sendAIMessage()">Send</button>
       </div>
     </div>
   </div>
@@ -772,8 +896,11 @@ button:active { transform: scale(0.94); opacity: 0.85; }
   <button data-page="packs" onclick="switchPage('packs')"><i class="fas fa-crown"></i><span>Packs</span></button>
   <button data-page="profile" onclick="switchPage('profile')" id="profileNavBtn"><i class="far fa-user"></i><span>Profile</span></button>
 </nav>
+
 <script>
 const BACKEND_URL = "https://lenidi-backend.onrender.com";
+const GROQ_API_KEY = "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";
+const GROQ_MODEL = "openai/gpt-oss-20b";
 const FREE_LIMIT = 10;
 const PLUS_LIMIT = 20;
 const PRO_LIMIT = 50;
@@ -802,21 +929,31 @@ let userEmail = localStorage.getItem('lenidiEmail') || '';
 let userPhone = localStorage.getItem('lenidiPhone') || '';
 let userVerify = localStorage.getItem('lenidiVerify') || '';
 let subscription = JSON.parse(localStorage.getItem('lenidiSubscription')) || null;
+let reportingScam = false;
+let scamDraft = {};
 let activePollingRef = null;
 let currentSellerEmail = '';
 let currentSellerName = '';
 let blockedSellers = JSON.parse(localStorage.getItem('lenidiBlocked')) || [];
+let aiConsented = JSON.parse(localStorage.getItem('lenidiAiConsent')) || false;
+let aiHistory = [{ role: 'system', content: 'You are Lenidi AI, the friendly assistant in the Lenidi marketplace app (Ghanaian buy-and-sell). Keep replies short, friendly, with emojis. If human help needed, tell them to WhatsApp 0544840240.' }];
 let pendingDeleteId = null;
 let referralInfo = { code: null, count: 0, claimed: false };
 let accountDeleted = false;
 let broadcasts = [];
+let notifications = [];
 let lastSeenBroadcastId = Number(localStorage.getItem('lenidiLastBroadcast') || 0);
 let supportPollRef = null;
 
 function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastText').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
 function isMe(name) { return name === userName; }
 function avatarHtml(name) { if (isMe(name) && userPfp) return '<img src="' + userPfp + '" alt="">'; if (!name) return '?'; return name.split(' ').map(n => n[0]).join(''); }
-function verifyMarkFor(sellerEmail) { if (sellerEmail === userEmail && userVerify) return ' <span class="verify-badge ' + userVerify + '"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span>'; return ''; }
+function verifyMarkFor(sellerEmail) {
+  if (sellerEmail === userEmail && userVerify) {
+    return ' <span class="verify-badge ' + userVerify + '"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span>';
+  }
+  return '';
+}
 function rankProducts(list) {
   const vip = list.filter(p => p.isVip);
   const boosted = list.filter(p => p.isBoosted && !p.isVip);
@@ -832,14 +969,9 @@ async function apiGet(path) { const res = await fetch(BACKEND_URL + path); retur
 async function apiPost(path, body) { const res = await fetch(BACKEND_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return res.json(); }
 async function apiDelete(path) { try { const res = await fetch(BACKEND_URL + path, { method: 'DELETE' }); return await res.json().catch(() => ({})); } catch (e) { return {}; } }
 
-// ================= SERVICES =================
 function openServices() { switchPage('servicesPage'); }
-function openAgentLink() {
-  window.open('https://dataplug-gh.com/auth?ref=5734ba5d-3096-44ce-90b9-ba8d90bd89ab', '_blank');
-}
-function openDataBundleLink() {
-  window.open('https://dataplug-gh.com/pay/data-max-buy-5734ba5d', '_blank');
-}
+function openAgentLink() { window.location.href = 'https://dataplug-gh.com/auth?ref=5734ba5d-3096-44ce-90b9-ba8d90bd89ab'; }
+function openDataBundleLink() { window.location.href = 'https://dataplug-gh.com/pay/data-max-buy-5734ba5d'; }
 
 async function syncFromBackend() {
   if (!userEmail) return;
@@ -873,7 +1005,7 @@ async function syncFromBackend() {
     if (data.verify !== undefined) userVerify = data.verify || '';
     if (data.plan && data.plan !== 'free') {
       const planData = SUBSCRIPTION_PLANS.find(p => p.id === data.plan);
-      subscription = { plan: data.plan, verifyClass: planData ? planData.verifyClass : '', until: data.subscription_until ? new Date(data.subscription_until).getTime() : Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: data.boosts || 0 };
+      subscription = { plan: data.plan, verifyClass: planData ? planData.verifyClass : '', until: Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: data.boosts || 0 };
       localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
     } else {
       subscription = null;
@@ -1131,8 +1263,8 @@ async function reportSeller(sellerEmail) {
     const reported = JSON.parse(localStorage.getItem('lenidiReported')) || {};
     reported[target] = (reported[target] || 0) + 1;
     localStorage.setItem('lenidiReported', JSON.stringify(reported));
-    if (reported[target] >= 10) showToast('🚨 Seller reported 10+ times'); else showToast('🚨 Report submitted');
-  } catch (e) { showToast('Failed to report'); }
+    if (reported[target] >= 10) showToast('🚨 Seller has been reported 10+ times'); else showToast('🚨 Report submitted. Thank you.');
+  } catch (e) { showToast('Failed to report. Try again.'); }
 }
 
 function blockSeller(sellerEmail) {
@@ -1203,7 +1335,7 @@ async function postAd() {
     if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
     const myCount = products.filter(p => p.sellerEmail === userEmail).length;
     const limit = getListingLimit();
-    if (myCount >= limit) { const target = getUpgradeTarget(); showToast('🚫 Limit reached, upgrade to ' + target); setTimeout(() => switchPage('packs'), 1300); return; }
+    if (myCount >= limit) { const target = getUpgradeTarget(); showToast('🚫 Limit reached, upgrade to ' + target + ' to post ad'); setTimeout(() => switchPage('packs'), 1300); return; }
     const isVip = subscription && Date.now() < subscription.until && subscription.plan === 'vip';
     const payload = {
       title: title, price: 'GHC ' + price, price_raw: parseInt(price) || 0,
@@ -1220,10 +1352,10 @@ async function postAd() {
     const result = await apiPost('/products', payload);
     if (result.error) { showToast('Error: ' + result.error); return; }
     clearForm();
-    showToast(isVip ? '🚀 VIP AD posted!' : '✅ Ad posted!');
+    showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted! It will show at the bottom of Search.');
     await loadProducts();
     switchPage('myListings');
-  } catch (err) { showToast('Error: ' + err.message); }
+  } catch (err) { showToast('Error posting: ' + err.message); }
 }
 
 function openBoostPage(id) {
@@ -1231,15 +1363,14 @@ function openBoostPage(id) {
   if (!p) return;
   const canBoost = userBoosts >= 50;
   document.getElementById('boostProductContent').innerHTML =
-    '<div class="filter-page-header"><button class="back-btn" onclick="switchPage(\'myListings\')"><i class=".getElementByIdfas fa-arrow-left"></i></button><h3>Boost product</h3></div>' +
-    '<div class="boost-page-wrap"><div class="boost('-page-card">' +
-      '<div class="boost-ring"><i class="fas fa-rocket"></i></div>'fs +
+    '<div class="filter-page-header"><button class="back-btn" onclick="switchPage(\'myListings\')"><i class="fas fa-arrow-left"></i></button><h3>Boost product</h3></div>' +
+    '<div class="boost-page-wrap"><div class="boost-page-card">' +
+      '<div class="boost-ring"><i class="fas fa-rocket"></i></div>' +
       '<h2>Boost this ad</h2>' +
-      '<p>Shows at top of Home & search.</Viewp>' +
+      '<p>Shows at top of Home & search.</p>' +
       '<div class="boost-cost"><i class="fas fa-bolt"></i> -50 boosts</div>' +
-      '<diver class="bill-box">' +
-        '<div class="bill-row"><span>Your balance</span><span>' + user');
-Boosts + '</span></div>' +
+      '<div class="bill-box">' +
+        '<div class="bill-row"><span>Your balance</span><span>' + userBoosts + '</span></div>' +
         '<div class="bill-row total"><span>After boost</span><span>' + (userBoosts - 50) + '</span></div>' +
       '</div>' +
       '<button class="boost-confirm-btn" onclick="confirmBoost(' + id + ')" ' + (canBoost ? '' : 'disabled style="opacity:0.5;"') + '>Confirm</button>' +
@@ -1254,7 +1385,7 @@ async function confirmBoost(id) {
   updateBoostsUI();
   const p = products.find(x => String(x.id) === String(id));
   if (p) { p.isBoosted = true; p.badge = 'BEST BUY'; p.boostedAt = Date.now(); try { await apiPost('/boost-product', { id: id, is_boosted: true, boosted_at: Date.now() }); } catch (e) {} }
-  showToast('🚀 Boosted!');
+  showToast('🚀 Boosted! Now visible on Home.');
   applyCollectionFilter();
   switchPage('home');
 }
@@ -1270,7 +1401,8 @@ async function updateActiveAdsCount() { const mine = products.filter(p => p.sell
 function openFullscreen(productId, startIndex) {
   const p = products.find(x => String(x.id) === String(productId));
   if (!p || !p.photos || p.photos.length === 0) return;
-  const viewer = document  const scroll = document.getElementById('fsScroll');
+  const viewer = document.getElementById('fsViewer');
+  const scroll = document.getElementById('fsScroll');
   scroll.innerHTML = '';
   p.photos.forEach(url => { scroll.innerHTML += '<div class="fs-slide"><img src="' + url + '" alt=""></div>'; });
   document.getElementById('fsCounter').textContent = (startIndex + 1) + '/' + p.photos.length;
@@ -1327,7 +1459,7 @@ function switchPacksTab(tab) {
 async function startPayment(email, amount, plan, type) {
   try {
     const data = await apiPost('/create-payment', { email: email, amount: amount, plan: plan, type: type });
-    if (!data.authorization_url) { showToast('Payment start failed'); return; }
+    if (!data.authorization_url) { showToast('Payment start failed: ' + (data.error || 'unknown')); return; }
     localStorage.setItem('lenidiPendingPayment', JSON.stringify({ reference: data.reference, plan: plan, type: type, amount: amount, started: Date.now() }));
     window.location.href = data.authorization_url;
   } catch (e) { showToast('Payment error: ' + e.message); }
@@ -1353,7 +1485,7 @@ function onPaymentSuccess(pending) {
     userBoosts += amt;
     localStorage.setItem('lenidiBoosts', userBoosts);
     updateBoostsUI();
-    showToast('🎉 +' + amt + ' boosts!');
+    showToast('🎉 +' + amt + ' boosts added!');
   } else if (pending.type === 'subscription') {
     const planData = SUBSCRIPTION_PLANS.find(p => p.id === pending.plan);
     if (planData) {
@@ -1377,17 +1509,12 @@ function updateSubTimer() {
   const c = document.getElementById('subTimerContainer');
   if (!subscription) { c.innerHTML = ''; return; }
   const now = Date.now();
-  if (now >= subscription.until) {
-    userVerify = ''; localStorage.setItem('lenidiVerify', '');
-    c.innerHTML = '<div class="sub-timer-banner sub-timer-blue"><i class="fas fa-crown"></i><div class="sub-info"><h4>Subscription expired</h4><p>Renew to keep VIP</p></div><button class="sub-renew-btn" onclick="switchPage(\'packs\'); switchPacksTab(\'subscriptions\');">Renew Subscription</button></div>';
-    return;
-  }
+  if (now >= subscription.until) { userVerify = ''; localStorage.setItem('lenidiVerify', ''); subscription = null; localStorage.removeItem('lenidiSubscription'); applyVerifyMark(); c.innerHTML = ''; return; }
   const rem = subscription.until - now;
   const d = Math.floor(rem / 86400000);
   const h = Math.floor((rem % 86400000) / 3600000);
-  const m = Math.floor((rem % 3600000) / 60000);
   const colourClass = { plus: 'sub-timer-yellow', pro: 'sub-timer-orange', premium: 'sub-timer-purple', vip: 'sub-timer-blue' }[subscription.plan] || 'sub-timer-yellow';
-  c.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h ' + m + 'm left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
+  c.innerHTML = '<div class="sub-timer-banner ' + colourClass + '"><i class="fas fa-crown"></i><div class="sub-info"><h4>' + subscription.plan.toUpperCase() + ' active</h4><p>' + d + 'd ' + h + 'h left</p></div><div class="sub-countdown">' + d + 'd</div></div>';
 }
 function applyVerifyMark() {
   const el = document.getElementById('profileVerifyMark');
@@ -1435,7 +1562,7 @@ function renderReferralPage() {
   const btn = document.getElementById('claimVipBtn');
   if (referralInfo.count >= 100 && !referralInfo.claimed) { btn.classList.add('unlocked'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-crown"></i> Claim Free VIP (1 Month)'; }
   else if (referralInfo.claimed) { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-check"></i> VIP Already Claimed'; }
-  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP'; }
+  else { btn.classList.remove('unlocked'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-lock"></i> Claim Free VIP (' + referralInfo.count + '/100)'; }
 }
 async function createMyCode() {
   const input = document.getElementById('newCodeInput');
@@ -1443,97 +1570,102 @@ async function createMyCode() {
   if (code.length < 3) { showToast('Code must be at least 3 characters'); return; }
   try {
     const res = await apiPost('/referral/set-code', { email: userEmail, code: code });
-    if (res.success) { referralInfo.code = res.code; showToast('✅ Code saved'); renderReferralPage(); }
-    else if (res.taken) { showToast('❌ TAKEN — try another'); }
+    if (res.success) { referralInfo.code = res.code; showToast('✅ Your referral code is ' + res.code); renderReferralPage(); }
+    else if (res.taken) { showToast('❌ TAKEN — try another code'); }
     else { showToast('❌ ' + (res.error || 'Failed')); }
   } catch (e) { showToast('Network error'); }
 }
 async function claimFreeVip() {
-  if (referralInfo.count < 100) { showToast('Need 100 referrals'); return; }
+  if (referralInfo.count < 100) { showToast('Need 100 referrals first'); return; }
   if (referralInfo.claimed) { showToast('Already claimed'); return; }
   if (!confirm('Claim your 1 month Free VIP reward?')) return;
   try {
     const res = await apiPost('/referral/claim-vip', { email: userEmail });
-    if (res.success) { showToast('🎉 You got FREE VIP!'); referralInfo.claimed = true; await syncFromBackend(); renderReferralPage(); }
+    if (res.success) { showToast('🎉 You got FREE VIP for 1 month!'); referralInfo.claimed = true; await syncFromBackend(); renderReferralPage(); }
     else { showToast('❌ ' + (res.error || 'Failed')); }
   } catch (e) { showToast('Network error'); }
 }
 
-// ===== INBOX =====
-async function loadBroadcasts() {
+// ============ INBOX ============
+function openInbox() {
+  if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
+  switchPage('inboxPage');
+  switchInboxTab('notif');
+  loadNotifications();
+}
+function switchInboxTab(tab) {
+  const slider = document.getElementById('inboxSlider');
+  const tabNotif = document.getElementById('tabNotif');
+  const tabSupport = document.getElementById('tabSupport');
+  const notifPanel = document.getElementById('notifPanel');
+  const supportPanel = document.getElementById('supportPanel');
+  if (tab === 'notif') {
+    slider.className = 'inbox-tab-slider left';
+    tabNotif.classList.add('active'); tabSupport.classList.remove('active');
+    notifPanel.classList.add('active'); supportPanel.classList.remove('active');
+    loadNotifications();
+  } else {
+    slider.className = 'inbox-tab-slider right';
+    tabNotif.classList.remove('active'); tabSupport.classList.add('active');
+    notifPanel.classList.remove('active'); supportPanel.classList.add('active');
+    loadSupportMessages();
+    if (supportPollRef) clearInterval(supportPollRef);
+    supportPollRef = setInterval(loadSupportMessages, 4000);
+  }
+}
+async function loadNotifications() {
   try {
     const data = await apiGet('/broadcasts');
-    broadcasts = Array.isArray(data) ? data : [];
+    notifications = Array.isArray(data) ? data : [];
+    renderNotifications();
     updateInboxBadge();
-    if (document.getElementById('inboxPage').classList.contains('active')) renderInbox();
-  } catch (e) {}
+  } catch (e) { notifications = []; renderNotifications(); }
 }
-function updateInboxBadge() {
-  const unread = broadcasts.filter(b => Number(b.id) > lastSeenBroadcastId).length;
-  const badge = document.getElementById('inboxBadge');
-  const navBadge = document.querySelector('#profileNavBtn .nav-dot');
-  if (unread > 0) {
-    badge.textContent = unread;
-    badge.style.display = 'flex';
-    if (!navBadge) {
-      const dot = document.createElement('span');
-      dot.className = 'nav-dot';
-      dot.textContent = unread;
-      document.getElementById('profileNavBtn').appendChild(dot);
-    } else navBadge.textContent = unread;
-  } else {
-    badge.style.display = 'none';
-    if (navBadge) navBadge.remove();
-  }
-}
-function openInbox() {
-  switchPage('inboxPage');
-  renderInbox();
-  if (broadcasts.length > 0) {
-    lastSeenBroadcastId = Math.max(...broadcasts.map(b => Number(b.id)));
-    localStorage.setItem('lenidiLastBroadcast', lastSeenBroadcastId);
-    setTimeout(updateInboxBadge, 500);
-  }
-}
-function renderInbox() {
-  const el = document.getElementById('inboxList');
-  if (!broadcasts.length) { el.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i><h3>No messages yet</h3><p>You\'ll see announcements here.</p></div>'; return; }
-  el.innerHTML = broadcasts.map(b => {
+function renderNotifications() {
+  const el = document.getElementById('notifList');
+  if (!notifications.length) { el.innerHTML = '<div class="no-results"><i class="fas fa-bell"></i><h3>No notifications</h3><p>You\'re all caught up!</p></div>'; return; }
+  el.innerHTML = notifications.map(b => {
     const dt = b.created_at ? new Date(b.created_at).toLocaleString() : '';
-    return '<div class="inbox-item">' +
-      '<div class="inbox-icon"><i class="fas fa-bullhorn"></i></div>' +
-      '<div class="inbox-body"><h4>' + (b.title || 'Broadcast') + '</h4><p>' + (b.body || '') + '</p><div class="inbox-date">' + dt + '</div></div>' +
+    return '<div class="notif-item" onclick="openNotification(' + b.id + ')">' +
+      '<div class="notif-icon"><i class="fas fa-bell"></i></div>' +
+      '<div class="notif-body"><h4>' + (b.title || 'Notification') + '</h4><p>' + (b.body || '') + '</p><div class="notif-date">' + dt + '</div></div>' +
     '</div>';
   }).join('');
 }
-
-// ===== SUPPORT CHAT =====
-function openSupportChat() {
-  if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
-  switchPage('supportChatPage');
-  loadSupportMessages();
-  if (supportPollRef) clearInterval(supportPollRef);
-  supportPollRef = setInterval(loadSupportMessages, 4000);
+async function openNotification(id) {
+  const b = notifications.find(x => String(x.id) === String(id));
+  if (!b) return;
+  document.getElementById('notifPopupTitle').textContent = b.title || 'Notification';
+  document.getElementById('notifPopupBody').textContent = b.body || '';
+  document.getElementById('notifPopup').classList.add('show');
+  try { await apiPost('/admin/delete-broadcast', { id: id }); } catch (e) {}
+  notifications = notifications.filter(x => String(x.id) !== String(id));
+  renderNotifications();
+  updateInboxBadge();
 }
+function closeNotifPopup() {
+  document.getElementById('notifPopup').classList.remove('show');
+}
+function updateInboxBadge() {
+  const badge = document.getElementById('inboxBadge');
+  const count = notifications.length;
+  if (count > 0) { badge.textContent = count; badge.style.display = 'flex'; }
+  else { badge.style.display = 'none'; }
+}
+
 async function loadSupportMessages() {
   if (!userEmail) return;
   try {
     const msgs = await apiGet('/dm/' + encodeURIComponent(userEmail));
     const box = document.getElementById('supportMessages');
     if (!box) return;
-    if (!msgs || !msgs.length) {
-      box.innerHTML = '<div class="msg-bubble received">Hi! 👋 How can we help you today?</div>';
-      return;
-    }
+    if (!msgs || !msgs.length) { box.innerHTML = '<div class="msg-bubble received">Hi! 👋 How can we help you today?</div>'; return; }
     const html = msgs.map(m => {
       const side = (m.sender === 'admin') ? 'received' : 'sent';
       const safe = (m.body || '').replace(/</g, '&lt;');
       return '<div class="msg-bubble ' + side + '">' + safe + '</div>';
     }).join('');
-    if (box.innerHTML !== html) {
-      box.innerHTML = html;
-      box.scrollTop = box.scrollHeight;
-    }
+    if (box.innerHTML !== html) { box.innerHTML = html; box.scrollTop = box.scrollHeight; }
   } catch (e) {}
 }
 async function sendSupportMsg() {
@@ -1544,14 +1676,10 @@ async function sendSupportMsg() {
   box.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
   box.scrollTop = box.scrollHeight;
   input.value = '';
-  try {
-    const res = await apiPost('/dm/send', { user_email: userEmail, sender: 'user', body: text });
-    if (res && res.success) setTimeout(loadSupportMessages, 400);
-    else showToast('Failed: ' + ((res && res.error) || 'unknown'));
-  } catch (e) { showToast('Network error'); }
+  try { const res = await apiPost('/dm/send', { user_email: userEmail, sender: 'user', body: text }); if (res && res.success) setTimeout(loadSupportMessages, 400); } catch (e) {}
 }
 
-// ===== AUTH =====
+// AUTH
 async function doLogin() {
   const name = (document.getElementById('loginName').value || '').trim();
   const email = (document.getElementById('loginEmail').value || '').trim();
@@ -1577,6 +1705,7 @@ async function doLogin() {
     } catch (e) {}
   }
   setTimeout(syncFromBackend, 500);
+  loadNotifications();
 }
 function doLogout() { localStorage.clear(); location.reload(); }
 function deleteMyAccount() { localStorage.clear(); showToast('Account deleted'); setTimeout(() => location.reload(), 1000); }
@@ -1590,21 +1719,144 @@ function syncUserInfo() {
   if (document.getElementById('myListingsPage').classList.contains('active')) renderMyListings();
   if (document.getElementById('savesPage').classList.contains('active')) renderSaves();
 }
-function changeName() { const n = prompt('New name:', userName); if (n && n.trim()) { userName = n.trim(); localStorage.setItem('lenidiName', userName); syncUserInfo(); pushUserToBackend(); showToast('✅ Name updated!'); } }
+function changeName() {
+  const n = prompt('New name:', userName);
+  if (n && n.trim()) { userName = n.trim(); localStorage.setItem('lenidiName', userName); syncUserInfo(); pushUserToBackend(); showToast('✅ Name updated everywhere!'); }
+}
 async function changeEmail() {
   const e = prompt('New email:', userEmail);
   if (e && e.trim()) {
     const newEmail = e.trim().toLowerCase();
-    if (newEmail === userEmail) { showToast('Same email'); return; }
+    if (newEmail === userEmail) { showToast('Same email, no change'); return; }
     try {
       const res = await apiPost('/change-email', { old_email: userEmail, new_email: newEmail });
-      if (res && res.success) { userEmail = newEmail; localStorage.setItem('lenidiEmail', userEmail); syncUserInfo(); pushUserToBackend(); showToast('✅ Email updated!'); }
+      if (res && res.success) { userEmail = newEmail; localStorage.setItem('lenidiEmail', userEmail); syncUserInfo(); pushUserToBackend(); showToast('✅ Email updated everywhere!'); }
       else { showToast('❌ ' + ((res && res.error) || 'Failed')); }
     } catch (err) { showToast('Network error'); }
   }
 }
-function changePhone() { const p = prompt('New phone:', userPhone); if (p && p.trim()) { userPhone = p.trim(); localStorage.setItem('lenidiPhone', userPhone); syncUserInfo(); pushUserToBackend(); showToast('✅ Phone updated!'); } }
-function handlePfpUpload(e) { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; }; r.readAsDataURL(f); }
+function changePhone() {
+  const p = prompt('New phone:', userPhone);
+  if (p && p.trim()) { userPhone = p.trim(); localStorage.setItem('lenidiPhone', userPhone); syncUserInfo(); pushUserToBackend(); showToast('✅ Phone updated everywhere!'); }
+}
+function handlePfpUpload(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; };
+  r.readAsDataURL(f);
+}
+
+// AI CHAT
+function openAISupport() { switchPage('aiSupportPage'); }
+function openAIChatWith(q) {
+  if (!aiConsented) { document.getElementById('aiConsentOverlay').classList.add('show'); window.pendingAIQuestion = q || ''; return; }
+  switchPage('aiChatPage');
+  if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
+}
+function acceptAIConsent() {
+  aiConsented = true;
+  localStorage.setItem('lenidiAiConsent', 'true');
+  document.getElementById('aiConsentOverlay').classList.remove('show');
+  switchPage('aiChatPage');
+  const q = window.pendingAIQuestion || '';
+  if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
+  window.pendingAIQuestion = '';
+}
+function declineAIConsent() { document.getElementById('aiConsentOverlay').classList.remove('show'); window.pendingAIQuestion = ''; showToast('AI chat unavailable without consent'); }
+function toggleConvMenu(e) { e.stopPropagation(); document.getElementById('convMenuPopup').classList.toggle('show'); }
+function clearAIChat() { document.getElementById('convMenuPopup').classList.remove('show'); document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
+function isAdminCommand(t) { return /^\/(suspend|ban|unban|gift|unpack|remove)/i.test(t.trim()); }
+function parseAdminCommand(text) {
+  const t = text.trim();
+  let m = t.match(/^\/gift_(plus|pro|premium|vip)_([^\s]+)$/i);
+  if (m) {
+    const plan = m[1].toLowerCase();
+    const target = m[2].toLowerCase();
+    const planData = SUBSCRIPTION_PLANS.find(p => p.id === plan);
+    if (!planData) return '❌ Unknown plan';
+    if (target === userEmail) {
+      userVerify = planData.verifyClass;
+      userBoosts += planData.boosts;
+      localStorage.setItem('lenidiVerify', userVerify);
+      localStorage.setItem('lenidiBoosts', userBoosts);
+      subscription = { plan: plan, verifyClass: planData.verifyClass, until: Date.now() + 31 * 24 * 60 * 60 * 1000, boosts: planData.boosts };
+      localStorage.setItem('lenidiSubscription', JSON.stringify(subscription));
+      applyVerifyMark(); updateBoostsUI(); updateSubTimer();
+      return '✅ Gifted you ' + plan.toUpperCase() + ' + ' + planData.boosts + ' boosts!';
+    }
+    return '✅ Gifted ' + plan.toUpperCase() + ' to ' + target;
+  }
+  m = t.match(/^\/gift_(\d+)_boosts_([^\s]+)$/i);
+  if (m) {
+    const amt = parseInt(m[1]);
+    const target = m[2].toLowerCase();
+    if (target === userEmail) { userBoosts += amt; localStorage.setItem('lenidiBoosts', userBoosts); updateBoostsUI(); return '✅ Gifted you ' + amt + ' boosts!'; }
+    return '✅ Gifted ' + amt + ' boosts to ' + target;
+  }
+  m = t.match(/^\/unpack_(plus|pro|premium|vip)_([^\s]+)$/i);
+  if (m) {
+    const plan = m[1].toLowerCase();
+    const target = m[2].toLowerCase();
+    if (target === userEmail) { userVerify = ''; localStorage.setItem('lenidiVerify', ''); subscription = null; localStorage.removeItem('lenidiSubscription'); applyVerifyMark(); updateSubTimer(); return '✅ Removed your ' + plan.toUpperCase(); }
+    return '✅ Removed ' + plan.toUpperCase() + ' from ' + target;
+  }
+  m = t.match(/^\/suspend_([^\s_]+)_(\d+)\s*days?$/i);
+  if (m) return '⛔ ' + m[1] + ' suspended for ' + m[2] + ' days.';
+  m = t.match(/^\/ban_([^\s]+)$/i);
+  if (m) return '⛔ ' + m[1] + ' banned permanently.';
+  m = t.match(/^\/unban_([^\s]+)$/i);
+  if (m) return '✅ ' + m[1] + ' unbanned.';
+  return null;
+}
+function isScamTrigger(t) { return /\b(scam|scammed|fraud|stolen|fake seller)\b/i.test(t); }
+function aiLocalReply(raw) {
+  if (isAdminCommand(raw)) { const r = parseAdminCommand(raw); if (r) return r; }
+  if (reportingScam) {
+    if (!scamDraft.name) { scamDraft.name = raw; return 'What is their email?'; }
+    if (!scamDraft.email) { scamDraft.email = raw; return 'Describe what happened.'; }
+    reportingScam = false; scamDraft = {};
+    return '✅ Report submitted. They will be reviewed.';
+  }
+  if (isScamTrigger(raw)) { reportingScam = true; scamDraft = {}; return 'Sorry to hear. What is their name?'; }
+  return null;
+}
+async function askGroq(msg) {
+  aiHistory.push({ role: 'user', content: msg });
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + GROQ_API_KEY },
+    body: JSON.stringify({ model: GROQ_MODEL, messages: aiHistory, temperature: 0.7, max_tokens: 512 })
+  });
+  if (!res.ok) throw new Error('AI error');
+  const data = await res.json();
+  const reply = data.choices?.[0]?.message?.content?.trim() || 'Sorry, no response.';
+  aiHistory.push({ role: 'assistant', content: reply });
+  if (aiHistory.length > 11) aiHistory = [aiHistory[0], ...aiHistory.slice(-10)];
+  return reply;
+}
+async function sendAIMessage() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = document.getElementById('aiMessages');
+  msgs.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+  const typing = document.createElement('div');
+  typing.className = 'msg-bubble received';
+  typing.id = 'aiTyping';
+  typing.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+  let reply;
+  try { const local = aiLocalReply(text); reply = local !== null ? local : await askGroq(text); }
+  catch (e) { reply = '⚠️ AI error. Contact 0544840240.'; }
+  const t = document.getElementById('aiTyping');
+  if (t) t.remove();
+  msgs.innerHTML += '<div class="msg-bubble received">' + reply.replace(/\n/g, '<br>') + '</div>';
+  msgs.scrollTop = msgs.scrollHeight;
+}
 
 function buildAdStrip() {
   const strip = document.getElementById('adStrip');
@@ -1614,7 +1866,7 @@ function buildAdStrip() {
     { title: 'Lenidi Plus', desc: 'GHC 99/month', icon: 'fa-crown', cls: 'purple-card' },
     { title: 'Sell faster', desc: 'Featured listings', icon: 'fa-bolt', cls: 'yellow-card' },
     { title: 'Watch & earn', desc: 'Free boosts', icon: 'fa-gift', cls: 'blue-card' },
-    { title: 'Chat support', desc: '24/7 help', icon: 'fa-headset', cls: 'red-card' },
+    { title: 'Chat support', desc: '24/7 help', icon: 'fa-robot', cls: 'red-card' },
     { title: 'Save items', desc: 'Star favourites', icon: 'fa-star', cls: 'amber-card' }
   ];
   strip.innerHTML = '';
@@ -1623,20 +1875,21 @@ function buildAdStrip() {
 
 function switchPage(pageId) {
   if (accountDeleted) return;
+  if (pageId !== 'aiChatPage') { const msgs = document.getElementById('aiMessages'); if (msgs) msgs.innerHTML = '<div class="msg-bubble received">Hi! I\'m Lenidi AI. How can I help? 😊</div>'; }
   let target = document.getElementById(pageId);
   if (!target) target = document.getElementById(pageId + 'Page');
   if (!target) { console.warn('Page not found:', pageId); return; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   target.classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => { b.classList.toggle('active', b.dataset.page === pageId); });
-  const hideHeader = ['search','filter','detail','boostProductPage','deleteAccountPage','referralPage','inboxPage','supportChatPage','servicesPage'];
+  const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage','referralPage','servicesPage','inboxPage'];
   document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
   if (pageId === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
   if (pageId === 'referralPage') loadReferralInfo();
   if (pageId === 'home') { loadProducts(); }
-  if (pageId !== 'supportChatPage' && supportPollRef) { clearInterval(supportPollRef); supportPollRef = null; }
+  if (pageId !== 'inboxPage' && supportPollRef) { clearInterval(supportPollRef); supportPollRef = null; }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1654,15 +1907,15 @@ buildPricingGrid();
   await loadProducts();
   checkPendingPayment();
   syncFromBackend();
-  loadBroadcasts();
+  loadNotifications();
   setInterval(() => { if (isLoggedIn && userEmail && !accountDeleted) syncFromBackend(); }, 15000);
-  setInterval(() => { if (isLoggedIn && !accountDeleted) updateSubTimer(); }, 60000);
-  setInterval(() => { if (isLoggedIn && !accountDeleted) loadBroadcasts(); }, 30000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && isLoggedIn && userEmail && !accountDeleted) { syncFromBackend(); loadBroadcasts(); } });
+  setInterval(() => { if (isLoggedIn && !accountDeleted) loadNotifications(); }, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && isLoggedIn && userEmail && !accountDeleted) { syncFromBackend(); loadNotifications(); } });
   switchPage('home');
 })();
 
 document.addEventListener('click', () => {
+  document.getElementById('convMenuPopup')?.classList.remove('show');
   document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show'));
 });
 </script>
