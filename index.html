@@ -9,132 +9,121 @@
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <style>
 /* ============================================================
-   LENIDI · LIQUID GLASS (FINAL)
-   No blur · No orange pills · Raised plates (except profile/sell/home cards)
-   Sliding pills: nav + collection + categories + packs + inbox
+   LENIDI · FINAL BUILD
    ============================================================ */
-
 :root {
-  /* Raised plate (transparent glass) */
-  --plate-bg: linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.55) 55%, rgba(255,255,255,0.42) 100%);
-  --plate-border: rgba(255,255,255,0.8);
-  --plate-lift-soft:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -2px 3px rgba(30,42,58,0.05),
-    0 4px 12px rgba(30,42,58,0.08),
-    0 10px 24px rgba(30,42,58,0.05);
-  --plate-lift:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 1px 0 0 rgba(255,255,255,0.55),
-    inset -1px 0 0 rgba(255,255,255,0.55),
-    inset 0 -2px 3px rgba(30,42,58,0.06),
-    0 2px 4px rgba(30,42,58,0.06),
-    0 8px 20px rgba(30,42,58,0.10),
-    0 16px 32px rgba(30,42,58,0.06);
+  --orange: #ff6b00;
+  --orange-light: #ff8f3f;
+  --gray-text: #5e6f7e;
+  --dark-text: #1e2a3a;
+  --border-soft: #edf0f3;
+  --border-input: #e2e8f0;
 }
-
-/* ---------- NO BLUR ANYWHERE ---------- */
 *, *::before, *::after {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-
-/* ---------- BODY ---------- */
 body {
-  background:
-    radial-gradient(1200px 600px at 15% -10%, #fff7ee 0%, transparent 60%),
-    radial-gradient(900px 500px at 110% 10%, #eef4ff 0%, transparent 55%),
-    #eef1f6 !important;
-  background-attachment: fixed;
+  background: #eef1f6 !important;
   padding-bottom: 118px !important;
+  -webkit-tap-highlight-color: transparent;
+}
+* { -webkit-tap-highlight-color: transparent; }
+button, a, [onclick] {
+  transition: transform 0.08s ease, background-color 0.08s ease, color 0.08s ease !important;
 }
 
-/* ---------- RAISED PLATES (everything except profile + sell + home cards) ---------- */
-.top-bar, .search-page-bar, .filter-row, .filter-page-header,
-.conv-header, .listings-header,
-.pricing-card, .boost-card,
-.seller-card, .detail-desc, .detail-meta,
-.filter-section, .ai-support-hero, .ai-contact-card,
-.referral-progress-card, .boost-page-card,
-.confirm-card, .auth-page-card, .promo-card,
-.seller-profile-header, .bill-box,
+/* FLAT CARDS */
+.product-card,
+#pricingGrid .pricing-card,
+#boostGrid .boost-card,
+.menu-item,
+.seller-card,
+.detail-desc,
+.detail-meta,
+.filter-section,
+.ai-support-hero,
+.ai-contact-card,
+.referral-progress-card,
+.boost-page-card,
+.sell-container,
+.confirm-card,
+.auth-page-card,
+.profile-header,
+.seller-profile-header,
+.bill-box,
 .referral-code-box,
-.packs-tab-bar {
-  background: var(--plate-bg) !important;
-  border: 1px solid var(--plate-border) !important;
-  box-shadow: var(--plate-lift-soft) !important;
-  position: relative;
-  border-radius: 16px;
-}
-.confirm-card, .auth-page-card,
-.boost-page-card, .ai-support-hero, .referral-progress-card,
-.seller-profile-header {
-  border-radius: 20px !important;
-  box-shadow: var(--plate-lift) !important;
+.upload-area {
+  background: #fff !important;
+  border: 1px solid var(--border-soft) !important;
+  box-shadow: 0 1px 3px rgba(30,42,58,0.05) !important;
 }
 
-/* Upload area (only on sell page → keep flat) — reset to flat */
-.sell-container .upload-area {
-  background: #fafcff !important;
-  border: 2px dashed #d0d7de !important;
+/* SEARCH BARS */
+.search-trigger {
+  background: #f0f2f5 !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 60px !important;
+  padding: 11px 18px !important;
+}
+.search-trigger i { color: #8f9aa8 !important; font-size: 15px !important; }
+.search-trigger span { color: #8f9aa8 !important; font-size: 14px !important; }
+.search-page-bar {
+  background: #fff !important;
+  border-bottom: 1px solid #e9ecef !important;
+  box-shadow: none !important;
+}
+.search-input-wrap {
+  background: #f0f2f5 !important;
+  border: 1.5px solid var(--orange) !important;
+  box-shadow: none !important;
+  border-radius: 60px !important;
+  padding: 4px 4px 4px 16px !important;
+}
+.search-input-wrap input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.search-input-wrap button { box-shadow: none !important; border: none !important; }
+.top-bar {
+  background: #fff !important;
+  border-bottom: 1px solid #e9ecef !important;
   box-shadow: none !important;
 }
 
-/* ---------- INPUTS (flat glass) ---------- */
+/* INPUTS */
 .form-group input, .form-group select, .form-group textarea,
 .filter-input, .filter-select, .filter-price-row input,
-.search-trigger, .search-input-wrap, .search-input-wrap input,
 .conv-input-bar input, .referral-input-row input,
 .auth-page-card .form-group input {
-  background: rgba(255,255,255,0.6) !important;
-  border: 1px solid rgba(255,255,255,0.85) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -1px 2px rgba(30,42,58,0.04),
-    0 2px 6px rgba(30,42,58,0.05) !important;
-  border-radius: 14px !important;
+  background: #fafcff !important;
+  border: 1.5px solid var(--border-input) !important;
+  box-shadow: none !important;
 }
-.form-group input:focus, .form-group select:focus,
-.form-group textarea:focus, .filter-input:focus,
-.filter-select:focus, .search-input-wrap:focus-within,
-.referral-input-row input:focus, .auth-page-card .form-group input:focus {
-  border-color: #ff6b00 !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    0 0 0 3px rgba(255,107,0,0.14),
-    0 4px 12px rgba(255,107,0,0.16) !important;
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus,
+.filter-input:focus, .filter-select:focus, .search-input-wrap:focus-within {
+  border-color: var(--orange) !important;
 }
 
-/* ---------- BUTTONS ---------- */
+/* BUTTONS */
 .btn-primary, .chat-btn, .boost-btn, .boost-confirm-btn,
 .filter-show-btn, .pack-btn, .auth-btn.signin, .conv-send-btn,
 .btn-blue, .ai-consent-accept, .boost-inline-btn,
 .delete-inline-btn, .create-account-btn, .btn-clear,
 .boost-cancel-btn, .filter-btn, .btn-claim,
 .ai-consent-decline, .confirm-no, .auth-btn.logout {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.55),
-    inset 0 -2px 3px rgba(0,0,0,0.12),
-    0 4px 10px rgba(0,0,0,0.10),
-    0 10px 22px rgba(0,0,0,0.06) !important;
-  position: relative;
-  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
 }
-
-/* ---------- HERO BANNERS ---------- */
 .promo-banner, .referral-hero, .sub-timer-banner {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.25),
-    inset 0 -2px 4px rgba(0,0,0,0.18),
-    0 6px 18px rgba(0,0,0,0.14),
-    0 14px 32px rgba(0,0,0,0.10) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
 }
+.toast { background: rgba(30,42,58,0.92) !important; color: #fff !important; box-shadow: 0 8px 24px rgba(0,0,0,0.2) !important; }
+.ai-consent-box { background: #fff !important; border: 1px solid var(--border-soft) !important; box-shadow: 0 12px 36px rgba(0,0,0,0.15) !important; }
 
-/* ---------- TOAST / MODALS ---------- */
-.toast { background: rgba(30,42,58,0.92) !important; color: #fff !important; box-shadow: 0 12px 36px rgba(0,0,0,0.25) !important; }
-.ai-consent-box { background: rgba(255,255,255,0.92) !important; border: 1px solid rgba(255,255,255,0.9) !important; box-shadow: 0 12px 36px rgba(0,0,0,0.18) !important; }
-
-/* ---------- BOTTOM NAV (floating pill) ---------- */
+/* BOTTOM NAV */
 .bottom-nav {
   position: fixed !important;
   bottom: 14px !important;
@@ -148,14 +137,12 @@ body {
   justify-content: space-between !important;
   align-items: center !important;
   gap: 4px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.6) 100%) !important;
-  border: 1px solid rgba(255,255,255,0.9) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.95) !important;
   border-radius: 999px !important;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -2px 3px rgba(30,42,58,0.06),
-    0 6px 16px rgba(30,42,58,0.14),
-    0 16px 40px rgba(30,42,58,0.10) !important;
+    0 4px 14px rgba(30,42,58,0.12),
+    0 12px 32px rgba(30,42,58,0.08) !important;
   z-index: 1000;
   overflow: hidden;
   touch-action: none;
@@ -177,13 +164,15 @@ body {
   justify-content: center !important;
   gap: 3px !important;
   font-size: 10.5px !important;
-  color: #5e6f7e !important;
-  transition: color 0.25s ease;
+  color: var(--gray-text) !important;
+  transition: color 0.08s ease !important;
 }
-.bottom-nav button i { font-size: 19px !important; transition: transform 0.25s ease; }
+.bottom-nav button i { font-size: 19px !important; transition: transform 0.08s ease !important; }
 .bottom-nav button span { font-weight: 600; }
-.bottom-nav button.active { background: transparent !important; box-shadow: none !important; color: #1e2a3a !important; }
-.bottom-nav button.active i { color: #1e2a3a !important; transform: scale(1.08); }
+.bottom-nav button.active { background: transparent !important; box-shadow: none !important; }
+.bottom-nav button.active,
+.bottom-nav button.active i { color: var(--orange) !important; }
+.bottom-nav button.active i { transform: scale(1.08); }
 .bottom-nav button.active::before { display: none !important; }
 
 .nav-platter {
@@ -194,18 +183,16 @@ body {
   border-radius: 999px;
   background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -2px 3px rgba(30,42,58,0.06),
-    0 3px 8px rgba(30,42,58,0.14),
-    0 6px 14px rgba(30,42,58,0.08);
-  transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+    0 2px 6px rgba(30,42,58,0.14),
+    0 4px 12px rgba(30,42,58,0.08);
+  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1), width 0.08s cubic-bezier(0.25, 1, 0.5, 1) !important;
   pointer-events: none;
   z-index: 2;
   overflow: hidden;
 }
-.bottom-nav.dragging .nav-platter { transition: none; }
+.bottom-nav.dragging .nav-platter { transition: none !important; }
 
-/* ---------- SLIDE PILL GROUPS ---------- */
+/* SLIDE PILLS */
 .slide-pill-group {
   position: relative !important;
   overflow: hidden;
@@ -219,24 +206,22 @@ body {
   overflow-y: hidden !important;
   touch-action: pan-x;
 }
-
 .slide-pill {
   position: absolute;
   top: 4px;
   bottom: 4px;
   left: 4px;
+  min-width: 40px;
   border-radius: 999px;
   background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,1),
-    inset 0 -2px 3px rgba(30,42,58,0.06),
-    0 3px 8px rgba(30,42,58,0.14),
-    0 6px 14px rgba(30,42,58,0.08);
-  transition: transform 0.32s cubic-bezier(0.34, 1.4, 0.64, 1), width 0.32s cubic-bezier(0.34, 1.4, 0.64, 1);
+    0 2px 6px rgba(30,42,58,0.12),
+    0 4px 12px rgba(30,42,58,0.06);
+  transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1), width 0.08s cubic-bezier(0.25, 1, 0.5, 1) !important;
   pointer-events: none;
   z-index: 2;
 }
-.slide-pill-group.dragging .slide-pill { transition: none; }
+.slide-pill-group.dragging .slide-pill { transition: none !important; }
 .slide-pill-group button,
 .slide-pill-group a,
 .slide-pill-group .collection-tab {
@@ -245,93 +230,314 @@ body {
   background: transparent !important;
   border-color: transparent !important;
   box-shadow: none !important;
+  transition: color 0.08s ease !important;
 }
 
-/* ---------- COLLECTION TABS ---------- */
-#collectionTabs { background: transparent !important; overflow: visible !important; }
-#collectionTabs .collection-tab {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: #5e6f7e !important;
-  font-weight: 500;
-  padding: 10px 20px;
-  transition: color 0.2s ease;
-}
-#collectionTabs .collection-tab::after { display: none !important; }
+/* ORANGE ACTIVE TEXT on all pill groups */
+.bottom-nav button.active,
+.bottom-nav button.active i,
+.categories a.active,
+.packs-tab-bar button.active,
+.slide-pill-group button.active,
+.slide-pill-group a.active,
+.slide-pill-group .collection-tab.active,
 #collectionTabs .collection-tab.active {
-  background: transparent !important;
-  color: #1e2a3a !important;
-  font-weight: 700;
-  box-shadow: none !important;
-  border: none !important;
+  color: var(--orange) !important;
 }
 
-/* ---------- CATEGORY BAR ---------- */
+/* CATEGORY BAR */
+.categories {
+  background: #fff !important;
+  padding: 10px 12px !important;
+  gap: 4px !important;
+  border-bottom: 1px solid #e9ecef !important;
+}
 .categories a {
   background: transparent !important;
   border-bottom-color: transparent !important;
-  color: #5e6f7e !important;
+  color: var(--gray-text) !important;
   box-shadow: none !important;
-  padding: 8px 14px !important;
-  border-radius: 999px;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  border-bottom: none !important;
 }
 .categories a.active {
-  background: transparent !important;
-  color: #1e2a3a !important;
-  font-weight: 700;
+  color: var(--orange) !important;
+  font-weight: 700 !important;
   border-bottom-color: transparent !important;
-  box-shadow: none !important;
 }
 
-/* ---------- PACKS + INBOX TAB BARS ---------- */
+/* PACKS + INBOX TAB BARS */
 .packs-tab-bar button {
   background: transparent !important;
-  color: #5e6f7e !important;
+  color: var(--gray-text) !important;
   box-shadow: none !important;
   text-shadow: none !important;
 }
-.packs-tab-bar button.active { color: #1e2a3a !important; font-weight: 700; }
 .packs-tab-slider { display: none !important; visibility: hidden !important; }
-
-/* ---------- HIDE MOST POPULAR BADGE ---------- */
 .popular-badge { display: none !important; visibility: hidden !important; }
 
-/* ---------- FLAT SECTIONS (profile + home cards + sell) ---------- */
-.profile-header, .menu-item, .auth-bar {
-  background: #fff !important;
-  border: 1px solid #edf0f3 !important;
-  box-shadow: 0 2px 8px rgba(30,42,58,0.04) !important;
+/* PACKS TAB — orange pill, white text */
+#packsTabBar .slide-pill {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light)) !important;
+  box-shadow: 0 3px 10px rgba(255,107,0,0.30) !important;
+  min-width: 40px !important;
 }
-.product-card {
-  background: #fff !important;
-  border: 1px solid #edf0f3 !important;
-  box-shadow: 0 2px 8px rgba(30,42,58,0.05) !important;
+#packsTabBar button {
+  color: var(--gray-text) !important;
 }
-.sell-container {
-  background: #fff !important;
-  border: 1px solid #edf0f3 !important;
-  box-shadow: 0 2px 8px rgba(30,42,58,0.04) !important;
-}
-.sell-container .form-group input,
-.sell-container .form-group select,
-.sell-container .form-group textarea {
-  background: #fafcff !important;
-  border: 1.5px solid #e2e8f0 !important;
-  box-shadow: none !important;
+#packsTabBar button.active {
+  color: #ffffff !important;
+  font-weight: 700 !important;
 }
 
-/* ---------- PAGE SLIDE TRANSITIONS ---------- */
-.page { will-change: transform, opacity; }
-.page.slide-in-right { animation: slideInRight 0.32s cubic-bezier(0.22,1,0.36,1) both; }
-.page.slide-in-left  { animation: slideInLeft  0.32s cubic-bezier(0.22,1,0.36,1) both; }
-@keyframes slideInRight { from { opacity: 0.4; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes slideInLeft  { from { opacity: 0.4; transform: translateX(-24px); } to { opacity: 1; transform: translateX(0); } }
+/* INBOX TAB — orange pill, white text */
+#inboxTabBar .slide-pill {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light)) !important;
+  box-shadow: 0 3px 10px rgba(255,107,0,0.30) !important;
+  min-width: 40px !important;
+}
+#inboxTabBar button {
+  color: var(--gray-text) !important;
+}
+#inboxTabBar button.active {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* COLLECTION TABS — orange pill, white text */
+#collectionTabs {
+  background: transparent !important;
+  overflow: visible !important;
+  display: flex !important;
+  gap: 10px !important;
+  padding: 4px 0 8px !important;
+  margin-bottom: 18px !important;
+}
+#collectionTabs .slide-pill {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light)) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 3px 10px rgba(255,107,0,0.30) !important;
+}
+#collectionTabs .collection-tab {
+  background: #fff !important;
+  border: 1px solid #e4e7ec !important;
+  padding: 9px 18px !important;
+  border-radius: 30px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: var(--dark-text) !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: color 0.08s ease !important;
+  position: relative;
+  z-index: 3;
+}
+#collectionTabs .collection-tab.active {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+#collectionTabs .collection-tab::after { display: none !important; }
+
+/* PROMO CARDS — light fill, colored rings, no glow */
+.promo-card {
+  min-width: 210px !important;
+  max-width: 210px !important;
+  min-height: 100px !important;
+  max-height: 100px !important;
+  border-radius: 18px !important;
+  padding: 14px 16px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 14px !important;
+  text-align: left !important;
+  border: 2px solid !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+.promo-card .promo-icon {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 22px !important;
+  flex-shrink: 0 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+.promo-card .promo-title {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  color: var(--dark-text) !important;
+  line-height: 1.15 !important;
+  margin-bottom: 3px !important;
+  white-space: nowrap !important;
+}
+.promo-card .promo-desc {
+  font-size: 12px !important;
+  color: var(--gray-text) !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+}
+.promo-card.blue-card { background: #e8f0fe !important; border-color: #4285f4 !important; }
+.promo-card.blue-card .promo-icon { background: #4285f4 !important; color: #fff !important; }
+.promo-card.orange-card { background: #fff3e0 !important; border-color: #f57c00 !important; }
+.promo-card.orange-card .promo-icon { background: #f57c00 !important; color: #fff !important; }
+.promo-card.purple-card { background: #ede7f6 !important; border-color: #7e57c2 !important; }
+.promo-card.purple-card .promo-icon { background: #7e57c2 !important; color: #fff !important; }
+.promo-card.yellow-card { background: #fffde7 !important; border-color: #fbc02d !important; }
+.promo-card.yellow-card .promo-icon { background: #fbc02d !important; color: #fff !important; }
+.promo-card.red-card { background: #ffebee !important; border-color: #e53935 !important; }
+.promo-card.red-card .promo-icon { background: #e53935 !important; color: #fff !important; }
+.promo-card.amber-card { background: #fff8e1 !important; border-color: #ffa000 !important; }
+.promo-card.amber-card .promo-icon { background: #ffa000 !important; color: #fff !important; }
+.promo-card.green-card { background: #e8f5e9 !important; border-color: #43a047 !important; }
+.promo-card.green-card .promo-icon { background: #43a047 !important; color: #fff !important; }
+
+/* SELLER AVATAR CIRCULAR */
+.seller-card .seller-avatar,
+.seller-profile-avatar,
+.conv-avatar {
+  width: 56px !important;
+  height: 56px !important;
+  min-width: 56px !important;
+  min-height: 56px !important;
+  max-width: 56px !important;
+  max-height: 56px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: linear-gradient(135deg, var(--orange), var(--orange-light)) !important;
+  background-image: linear-gradient(135deg, var(--orange), var(--orange-light)) !important;
+  position: relative !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 3px 10px rgba(255,107,0,0.25) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  padding: 0 !important;
+}
+.seller-card .seller-avatar img,
+.seller-profile-avatar img,
+.conv-avatar img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+.seller-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 14px !important;
+  text-align: left !important;
+}
+.seller-card .seller-info { flex: 1 !important; min-width: 0 !important; }
+
+/* AI + SUPPORT AVATARS — visible icon on orange circle */
+.conv-avatar,
+.ai-big-icon {
+  background: linear-gradient(135deg, var(--orange), var(--orange-light)) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}
+.conv-avatar i,
+.ai-big-icon i {
+  color: #ffffff !important;
+  font-size: 20px !important;
+}
+.ai-support-hero .ai-big-icon i {
+  font-size: 28px !important;
+}
+
+/* LOADING SPINNER */
+#lenidiLoader {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.78);
+  z-index: 99998;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+  text-align: center;
+  padding: 20px;
+}
+#lenidiLoader.show { display: flex; }
+#lenidiLoader .spinner {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: var(--orange);
+  animation: lenidiSpin 0.7s linear infinite;
+}
+#lenidiLoader .loader-text {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+#lenidiLoader .loader-sub {
+  color: #cbd5e1;
+  font-size: 12px;
+  margin-top: -8px;
+}
+@keyframes lenidiSpin { to { transform: rotate(360deg); } }
+
+/* LOADER CLOSE X */
+#lenidiLoader .loader-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #ffffff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 99999;
+  transition: background 0.15s ease;
+}
+#lenidiLoader .loader-close:active {
+  background: rgba(255,255,255,0.3);
+  transform: scale(0.92);
+}
+
+/* PAGE SLIDE */
+.page { will-change: auto; }
+.page.slide-in-right { animation: slideInRight 0.12s cubic-bezier(0.25,1,0.5,1) both; }
+.page.slide-in-left  { animation: slideInLeft  0.12s cubic-bezier(0.25,1,0.5,1) both; }
+@keyframes slideInRight { from { opacity: 0.5; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideInLeft  { from { opacity: 0.5; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
 .main-container { scroll-behavior: auto !important; }
 
 /* ============================================================
-   ▼▼▼ YOUR ORIGINAL CSS — UNCHANGED ▼▼▼
+   YOUR ORIGINAL CSS
    ============================================================ */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 body { background: #f5f7fa; min-height: 100vh; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
@@ -660,22 +866,6 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .fs-scroll::-webkit-scrollbar { display: none; }
 .fs-slide { flex: 0 0 100%; height: 100%; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; }
 .fs-slide img { width: 100%; height: 100%; object-fit: cover; }
-.promo-card { min-width: 170px; border-radius: 18px; padding: 16px 14px; display: flex; align-items: center; gap: 14px; border: 2px solid; min-height: 96px; box-shadow: 0 4px 12px rgba(30,42,58,0.06); }
-.promo-card .promo-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
-.promo-card .promo-title { font-size: 15px; font-weight: 800; color: #1e2a3a; line-height: 1.2; }
-.promo-card .promo-desc { font-size: 12px; color: #5e6f7e; line-height: 1.3; }
-.promo-card.blue-card { background: #e3f2fd; border-color: #42a5f5; }
-.promo-card.blue-card .promo-icon { background: #1e88e5; color: #fff; }
-.promo-card.orange-card { background: #fff3e0; border-color: #ff9800; }
-.promo-card.orange-card .promo-icon { background: #ff6b00; color: #fff; }
-.promo-card.purple-card { background: #ede7f6; border-color: #7e57c2; }
-.promo-card.purple-card .promo-icon { background: #7e57c2; color: #fff; }
-.promo-card.yellow-card { background: #fffde7; border-color: #fdd835; }
-.promo-card.yellow-card .promo-icon { background: #fbc02d; color: #fff; }
-.promo-card.red-card { background: #ffebee; border-color: #ef5350; }
-.promo-card.red-card .promo-icon { background: #e53935; color: #fff; }
-.promo-card.amber-card { background: #fff8e1; border-color: #ffca28; }
-.promo-card.amber-card .promo-icon { background: #ffa000; color: #fff; }
 .ai-consent-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 8000; display: none; align-items: center; justify-content: center; padding: 20px; }
 .ai-consent-overlay.show { display: flex; }
 .ai-consent-box { background: #fff; border-radius: 20px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
@@ -699,7 +889,7 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
 .referral-code-box .code-value { font-size: 24px; font-weight: 800; color: #1e40af; letter-spacing: 3px; }
 .referral-code-box .code-hint { font-size: 11px; color: #64748b; margin-top: 6px; }
 .referral-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
-.referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase font; letter-spacing: 2px;-weight: 700; outline: none; }
+.referral-input-row input { flex: 1; padding: 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 16px; text-align: center; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; outline: none; }
 .referral-input-row input:focus { border-color: #3b82f6; }
 .btn-claim { width: 100%; padding: 16px; border-radius: 60px; border: none; font-weight: 800; font-size: 15px; background: #cbd5e1; color: #64748b; cursor: not-allowed; }
 .btn-claim.unlocked { background: linear-gradient(135deg, #3b82f6, #1e40af); color: #fff; cursor: pointer; box-shadow: 0 6px 16px rgba(30,64,175,0.3); }
@@ -712,20 +902,9 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
   .pricing-grid { grid-template-columns: repeat(2, 1fr); }
   .profile-menu { grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (min-width: 900px) {
   .product-grid { grid-template-columns: repeat(4, 1fr); }
   .pricing-grid { grid-template-columns: repeat(4, 1fr); }
-}
-
-/* Tighter category tabs */
-.categories {
-  gap: 4px !important;
-  padding: 10px 12px !important;
-}
-.categories a {
-  padding: 8px 12px !important;
-  font-size: 13.5px !important;
 }
 </style>
 </head>
@@ -759,6 +938,13 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
   <div class="fs-scroll" id="fsScroll"></div>
 </div>
 
+<div id="lenidiLoader">
+  <button class="loader-close" onclick="hideLoader()"><i class="fas fa-times"></i></button>
+  <div class="spinner"></div>
+  <div class="loader-text" id="lenidiLoaderText">Redirecting to payment…</div>
+  <div class="loader-sub">Please wait, do not close this page</div>
+</div>
+
 <header id="mainHeader">
   <div class="top-bar">
     <div class="logo-text">Len<span>idi</span></div>
@@ -773,8 +959,7 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
     <a href="#" data-category="clothing" data-index="2" onclick="slideGroupTap(event, 'clothing')">Clothing</a>
     <a href="#" data-category="phones" data-index="3" onclick="slideGroupTap(event, 'phones')">Phones</a>
     <a href="#" data-category="electronics" data-index="4" onclick="slideGroupTap(event, 'electronics')">Electronics</a>
-    <a href="#" data-category="home" data-index="5" onclick="slideGroupTap(event, 'home')">Home</a>
-    <a href="#" data-category="jobs" data-index="6" onclick="slideGroupTap(event, 'jobs')">Jobs</a>
+    <a href="#" data-category="jobs" data-index="5" onclick="slideGroupTap(event, 'jobs')">Jobs</a>
   </div>
 </header>
 
@@ -1219,10 +1404,9 @@ button:active, [onclick]:active, .menu-item:active, .product-card:active, .colle
   <button data-page="packs" data-index="3" onclick="navTap(this)"><i class="fas fa-crown"></i><span>Packs</span></button>
   <button data-page="profile" data-index="4" onclick="navTap(this)"><i class="far fa-user"></i><span>Profile</span></button>
 </nav>
-
 <script>
 /* ============================================================
-   LENIDI · SLIDING PILL SYSTEM (bottom nav + all tab groups)
+   LENIDI · SLIDING PILLS + FAST TAPS + LOADING SPINNER
    ============================================================ */
 const NAV_PAGES = ['home', 'saves', 'sell', 'packs', 'profile'];
 let navCurrentIndex = 0;
@@ -1242,6 +1426,7 @@ function moveNavPlatterToIndex(idx, animate = true) {
 }
 
 function navTap(btn) {
+  if (!btn) return;
   const idx = parseInt(btn.dataset.index, 10);
   const page = btn.dataset.page;
   slideToPage(page, idx, navCurrentIndex);
@@ -1258,14 +1443,25 @@ function slideToPage(page, newIdx, oldIdx) {
   document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.toggle('active', b.dataset.page === page));
 
   const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage','referralPage','servicesPage','inboxPage'];
-  document.getElementById('mainHeader').style.display = hideHeader.includes(page) ? 'none' : 'block';
+  const hdr = document.getElementById('mainHeader');
+  if (hdr) hdr.style.display = hideHeader.includes(page) ? 'none' : 'block';
   if (page === 'saves') renderSaves();
   if (page === 'myListings') renderMyListings();
   if (page === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
   if (page === 'referralPage') loadReferralInfo();
-  if (page === 'home') loadProducts();
+  if (page === 'home') { loadProducts(); }
   if (page !== 'inboxPage' && supportPollRef) { clearInterval(supportPollRef); supportPollRef = null; }
   window.scrollTo({ top: 0, behavior: 'auto' });
+
+  // Re-measure slide pills on the page we just showed
+  setTimeout(() => {
+    if (typeof SLIDE_GROUPS !== 'undefined') {
+      Object.values(SLIDE_GROUPS).forEach(g => {
+        const active = g.items.find(i => i.classList.contains('active'));
+        if (active) g.movePillToItem(active, false);
+      });
+    }
+  }, 30);
 }
 
 function initNavSwipe() {
@@ -1282,14 +1478,12 @@ function initNavSwipe() {
     lockedWidth = (rect.width - 20) / NAV_PAGES.length;
     lockedLeft = rect.left + 10;
   }
-
   function idxFromX(x) {
     const rel = x - lockedLeft;
     const raw = rel / lockedWidth;
     const idx = Math.round(raw - 0.5);
     return Math.max(0, Math.min(NAV_PAGES.length - 1, idx));
   }
-
   function onDown(e) {
     if (e.target.closest('.nav-platter')) return;
     refreshLayout();
@@ -1377,8 +1571,10 @@ function initSlideGroup(groupEl) {
 
   SLIDE_GROUPS[id] = { groupEl, pill, items, movePillToItem, get dragging() { return dragging; } };
 
+  // Generic click handler — skipped if the element has its own onclick (prevents double-fire)
   items.forEach(el => el.addEventListener('click', (e) => {
     if (dragging) return;
+    if (el.hasAttribute('onclick')) return;
     items.forEach(i => i.classList.remove('active'));
     el.classList.add('active');
     movePillToItem(el, true);
@@ -1412,7 +1608,6 @@ function initSlideGroup(groupEl) {
     setPillX(e.clientX - gRect.left - pill.offsetWidth / 2 + scrollLeft);
     try { groupEl.setPointerCapture(pointerId); } catch (err) {}
   }
-
   function onMove(e) {
     if (!dragging) return;
     if (e.pointerId && e.pointerId !== pointerId) return;
@@ -1420,7 +1615,6 @@ function initSlideGroup(groupEl) {
     const scrollLeft = groupEl.scrollLeft || 0;
     setPillX(e.clientX - gRect.left - pill.offsetWidth / 2 + scrollLeft);
   }
-
   function onUp(e) {
     if (!dragging) return;
     dragging = false;
@@ -1429,7 +1623,6 @@ function initSlideGroup(groupEl) {
     if (target) target.click();
     pointerId = null;
   }
-
   function onCancel() {
     if (!dragging) return;
     dragging = false;
@@ -1466,7 +1659,11 @@ function slideGroupTap(elOrEvent, value) {
   const groupEl = el.closest('.slide-pill-group');
   if (!groupEl) return;
   const state = SLIDE_GROUPS[groupEl.id];
-  if (state) { state.items.forEach(i => i.classList.remove('active')); el.classList.add('active'); state.movePillToItem(el, true); }
+  if (state) {
+    state.items.forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    state.movePillToItem(el, true);
+  }
 
   if (groupEl.id === 'categoryBar' && value) { currentHomeCategory = value; applyCollectionFilter(); }
   if (groupEl.id === 'packsTabBar' && value) switchPacksTabRaw(value);
@@ -1502,8 +1699,21 @@ function initAllSlideGroups() {
   moveNavPlatterToIndex(0, false);
   initNavSwipe();
 }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAllSlideGroups);
-else initAllSlideGroups();
+
+/* ============================================================
+   LOADING SPINNER
+   ============================================================ */
+function showLoader(text) {
+  const el = document.getElementById('lenidiLoader');
+  const txt = document.getElementById('lenidiLoaderText');
+  if (!el) return;
+  if (txt) txt.textContent = text || 'Redirecting…';
+  el.classList.add('show');
+}
+function hideLoader() {
+  const el = document.getElementById('lenidiLoader');
+  if (el) el.classList.remove('show');
+}
 
 /* ============================================================
    APP LOGIC
@@ -1553,8 +1763,10 @@ let accountDeleted = false;
 let broadcasts = [];
 let notifications = [];
 let supportPollRef = null;
+let paymentRedirectTimer = null;
+let paymentCancelled = false;
 
-function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastText').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+function showToast(msg) { const t = document.getElementById('toast'); const txt = document.getElementById('toastText'); if (!t) return; if (txt) txt.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
 function isMe(name) { return name === userName; }
 function avatarHtml(name) { if (isMe(name) && userPfp) return '<img src="' + userPfp + '" alt="">'; if (!name) return '?'; return name.split(' ').map(n => n[0]).join(''); }
 function verifyMarkFor(sellerEmail) {
@@ -1579,8 +1791,16 @@ async function apiPost(path, body) { const res = await fetch(BACKEND_URL + path,
 async function apiDelete(path) { try { const res = await fetch(BACKEND_URL + path, { method: 'DELETE' }); return await res.json().catch(() => ({})); } catch (e) { return {}; } }
 
 function openServices() { switchPage('servicesPage'); }
-function openAgentLink() { window.location.href = 'https://dataplug-gh.com/auth?ref=5734ba5d-3096-44ce-90b9-ba8d90bd89ab'; }
-function openDataBundleLink() { window.location.href = 'https://dataplug-gh.com/pay/data-max-buy-5734ba5d'; }
+
+function openAgentLink() {
+  showLoader('Opening agent signup…');
+  setTimeout(() => { window.location.href = 'https://dataplug-gh.com/auth?ref=5734ba5d-3096-44ce-90b9-ba8d90bd89ab'; }, 350);
+}
+function openDataBundleLink() {
+  showLoader('Opening data bundles…');
+  setTimeout(() => { window.location.href = 'https://dataplug-gh.com/pay/data-max-buy-5734ba5d'; }, 350);
+}
+
 function openSupportChatPage() { switchPage('supportChatPage'); }
 
 async function syncFromBackend() {
@@ -1590,25 +1810,39 @@ async function syncFromBackend() {
     if (!data) return;
     if (data.deleted === true || data.status === 'deleted') {
       accountDeleted = true;
-      document.getElementById('suspendedTitle').textContent = 'Account Deleted';
-      document.getElementById('suspendedMsg').textContent = 'Your account has been deleted. You can contact support or create a new one.';
-      document.getElementById('suspendedCountdown').textContent = '';
-      document.getElementById('suspendedSubtext').textContent = '';
-      document.getElementById('createAccountBtn').style.display = 'inline-block';
-      document.getElementById('suspendedOverlay').classList.add('show');
+      const t = document.getElementById('suspendedTitle');
+      const m = document.getElementById('suspendedMsg');
+      const c = document.getElementById('suspendedCountdown');
+      const s = document.getElementById('suspendedSubtext');
+      const b = document.getElementById('createAccountBtn');
+      const o = document.getElementById('suspendedOverlay');
+      if (t) t.textContent = 'Account Deleted';
+      if (m) m.textContent = 'Your account has been deleted. You can contact support or create a new one.';
+      if (c) c.textContent = '';
+      if (s) s.textContent = '';
+      if (b) b.style.display = 'inline-block';
+      if (o) o.classList.add('show');
       return;
     }
     if (data.status === 'banned' || data.status === 'suspended') {
-      document.getElementById('suspendedTitle').textContent = 'Account Suspended';
-      document.getElementById('suspendedMsg').textContent = data.status === 'banned' ? 'Your account has been permanently banned for violating our rules.' : 'Your account is temporarily suspended.';
-      document.getElementById('suspendedCountdown').textContent = data.status === 'banned' ? '∞' : ((data.suspend_days || '?') + ' days');
-      document.getElementById('suspendedSubtext').textContent = '';
-      document.getElementById('createAccountBtn').style.display = 'none';
-      document.getElementById('suspendedOverlay').classList.add('show');
+      const t = document.getElementById('suspendedTitle');
+      const m = document.getElementById('suspendedMsg');
+      const c = document.getElementById('suspendedCountdown');
+      const s = document.getElementById('suspendedSubtext');
+      const b = document.getElementById('createAccountBtn');
+      const o = document.getElementById('suspendedOverlay');
+      if (t) t.textContent = 'Account Suspended';
+      if (m) m.textContent = data.status === 'banned' ? 'Your account has been permanently banned for violating our rules.' : 'Your account is temporarily suspended.';
+      if (c) c.textContent = data.status === 'banned' ? '∞' : ((data.suspend_days || '?') + ' days');
+      if (s) s.textContent = '';
+      if (b) b.style.display = 'none';
+      if (o) o.classList.add('show');
       return;
     } else {
-      document.getElementById('suspendedOverlay').classList.remove('show');
-      document.getElementById('createAccountBtn').style.display = 'none';
+      const o = document.getElementById('suspendedOverlay');
+      const b = document.getElementById('createAccountBtn');
+      if (o) o.classList.remove('show');
+      if (b) b.style.display = 'none';
     }
     const oldBoosts = userBoosts; const oldVerify = userVerify; const oldPlan = subscription ? subscription.plan : null;
     if (data.boosts !== undefined) userBoosts = data.boosts || 0;
@@ -1690,32 +1924,39 @@ function renderProducts(list, containerId) {
 function applyCollectionFilter() {
   let filtered = homeList().slice(0, 16);
   const titleMap = { fresh: 'Fresh recommendations', hot: 'Hot deals', near: 'Near you', trending: 'Trending now' };
-  document.getElementById('sectionTitle').textContent = titleMap[currentCollection] || 'Fresh recommendations';
+  const titleEl = document.getElementById('sectionTitle');
+  if (titleEl) titleEl.textContent = titleMap[currentCollection] || 'Fresh recommendations';
   if (currentHomeCategory !== 'all') filtered = filtered.filter(p => p.category === currentHomeCategory);
   renderProducts(filtered, 'productGrid');
 }
 
-function openSearchPage() { switchPage('search'); setTimeout(() => document.getElementById('searchInput').focus(), 100); }
+function openSearchPage() { switchPage('search'); setTimeout(() => { const el = document.getElementById('searchInput'); if (el) el.focus(); }, 100); }
 function performSearch() {
-  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const inp = document.getElementById('searchInput');
+  if (!inp) return;
+  const q = inp.value.trim().toLowerCase();
   if (!q) return;
   const tokens = q.split(/\s+/);
   const results = products.filter(p => { const hay = (p.title + ' ' + (p.desc || '') + ' ' + p.category + ' ' + (p.brand || '') + ' ' + p.location).toLowerCase(); return tokens.some(t => hay.includes(t)); });
-  document.getElementById('searchSuggestions').style.display = 'none';
-  document.getElementById('searchProductGrid').style.display = 'grid';
+  const sug = document.getElementById('searchSuggestions');
+  const grid = document.getElementById('searchProductGrid');
+  if (sug) sug.style.display = 'none';
+  if (grid) grid.style.display = 'grid';
   renderProducts(searchList(results), 'searchProductGrid');
 }
-function quickSearch(term) { document.getElementById('searchInput').value = term; performSearch(); }
+function quickSearch(term) { const el = document.getElementById('searchInput'); if (el) el.value = term; performSearch(); }
 function applyFilter() {
-  const min = parseInt(document.getElementById('filterMin').value) || 0;
-  const max = parseInt(document.getElementById('filterMax').value) || 999999999;
-  const loc = document.getElementById('filterLocation').value.trim().toLowerCase();
-  const cat = document.getElementById('filterCategory').value;
+  const min = parseInt(document.getElementById('filterMin')?.value) || 0;
+  const max = parseInt(document.getElementById('filterMax')?.value) || 999999999;
+  const loc = document.getElementById('filterLocation')?.value.trim().toLowerCase() || '';
+  const cat = document.getElementById('filterCategory')?.value || 'all';
   let results = products.filter(p => p.priceRaw >= min && p.priceRaw <= max);
   if (loc) results = results.filter(p => p.location.toLowerCase().includes(loc));
   if (cat !== 'all') results = results.filter(p => p.category === cat);
-  document.getElementById('searchSuggestions').style.display = 'none';
-  document.getElementById('searchProductGrid').style.display = 'grid';
+  const sug = document.getElementById('searchSuggestions');
+  const grid = document.getElementById('searchProductGrid');
+  if (sug) sug.style.display = 'none';
+  if (grid) grid.style.display = 'grid';
   renderProducts(searchList(results), 'searchProductGrid');
   switchPage('search');
 }
@@ -1759,6 +2000,11 @@ function openProduct(id) {
   const leftHtml = leftCol.map(renderCell).join('');
   const rightHtml = rightCol.map(renderCell).join('');
   const ownerButtons = isMe(p.seller) ? '<div class="detail-btn-stack"><button class="delete-inline-btn" onclick="requestDeleteAd(' + p.id + ')"><i class="fas fa-trash"></i> Delete</button><button class="boost-inline-btn" onclick="openBoostPage(' + p.id + ')"><i class="fas fa-rocket"></i> Boost</button></div>' : '';
+
+  const sellerAvatar = (p.sellerEmail && p.sellerEmail === userEmail && userPfp)
+    ? '<img src="' + userPfp + '" alt="">'
+    : (p.seller ? p.seller.split(' ').map(n => n[0]).join('') : '?');
+
   document.getElementById('detailContent').innerHTML =
     '<div class="detail-gallery">' +
       '<button class="gallery-back" onclick="switchPage(\'home\')"><i class="fas fa-arrow-left"></i></button>' +
@@ -1779,7 +2025,7 @@ function openProduct(id) {
       (rows.length > 0 ? '<div class="detail-meta" style="margin-bottom:0;"><div>' + leftHtml + '</div><div>' + rightHtml + '</div></div>' : '') +
       '<div class="detail-desc"><h4>Description</h4><p>' + (p.desc || 'No description') + '</p></div>' +
       '<div class="seller-card" onclick="openSellerProfile(\'' + (p.sellerEmail || '').replace(/'/g, "\\'") + '\')">' +
-        '<div class="seller-avatar">' + avatarHtml(p.seller) + '</div>' +
+        '<div class="seller-avatar">' + sellerAvatar + '</div>' +
         '<div class="seller-info"><h4>' + p.seller + tick + '</h4>' +
           (p.sellerEmail ? '<p><i class="fas fa-envelope" style="font-size:10px;"></i> ' + p.sellerEmail + '</p>' : '') +
           (p.sellerPhone ? '<p><i class="fas fa-phone" style="font-size:10px;"></i> ' + p.sellerPhone + '</p>' : '') +
@@ -1799,7 +2045,8 @@ function openProduct(id) {
     if (scroller) {
       scroller.addEventListener('scroll', () => {
         const idx = Math.round(scroller.scrollLeft / scroller.clientWidth);
-        document.getElementById('galleryCounterText').textContent = (idx + 1) + '/' + slideCount;
+        const t = document.getElementById('galleryCounterText');
+        if (t) t.textContent = (idx + 1) + '/' + slideCount;
         document.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
       }, { passive: true });
     }
@@ -1824,8 +2071,8 @@ async function confirmDeleteAd() {
   switchPage('myListings');
 }
 
-function toggleSellerMenu(e, email, name) { e.stopPropagation(); currentSellerEmail = email; currentSellerName = name; const allMenus = document.querySelectorAll('.seller-menu-popup'); const parentCard = e.target.closest('.seller-card'); const thisMenu = parentCard.querySelector('.seller-menu-popup'); const wasOpen = thisMenu.classList.contains('show'); allMenus.forEach(m => m.classList.remove('show')); if (!wasOpen) thisMenu.classList.add('show'); }
-function toggleSellerProfileMenu(e) { e.stopPropagation(); document.getElementById('sellerProfileMenuPopup').classList.toggle('show'); }
+function toggleSellerMenu(e, email, name) { e.stopPropagation(); currentSellerEmail = email; currentSellerName = name; const allMenus = document.querySelectorAll('.seller-menu-popup'); const parentCard = e.target.closest('.seller-card'); if (!parentCard) return; const thisMenu = parentCard.querySelector('.seller-menu-popup'); if (!thisMenu) return; const wasOpen = thisMenu.classList.contains('show'); allMenus.forEach(m => m.classList.remove('show')); if (!wasOpen) thisMenu.classList.add('show'); }
+function toggleSellerProfileMenu(e) { e.stopPropagation(); const el = document.getElementById('sellerProfileMenuPopup'); if (el) el.classList.toggle('show'); }
 document.addEventListener('click', () => { document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show')); });
 
 function openSellerProfile(sellerEmail) {
@@ -1836,11 +2083,17 @@ function openSellerProfile(sellerEmail) {
   const sample = sellerAds[0] || {};
   currentSellerName = sample.seller || 'Seller';
   const tick = verifyMarkFor(sellerEmail);
-  document.getElementById('sellerProfileName').innerHTML = (sample.seller || 'Seller') + tick;
-  document.getElementById('sellerProfileAvatar').innerHTML = avatarHtml(sample.seller);
-  document.getElementById('sellerProfileEmail').innerHTML = '<i class="fas fa-envelope" style="color:#7f8c8d;font-size:11px;"></i> ' + sellerEmail;
-  document.getElementById('sellerProfilePhone').innerHTML = sample.sellerPhone ? '<i class="fas fa-phone" style="color:#7f8c8d;font-size:11px;"></i> ' + sample.sellerPhone : '';
-  document.getElementById('sellerProfileAdsCount').textContent = sellerAds.length + ' ads listed';
+  const nameEl = document.getElementById('sellerProfileName');
+  if (nameEl) nameEl.innerHTML = (sample.seller || 'Seller') + tick;
+  const avatar = (sellerEmail === userEmail && userPfp) ? '<img src="' + userPfp + '">' : avatarHtml(sample.seller);
+  const avEl = document.getElementById('sellerProfileAvatar');
+  if (avEl) avEl.innerHTML = avatar;
+  const eEl = document.getElementById('sellerProfileEmail');
+  if (eEl) eEl.innerHTML = '<i class="fas fa-envelope" style="color:#7f8c8d;font-size:11px;"></i> ' + sellerEmail;
+  const pEl = document.getElementById('sellerProfilePhone');
+  if (pEl) pEl.innerHTML = sample.sellerPhone ? '<i class="fas fa-phone" style="color:#7f8c8d;font-size:11px;"></i> ' + sample.sellerPhone : '';
+  const cEl = document.getElementById('sellerProfileAdsCount');
+  if (cEl) cEl.textContent = sellerAds.length + ' ads listed';
   renderProducts(searchList(sellerAds), 'sellerProfileGrid');
   switchPage('sellerProfile');
 }
@@ -1881,6 +2134,7 @@ function blockSeller(sellerEmail) {
 function updateSellDetailFields() {
   const cat = document.getElementById('sellCategory').value;
   const container = document.getElementById('dynamicDetailFields');
+  if (!container) return;
   const fields = {
     phones: [['sellBrand','Brand','Apple'],['sellModel','Model','iPhone 13'],['sellCondition','Condition','Used'],['sellStorage','Storage','64 GB'],['sellRam','RAM','3 GB'],['sellNetwork','Network','4G'],['sellRearCam','Rear Camera','12 MP'],['sellFrontCam','Front Camera','7 MP'],['sellScreenSize','Screen Size','6.1 inches'],['sellBattery','Battery','2942 mAh'],['sellColor','Color','Black']],
     vehicles: [['sellBrand','Brand','Toyota'],['sellModel','Model','Camry'],['sellYear','Year','2018'],['sellMileage','Mileage','45,000 km'],['sellTransmission','Transmission','Automatic'],['sellFuel','Fuel','Petrol'],['sellCondition','Condition','Used'],['sellColor','Color','Black']],
@@ -1899,6 +2153,7 @@ function updateSellDetailFields() {
 function handlePhotoUpload(event) {
   const files = event.target.files;
   const preview = document.getElementById('uploadPreview');
+  if (!preview) return;
   if (uploadedPhotos.length + files.length > 2) { showToast('Max 2 photos'); return; }
   for (let i = 0; i < files.length; i++) {
     if (uploadedPhotos.length >= 2) break;
@@ -1909,14 +2164,14 @@ function handlePhotoUpload(event) {
   event.target.value = '';
 }
 function clearForm() {
-  document.getElementById('sellTitle').value = '';
-  document.getElementById('sellRegion').value = '';
-  document.getElementById('sellWhatsapp').value = '';
-  document.getElementById('sellPrice').value = '';
-  document.getElementById('sellDesc').value = '';
-  document.getElementById('sellCategory').selectedIndex = 0;
-  document.getElementById('uploadPreview').innerHTML = '';
-  document.getElementById('dynamicDetailFields').innerHTML = '';
+  const t = document.getElementById('sellTitle'); if (t) t.value = '';
+  const r = document.getElementById('sellRegion'); if (r) r.value = '';
+  const w = document.getElementById('sellWhatsapp'); if (w) w.value = '';
+  const p = document.getElementById('sellPrice'); if (p) p.value = '';
+  const d = document.getElementById('sellDesc'); if (d) d.value = '';
+  const c = document.getElementById('sellCategory'); if (c) c.selectedIndex = 0;
+  const u = document.getElementById('uploadPreview'); if (u) u.innerHTML = '';
+  const f = document.getElementById('dynamicDetailFields'); if (f) f.innerHTML = '';
   uploadedPhotos = [];
 }
 function getListingLimit() { if (!subscription || Date.now() >= subscription.until) return FREE_LIMIT; const plan = SUBSCRIPTION_PLANS.find(p => p.id === subscription.plan); return plan ? plan.limit : FREE_LIMIT; }
@@ -1924,39 +2179,89 @@ function getUpgradeTarget() { if (!subscription || Date.now() >= subscription.un
 
 async function postAd() {
   try {
-    const title = (document.getElementById('sellTitle').value || '').trim();
-    const region = (document.getElementById('sellRegion').value || '').trim();
-    const whatsapp = (document.getElementById('sellWhatsapp').value || '').trim();
-    const category = document.getElementById('sellCategory').value;
-    const price = (document.getElementById('sellPrice').value || '').trim();
-    const desc = (document.getElementById('sellDesc').value || '').trim();
+    const title = (document.getElementById('sellTitle')?.value || '').trim();
+    const region = (document.getElementById('sellRegion')?.value || '').trim();
+    const whatsapp = (document.getElementById('sellWhatsapp')?.value || '').trim();
+    const category = document.getElementById('sellCategory')?.value || '';
+    const price = (document.getElementById('sellPrice')?.value || '').trim();
+    const desc = (document.getElementById('sellDesc')?.value || '').trim();
+
+    // Validation — show toast, don't show loader
     if (!title || !price) { showToast('Enter title and price'); return; }
     if (!category) { showToast('Select a category'); return; }
     if (!whatsapp) { showToast('Enter WhatsApp number'); return; }
     if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
+
     const myCount = products.filter(p => p.sellerEmail === userEmail).length;
     const limit = getListingLimit();
-    if (myCount >= limit) { const target = getUpgradeTarget(); showToast('🚫 Limit reached, upgrade to ' + target + ' to post ad'); setTimeout(() => switchPage('packs'), 1300); return; }
+    if (myCount >= limit) {
+      const target = getUpgradeTarget();
+      showToast('🚫 Limit reached, upgrade to ' + target + ' to post ad');
+      setTimeout(() => switchPage('packs'), 1300);
+      return;
+    }
+
+    // All checks passed — show the loader
+    showLoader('Posting your ad…');
+
     const isVip = subscription && Date.now() < subscription.until && subscription.plan === 'vip';
     const payload = {
-      title: title, price: 'GHC ' + price, price_raw: parseInt(price) || 0,
-      category: category, location: region || 'Accra',
+      title: title,
+      price: 'GHC ' + price,
+      price_raw: parseInt(price) || 0,
+      category: category,
+      location: region || 'Accra',
       description: desc || 'No description',
-      seller_email: userEmail, seller_name: userName,
-      seller_phone: whatsapp, whatsapp: whatsapp,
-      photos: uploadedPhotos, badge: isVip ? 'BEST BUY' : 'NEW',
-      is_boosted: isVip, is_vip: isVip,
-      posted_at: Date.now(), boosted_at: isVip ? Date.now() : 0
+      seller_email: userEmail,
+      seller_name: userName,
+      seller_phone: whatsapp,
+      whatsapp: whatsapp,
+      photos: uploadedPhotos,
+      badge: isVip ? 'BEST BUY' : 'NEW',
+      is_boosted: isVip,
+      is_vip: isVip,
+      posted_at: Date.now(),
+      boosted_at: isVip ? Date.now() : 0
     };
-    const fieldIds = ['sellBrand','sellModel','sellCondition','sellStorage','sellRam','sellNetwork','sellRearCam','sellFrontCam','sellScreenSize','sellBattery','sellColor','sellYear','sellMileage','sellTransmission','sellFuel','sellBedrooms','sellBathrooms','sellSize','sellProcessor','sellMaterial','sellCompany','sellJobType','sellSalary','sellServiceType','sellExperience','sellGender'];
-    fieldIds.forEach(id => { const el = document.getElementById(id); if (el && el.value) { const key = id.replace('sell', ''); payload[key.charAt(0).toLowerCase() + key.slice(1)] = el.value.trim(); } });
+
+    const fieldIds = [
+      'sellBrand','sellModel','sellCondition','sellStorage','sellRam',
+      'sellNetwork','sellRearCam','sellFrontCam','sellScreenSize',
+      'sellBattery','sellColor','sellYear','sellMileage','sellTransmission',
+      'sellFuel','sellBedrooms','sellBathrooms','sellSize','sellProcessor',
+      'sellMaterial','sellCompany','sellJobType','sellSalary',
+      'sellServiceType','sellExperience','sellGender'
+    ];
+    fieldIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.value) {
+        const key = id.replace('sell', '');
+        payload[key.charAt(0).toLowerCase() + key.slice(1)] = el.value.trim();
+      }
+    });
+
     const result = await apiPost('/products', payload);
-    if (result.error) { showToast('Error: ' + result.error); return; }
+
+    // Hide loader regardless of success/failure
+    hideLoader();
+
+    if (result && result.error) {
+      showToast('Error: ' + result.error);
+      return;
+    }
+
+    // Success — clear form, toast, go to My Listings
     clearForm();
-    showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted! It will show at the bottom of Search.');
+    showToast(isVip ? '🚀 VIP AD posted — auto-boosted!' : '✅ Ad posted!');
+
     await loadProducts();
+    updateActiveAdsCount();
     switchPage('myListings');
-  } catch (err) { showToast('Error posting: ' + err.message); }
+    renderMyListings();
+  } catch (err) {
+    hideLoader();
+    showToast('Error posting: ' + (err.message || 'unknown'));
+  }
 }
 
 function openBoostPage(id) {
@@ -1992,37 +2297,42 @@ async function confirmBoost(id) {
 }
 function renderMyListings() {
   const grid = document.getElementById('myListingsGrid');
+  if (!grid) return;
   const mine = products.filter(p => p.sellerEmail === userEmail);
   if (mine.length === 0) { grid.innerHTML = '<div class="no-results"><i class="fas fa-box-open"></i><h3>No listings yet</h3><p>Post an ad to see it here.</p></div>'; return; }
   const sorted = [...mine].sort((a, b) => (b.postedAt || 0) - (a.postedAt || 0));
   renderProducts(sorted, 'myListingsGrid');
 }
-async function updateActiveAdsCount() { const mine = products.filter(p => p.sellerEmail === userEmail); document.getElementById('activeAdsCount').textContent = mine.length; }
+async function updateActiveAdsCount() { const mine = products.filter(p => p.sellerEmail === userEmail); const el = document.getElementById('activeAdsCount'); if (el) el.textContent = mine.length; }
 
 function openFullscreen(productId, startIndex) {
   const p = products.find(x => String(x.id) === String(productId));
   if (!p || !p.photos || p.photos.length === 0) return;
   const viewer = document.getElementById('fsViewer');
   const scroll = document.getElementById('fsScroll');
+  if (!viewer || !scroll) return;
   scroll.innerHTML = '';
   p.photos.forEach(url => { scroll.innerHTML += '<div class="fs-slide"><img src="' + url + '" alt=""></div>'; });
-  document.getElementById('fsCounter').textContent = (startIndex + 1) + '/' + p.photos.length;
+  const c = document.getElementById('fsCounter');
+  if (c) c.textContent = (startIndex + 1) + '/' + p.photos.length;
   viewer.classList.add('show');
   requestAnimationFrame(() => { scroll.scrollLeft = startIndex * scroll.clientWidth; });
 }
-function closeFullscreen() { document.getElementById('fsViewer').classList.remove('show'); }
+function closeFullscreen() { const el = document.getElementById('fsViewer'); if (el) el.classList.remove('show'); }
 
 function toggleSaveFromDetail(id) {
   const idx = savedItems.indexOf(id);
   if (idx > -1) savedItems.splice(idx, 1); else savedItems.push(id);
   localStorage.setItem('lenidiSaved', JSON.stringify(savedItems));
   const btn = document.querySelector('.gallery-heart');
+  if (!btn) return;
   const isSaved = savedItems.includes(id);
   btn.className = 'gallery-heart ' + (isSaved ? 'saved' : '');
   btn.innerHTML = '<i class="' + (isSaved ? 'fas' : 'far') + ' fa-star"></i>';
 }
 function renderSaves() {
   const grid = document.getElementById('savesGrid');
+  if (!grid) return;
   const saved = products.filter(p => savedItems.includes(p.id));
   if (saved.length === 0) { grid.innerHTML = '<div class="empty-state"><i class="far fa-star"></i><h3>No saved items</h3><p>Tap the star on any listing.</p></div>'; return; }
   renderProducts(searchList(saved), 'savesGrid');
@@ -2033,11 +2343,13 @@ function openTerms() { window.location.href = 'https://dave-software-67.github.i
 
 function buildBoostGrid() {
   const grid = document.getElementById('boostGrid');
+  if (!grid) return;
   grid.innerHTML = '';
   BOOST_PACKS.forEach(p => { const card = document.createElement('div'); card.className = 'boost-card'; card.innerHTML = '<div class="boost-amount">' + p.amount + '</div><div class="boost-label">boosts</div><div class="boost-price">GHC ' + p.price + '</div><button class="boost-btn" onclick="buyBoosts(' + p.amount + ',' + p.price + ')">Buy</button>'; grid.appendChild(card); });
 }
 function buildPricingGrid() {
   const grid = document.getElementById('pricingGrid');
+  if (!grid) return;
   grid.innerHTML = '';
   SUBSCRIPTION_PLANS.forEach(plan => {
     const card = document.createElement('div');
@@ -2049,14 +2361,35 @@ function buildPricingGrid() {
 }
 function switchPacksTab(tab) { switchPacksTabRaw(tab); }
 
-async function startPayment(email, amount, plan, type) {
+/* ---------- PAYMENTS with spinner ---------- */
+async function startPayment(email, amount, plan, type, label) {
+  paymentCancelled = false;
+  showLoader(label || 'Redirecting to payment…');
   try {
     const data = await apiPost('/create-payment', { email: email, amount: amount, plan: plan, type: type });
-    if (!data.authorization_url) { showToast('Payment start failed: ' + (data.error || 'unknown')); return; }
+    if (!data.authorization_url) {
+      hideLoader();
+      showToast('Payment start failed: ' + (data.error || 'unknown'));
+      return;
+    }
     localStorage.setItem('lenidiPendingPayment', JSON.stringify({ reference: data.reference, plan: plan, type: type, amount: amount, started: Date.now() }));
-    window.location.href = data.authorization_url;
-  } catch (e) { showToast('Payment error: ' + e.message); }
+    paymentRedirectTimer = setTimeout(() => {
+      if (paymentCancelled) return;
+      window.location.href = data.authorization_url;
+    }, 400);
+  } catch (e) {
+    hideLoader();
+    showToast('Payment error: ' + e.message);
+  }
 }
+
+function cancelPaymentRedirect() {
+  paymentCancelled = true;
+  if (paymentRedirectTimer) { clearTimeout(paymentRedirectTimer); paymentRedirectTimer = null; }
+  hideLoader();
+  showToast('Payment cancelled');
+}
+
 function checkPendingPayment() {
   const pending = JSON.parse(localStorage.getItem('lenidiPendingPayment'));
   if (!pending) return;
@@ -2095,11 +2428,19 @@ function onPaymentSuccess(pending) {
     }
   }
 }
-function buyBoosts(amount, price) { if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; } startPayment(userEmail, price, amount + '', 'boost'); }
-function subscribePlan(planId, price, freeBoosts, verifyClass) { if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; } startPayment(userEmail, price, planId, 'subscription'); }
+function buyBoosts(amount, price) {
+  if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; }
+  startPayment(userEmail, price, amount + '', 'boost', 'Preparing your boost purchase…');
+}
+function subscribePlan(planId, price, freeBoosts, verifyClass) {
+  if (!isLoggedIn) { showToast('Please sign in'); switchPage('profile'); return; }
+  const planNames = { plus: 'Plus', pro: 'Pro', premium: 'Premium', vip: 'VIP' };
+  startPayment(userEmail, price, planId, 'subscription', 'Redirecting to pay for ' + (planNames[planId] || planId.toUpperCase()) + '…');
+}
 
 function updateSubTimer() {
   const c = document.getElementById('subTimerContainer');
+  if (!c) return;
   if (!subscription) { c.innerHTML = ''; return; }
   const now = Date.now();
   if (now >= subscription.until) { userVerify = ''; localStorage.setItem('lenidiVerify', ''); subscription = null; localStorage.removeItem('lenidiSubscription'); applyVerifyMark(); c.innerHTML = ''; return; }
@@ -2111,9 +2452,10 @@ function updateSubTimer() {
 }
 function applyVerifyMark() {
   const el = document.getElementById('profileVerifyMark');
+  if (!el) return;
   el.innerHTML = userVerify ? '<span class="verify-badge ' + userVerify + '"><i class="fas fa-certificate"></i><i class="fas fa-check"></i></span>' : '';
 }
-function updateBoostsUI() { const stat = document.getElementById('boostsStat'); const count = document.getElementById('boostCount'); if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; } else stat.style.display = 'none'; }
+function updateBoostsUI() { const stat = document.getElementById('boostsStat'); const count = document.getElementById('boostCount'); if (!stat || !count) return; if (isLoggedIn) { stat.style.display = 'flex'; count.textContent = userBoosts; } else stat.style.display = 'none'; }
 
 async function openReferralPage() {
   if (!isLoggedIn) { showToast('Please sign in first'); switchPage('profile'); return; }
@@ -2130,29 +2472,28 @@ async function loadReferralInfo() {
   } catch (e) { renderReferralPage(); }
 }
 function renderReferralPage() {
-  document.getElementById('refCount').textContent = referralInfo.count + '/100';
+  const rc = document.getElementById('refCount'); if (rc) rc.textContent = referralInfo.count + '/100';
   const codeBox = document.getElementById('codeBox');
   const myCodeDisplay = document.getElementById('myCodeDisplay');
   const codeHint = document.getElementById('codeHint');
   const createSection = document.getElementById('createCodeSection');
   if (referralInfo.code) {
-    myCodeDisplay.textContent = referralInfo.code;
-    codeHint.textContent = 'Share this with friends!';
-    createSection.style.display = 'none';
-    codeBox.style.background = '#dcfce7';
-    codeBox.style.borderColor = '#16a34a';
-    myCodeDisplay.style.color = '#16a34a';
-    codeHint.style.color = '#166534';
+    if (myCodeDisplay) myCodeDisplay.textContent = referralInfo.code;
+    if (codeHint) codeHint.textContent = 'Share this with friends!';
+    if (createSection) createSection.style.display = 'none';
+    if (codeBox) { codeBox.style.background = '#dcfce7'; codeBox.style.borderColor = '#16a34a'; }
+    if (myCodeDisplay) myCodeDisplay.style.color = '#16a34a';
+    if (codeHint) codeHint.style.color = '#166534';
   } else {
-    myCodeDisplay.textContent = '— — —';
-    codeHint.textContent = 'Tap below to create your code';
-    createSection.style.display = 'block';
-    codeBox.style.background = '#f0f9ff';
-    codeBox.style.borderColor = '#3b82f6';
-    myCodeDisplay.style.color = '#1e40af';
-    codeHint.style.color = '#64748b';
+    if (myCodeDisplay) myCodeDisplay.textContent = '— — —';
+    if (codeHint) codeHint.textContent = 'Tap below to create your code';
+    if (createSection) createSection.style.display = 'block';
+    if (codeBox) { codeBox.style.background = '#f0f9ff'; codeBox.style.borderColor = '#3b82f6'; }
+    if (myCodeDisplay) myCodeDisplay.style.color = '#1e40af';
+    if (codeHint) codeHint.style.color = '#64748b';
   }
   const btn = document.getElementById('claimVipBtn');
+  if (!btn) return;
   if (referralInfo.count >= 100 && !referralInfo.claimed) {
     btn.classList.add('unlocked');
     btn.disabled = false;
@@ -2206,6 +2547,7 @@ async function loadNotifications() {
 }
 function renderNotifications() {
   const el = document.getElementById('notifList');
+  if (!el) return;
   if (!notifications.length) { el.innerHTML = '<div class="no-results"><i class="fas fa-bell"></i><h3>No notifications</h3><p>You\'re all caught up!</p></div>'; return; }
   el.innerHTML = notifications.map(b => {
     const dt = b.created_at ? new Date(b.created_at).toLocaleString() : '';
@@ -2251,17 +2593,19 @@ async function sendSupportMsg() {
   const text = input.value.trim();
   if (!text) return;
   const box = document.getElementById('supportMessages');
-  box.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
-  box.scrollTop = box.scrollHeight;
+  if (box) {
+    box.innerHTML += '<div class="msg-bubble sent">' + text.replace(/</g, '&lt;') + '</div>';
+    box.scrollTop = box.scrollHeight;
+  }
   input.value = '';
   try { const res = await apiPost('/dm/send', { user_email: userEmail, sender: 'user', body: text }); if (res && res.success) setTimeout(loadSupportMessages, 400); } catch (e) {}
 }
 
 async function doLogin() {
-  const name = (document.getElementById('loginName').value || '').trim();
-  const email = (document.getElementById('loginEmail').value || '').trim();
-  const phone = (document.getElementById('loginPhone').value || '').trim();
-  const referralCode = (document.getElementById('loginReferral').value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+  const name = (document.getElementById('loginName')?.value || '').trim();
+  const email = (document.getElementById('loginEmail')?.value || '').trim();
+  const phone = (document.getElementById('loginPhone')?.value || '').trim();
+  const referralCode = (document.getElementById('loginReferral')?.value || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
   if (!name || !email || !phone) { showToast('Fill all fields'); return; }
   isLoggedIn = true;
   userName = name; userEmail = email.toLowerCase(); userPhone = phone;
@@ -2286,15 +2630,22 @@ async function doLogin() {
 }
 function doLogout() { localStorage.clear(); location.reload(); }
 function deleteMyAccount() { localStorage.clear(); showToast('Account deleted'); setTimeout(() => location.reload(), 1000); }
-function updateProfileView() { document.getElementById('loggedInProfileView').style.display = isLoggedIn ? 'block' : 'none'; document.getElementById('loggedOutProfileView').style.display = isLoggedIn ? 'none' : 'block'; }
+function updateProfileView() {
+  const li = document.getElementById('loggedInProfileView');
+  const lo = document.getElementById('loggedOutProfileView');
+  if (li) li.style.display = isLoggedIn ? 'block' : 'none';
+  if (lo) lo.style.display = isLoggedIn ? 'none' : 'block';
+}
 function syncUserInfo() {
-  document.getElementById('profileNameText').textContent = userName || 'John Doe';
-  document.getElementById('profileEmailText').textContent = userEmail || '—';
-  document.getElementById('profilePhoneText').textContent = userPhone || '—';
-  products.forEach(p => { if (p.sellerEmail === userEmail) { p.seller = userName; p.sellerPhone = userPhone; p.whatsapp = userPhone; } });
+  const n = document.getElementById('profileNameText'); if (n) n.textContent = userName || 'John Doe';
+  const e = document.getElementById('profileEmailText'); if (e) e.textContent = userEmail || '—';
+  const p = document.getElementById('profilePhoneText'); if (p) p.textContent = userPhone || '—';
+  products.forEach(pr => { if (pr.sellerEmail === userEmail) { pr.seller = userName; pr.sellerPhone = userPhone; pr.whatsapp = userPhone; } });
   applyCollectionFilter();
-  if (document.getElementById('myListingsPage').classList.contains('active')) renderMyListings();
-  if (document.getElementById('savesPage').classList.contains('active')) renderSaves();
+  const ml = document.getElementById('myListingsPage');
+  if (ml && ml.classList.contains('active')) renderMyListings();
+  const sp = document.getElementById('savesPage');
+  if (sp && sp.classList.contains('active')) renderSaves();
 }
 function changeName() {
   const n = prompt('New name:', userName);
@@ -2320,28 +2671,28 @@ function handlePfpUpload(e) {
   const f = e.target.files[0];
   if (!f) return;
   const r = new FileReader();
-  r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; };
+  r.onload = function (ev) { userPfp = ev.target.result; localStorage.setItem('lenidiPfp', userPfp); const av = document.getElementById('profileAvatar'); if (av) av.innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; };
   r.readAsDataURL(f);
 }
 
 function openAISupport() { switchPage('aiSupportPage'); }
 function openAIChatWith(q) {
-  if (!aiConsented) { document.getElementById('aiConsentOverlay').classList.add('show'); window.pendingAIQuestion = q || ''; return; }
+  if (!aiConsented) { const o = document.getElementById('aiConsentOverlay'); if (o) o.classList.add('show'); window.pendingAIQuestion = q || ''; return; }
   switchPage('aiChatPage');
-  if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
+  if (q) { setTimeout(() => { const el = document.getElementById('aiInput'); if (el) { el.value = q; sendAIMessage(); } }, 100); }
 }
 function acceptAIConsent() {
   aiConsented = true;
   localStorage.setItem('lenidiAiConsent', 'true');
-  document.getElementById('aiConsentOverlay').classList.remove('show');
+  const o = document.getElementById('aiConsentOverlay'); if (o) o.classList.remove('show');
   switchPage('aiChatPage');
   const q = window.pendingAIQuestion || '';
-  if (q) { setTimeout(() => { document.getElementById('aiInput').value = q; sendAIMessage(); }, 100); }
+  if (q) { setTimeout(() => { const el = document.getElementById('aiInput'); if (el) { el.value = q; sendAIMessage(); } }, 100); }
   window.pendingAIQuestion = '';
 }
-function declineAIConsent() { document.getElementById('aiConsentOverlay').classList.remove('show'); window.pendingAIQuestion = ''; showToast('AI chat unavailable without consent'); }
-function toggleConvMenu(e) { e.stopPropagation(); document.getElementById('convMenuPopup').classList.toggle('show'); }
-function clearAIChat() { document.getElementById('convMenuPopup').classList.remove('show'); document.getElementById('aiMessages').innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
+function declineAIConsent() { const o = document.getElementById('aiConsentOverlay'); if (o) o.classList.remove('show'); window.pendingAIQuestion = ''; showToast('AI chat unavailable without consent'); }
+function toggleConvMenu(e) { e.stopPropagation(); const el = document.getElementById('convMenuPopup'); if (el) el.classList.toggle('show'); }
+function clearAIChat() { const p = document.getElementById('convMenuPopup'); if (p) p.classList.remove('show'); const m = document.getElementById('aiMessages'); if (m) m.innerHTML = '<div class="msg-bubble received">Chat cleared 😊</div>'; }
 function isAdminCommand(t) { return /^\/(suspend|ban|unban|gift|unpack|remove)/i.test(t.trim()); }
 function parseAdminCommand(text) {
   const t = text.trim();
@@ -2436,17 +2787,23 @@ async function sendAIMessage() {
 
 function buildAdStrip() {
   const strip = document.getElementById('adStrip');
+  if (!strip) return;
   const cards = [
     { title: 'Trusted sellers', desc: 'Verified badges', icon: 'fa-check', cls: 'blue-card' },
     { title: 'Boost your ad', desc: 'Get 10x views', icon: 'fa-rocket', cls: 'orange-card' },
     { title: 'Lenidi Plus', desc: 'GHC 99/month', icon: 'fa-crown', cls: 'purple-card' },
     { title: 'Sell faster', desc: 'Featured listings', icon: 'fa-bolt', cls: 'yellow-card' },
-    { title: 'Watch & earn', desc: 'Free boosts', icon: 'fa-gift', cls: 'blue-card' },
-    { title: 'Chat support', desc: '24/7 help', icon: 'fa-robot', cls: 'red-card' },
-    { title: 'Save items', desc: 'Star favourites', icon: 'fa-star', cls: 'amber-card' }
+    { title: 'Watch & earn', desc: 'Free boosts', icon: 'fa-gift', cls: 'red-card' },
+    { title: 'Chat support', desc: '24/7 help', icon: 'fa-robot', cls: 'amber-card' },
+    { title: 'Save items', desc: 'Star favourites', icon: 'fa-star', cls: 'green-card' }
   ];
   strip.innerHTML = '';
-  cards.forEach(c => { const card = document.createElement('div'); card.className = 'promo-card ' + c.cls; card.innerHTML = '<div class="promo-icon"><i class="fas ' + c.icon + '"></i></div><div><div class="promo-title">' + c.title + '</div><div class="promo-desc">' + c.desc + '</div></div>'; strip.appendChild(card); });
+  cards.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'promo-card ' + c.cls;
+    card.innerHTML = '<div class="promo-icon"><i class="fas ' + c.icon + '"></i></div><div><div class="promo-title">' + c.title + '</div><div class="promo-desc">' + c.desc + '</div></div>';
+    strip.appendChild(card);
+  });
 }
 
 function switchPage(pageId) {
@@ -2458,7 +2815,8 @@ function switchPage(pageId) {
   target.classList.add('active');
   document.querySelectorAll('.bottom-nav button').forEach(b => { b.classList.toggle('active', b.dataset.page === pageId); });
   const hideHeader = ['search','filter','detail','boostProductPage','aiSupportPage','aiChatPage','deleteAccountPage','logoutConfirm','deleteAdConfirmPage','referralPage','servicesPage','inboxPage'];
-  document.getElementById('mainHeader').style.display = hideHeader.includes(pageId) ? 'none' : 'block';
+  const hdr = document.getElementById('mainHeader');
+  if (hdr) hdr.style.display = hideHeader.includes(pageId) ? 'none' : 'block';
   if (pageId === 'saves') renderSaves();
   if (pageId === 'myListings') renderMyListings();
   if (pageId === 'profile') { updateProfileView(); updateBoostsUI(); updateSubTimer(); syncUserInfo(); syncFromBackend(); }
@@ -2466,33 +2824,57 @@ function switchPage(pageId) {
   if (pageId === 'home') { loadProducts(); }
   if (pageId !== 'inboxPage' && supportPollRef) { clearInterval(supportPollRef); supportPollRef = null; }
   window.scrollTo({ top: 0, behavior: 'auto' });
+
+  // Re-measure slide pills on the page we just showed
+  setTimeout(() => {
+    if (typeof SLIDE_GROUPS !== 'undefined') {
+      Object.values(SLIDE_GROUPS).forEach(g => {
+        const active = g.items.find(i => i.classList.contains('active'));
+        if (active) g.movePillToItem(active, false);
+      });
+    }
+  }, 30);
 }
 
-buildAdStrip();
-buildBoostGrid();
-buildPricingGrid();
+/* ============================================================
+   BOOT
+   ============================================================ */
+function boot() {
+  try { buildAdStrip(); } catch (e) { console.warn('adStrip', e); }
+  try { buildBoostGrid(); } catch (e) { console.warn('boostGrid', e); }
+  try { buildPricingGrid(); } catch (e) { console.warn('pricingGrid', e); }
+  try { initAllSlideGroups(); } catch (e) { console.warn('slideGroups', e); }
 
-(async function init() {
-  if (userPfp) document.getElementById('profileAvatar').innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>';
-  applyVerifyMark();
-  updateProfileView();
-  updateBoostsUI();
-  updateSubTimer();
-  syncUserInfo();
-  await loadProducts();
-  checkPendingPayment();
-  syncFromBackend();
-  loadNotifications();
-  setInterval(() => { if (isLoggedIn && userEmail && !accountDeleted) syncFromBackend(); }, 15000);
-  setInterval(() => { if (isLoggedIn && !accountDeleted) loadNotifications(); }, 30000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden && isLoggedIn && userEmail && !accountDeleted) { syncFromBackend(); loadNotifications(); } });
+  try {
+    if (userPfp) { const a = document.getElementById('profileAvatar'); if (a) a.innerHTML = '<img src="' + userPfp + '"><div class="edit-overlay">EDIT</div>'; }
+    applyVerifyMark();
+    updateProfileView();
+    updateBoostsUI();
+    updateSubTimer();
+    syncUserInfo();
+  } catch (e) { console.warn('init UI', e); }
+
   switchPage('home');
-})();
+
+  (async () => {
+    try { await loadProducts(); } catch (e) { console.warn('loadProducts', e); }
+    try { checkPendingPayment(); } catch (e) {}
+    try { syncFromBackend(); } catch (e) {}
+    try { loadNotifications(); } catch (e) {}
+  })();
+
+  setInterval(() => { if (isLoggedIn && userEmail && !accountDeleted) { try { syncFromBackend(); } catch (e) {} } }, 15000);
+  setInterval(() => { if (isLoggedIn && !accountDeleted) { try { loadNotifications(); } catch (e) {} } }, 30000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && isLoggedIn && userEmail && !accountDeleted) { try { syncFromBackend(); } catch (e) {} try { loadNotifications(); } catch (e) {} } });
+}
 
 document.addEventListener('click', () => {
-  document.getElementById('convMenuPopup')?.classList.remove('show');
+  const c = document.getElementById('convMenuPopup'); if (c) c.classList.remove('show');
   document.querySelectorAll('.seller-menu-popup').forEach(m => m.classList.remove('show'));
 });
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
 </script>
 </body>
 </html>
